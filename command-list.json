@@ -1,0 +1,14 @@
+{
+  "n": {"name": "n", "help":"n/s/e/w: Travel north, south, east, or west"},
+  "s": {"name": "s", "help":"n/s/e/w: Travel north, south, east, or west"},
+  "e": {"name": "e", "help":"n/s/e/w: Travel north, south, east, or west"},
+  "w": {"name": "w", "help":"n/s/e/w: Travel north, south, east, or west"},
+  "t": {"name": "t", "help":"t: Select target"},
+  "a": {"name": "a", "help":"a: Attack current target with wielded weapon"},
+  "m": {"name": "m", "help":"m: Cast magic at current target"},
+  "l": {"name": "l", "help":"l: Look at surroundings"},
+  "i": {"name": "i", "help":"i: Check inventory and equipped items"},
+  "c": {"name": "c", "help":"c: Open character sheet"},
+  "S": {"name": "S", "help":"S: Open system menu"},
+  "?": {"name": "?", "help":"?: Open help menu, or type after a command to display help for that command"}
+}

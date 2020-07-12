@@ -197,7 +197,6 @@ module.exports = class Game {
   handleMove(commandSuffix) {
     const room = this.getCurrentRoom()
     if (room.exits.includes(commandSuffix)) {
-      // this.processMoveCreature('player', commandSuffix)
       this.addAction({type:'move', id: 'player', dir: commandSuffix})
       this.setTargetOf('player', null)
     } else {
@@ -207,9 +206,9 @@ module.exports = class Game {
 
   handleTarget(targeterId, index) {
     // FIXME Handlers are only for the player!
-    // TODO handle case of no available targets
     var targetId
-    if (!index) {
+    const inValidIndex = !parseInt(index) >= 0
+    if (inValidIndex) {
       const target = this.getFirstValidTargetOf(targeterId)
       targetId = this.getFirstValidTargetOf(targeterId) ? target.id : null
     } else {
@@ -292,6 +291,7 @@ module.exports = class Game {
   }
 
   handleInput(input) {
+    input = input.replace(' ', '')
     const player = this.getPlayer()
     const prefix = input[0]
     const suffix = input[1]
@@ -333,7 +333,6 @@ module.exports = class Game {
   // ACTIONS
 
   processAction(action) {
-    console.log('processing', action.type)
     switch (action.type) {
       case 'move':
         this.processMoveCreature(action.id, action.dir)
@@ -345,7 +344,6 @@ module.exports = class Game {
   }
 
   processActions() {
-    console.log('processing actions')
     this.state.actions.forEach(action => {
       this.processAction(action)
     })

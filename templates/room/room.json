@@ -1,0 +1,8 @@
+{
+  "desc": "You are in a plain room.",
+  "icon": "x",
+  "creatures": [],
+  "weights": {
+    "neighborType": {"room":1, "corridor":2}
+  }
+}

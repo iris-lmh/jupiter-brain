@@ -1,0 +1,15 @@
+{
+  "name": "Drone",
+  "remainsName": "wreckage",
+  "level": 1,
+  "hitDie": 6,
+  "attributes": {
+    "str": 8,
+    "dex": 12,
+    "con": 14,
+    "int": 6,
+    "wis": 8,
+    "cha": 8
+  },
+  "wielding":"knife"
+}

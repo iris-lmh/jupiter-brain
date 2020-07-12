@@ -1,6 +1,23 @@
 const _ = require('lodash')
 
 module.exports = {
+  assert: function(assertion, message) {
+    if (!assertion) {
+      console.trace()
+      throw message
+    }
+  },
+
+  expandWeights(weights) {
+    const expanded = []
+    _.forOwn(weights, (v, k) => {
+      for (var i=0; i<v; i++) {
+        expanded.push(k)
+      }
+    })
+    return expanded
+  },
+
   diceRoll: function(count, size) {
     let sum = 0
     for (var i=0; i<count; i++) {
@@ -11,11 +28,6 @@ module.exports = {
 
   getAttributeMod: function(n) {
     return Math.floor((n - 10)/2)
-  },
-
-  getTarget: function(state) {
-    const target = _.find(state.room.creatures, o => o.id == state.player.target) || {name: 'nothing'}
-    return target
   },
 
   deductAp: function(creature, amount) {

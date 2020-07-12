@@ -1,0 +1,14 @@
+{
+  "name": "Android",
+  "level": 1,
+  "hitDie": 6,
+  "attributes": {
+    "str": 10,
+    "dex": 14,
+    "con": 10,
+    "int": 6,
+    "wis": 8,
+    "cha": 8
+  },
+  "wielding":"knife"
+}

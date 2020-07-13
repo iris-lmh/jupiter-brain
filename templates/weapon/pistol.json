@@ -1,5 +1,6 @@
 {
   "name": "Pistol", 
+  "attackDesc": "shoot",
   "diceCount": 2, 
   "diceSize": 6, 
   "hitBonus": 0, 

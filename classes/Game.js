@@ -274,8 +274,8 @@ module.exports = class Game {
     const playerIsKilled = killed && attackerId != 'player' ? ', killing you' : ''
   
     const hitMsg = attackerId == 'player' 
-      ? `You${hit.crit ? ' critically ' : ' '}hit (${hit.roll}) the ${defender.name} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
-      : `The ${attacker.name}${hit.crit ? ' critically ' : ' '}hits (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
+      ? `You${hit.crit ? ' critically ' : ' '}${weapon.attackDesc} (${hit.roll}) the ${defender.name} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
+      : `The ${attacker.name}${hit.crit ? ' critically ' : ' '}${weapon.attackDesc}s (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
   
     const missMsg = attackerId == 'player'
       ? `You miss (${hit.roll}) the ${defender.name}.`

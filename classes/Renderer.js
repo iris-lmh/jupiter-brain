@@ -14,11 +14,12 @@ module.exports = class Renderer {
     const creatures = game.getNearbyCreaturesWithout('player')
     creatures.forEach((creature, i) => {
       // const creature = game.getCreature(creatureId)
+      const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
       if (creature.hp > 0) {
-        lines.push(`${i} - There is a ${creature.name}. ${creature.hp} hp`)
+        lines.push(`${i} - There is ${article} ${creature.name}. ${creature.hp} hp`)
       } 
       else if (creature.hp <= 0) {
-        lines.push(`${i} - There is a ${creature.name} ${creature.remainsName}.`)
+        lines.push(`${i} - There is ${article} ${creature.name} ${creature.remainsName}.`)
       }
     })
     return lines

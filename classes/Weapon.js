@@ -7,6 +7,7 @@ class Weapon extends Item {
     const template = this.loader.loadTemplate('weapon', templateName)
 
     this.name = template.name || 'Weapon'
+    this.attackDesc = template.attackDesc || 'hit'
     this.diceCount = template.diceCount || 1
     this.diceSize = template.diceSize || 4
     this.hitBonus = template.hitBonus || 0

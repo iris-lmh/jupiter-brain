@@ -1,5 +1,6 @@
 {
-  "name": "Knife", 
+  "name": "Knife",
+  "attackDesc": "stab",
   "diceCount": 1, 
   "diceSize": 4, 
   "hitBonus": 0, 

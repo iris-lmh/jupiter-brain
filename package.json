@@ -1,15 +1,19 @@
 {
-  "name": "ComplicatedRawPresses",
+  "name": "jupter-brain",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "todo": "leasot -xS . -i node_modules --reporter markdown > TODO.md"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "leasot": "^11.1.0"
   }
 }

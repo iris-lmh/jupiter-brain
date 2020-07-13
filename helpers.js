@@ -1,6 +1,6 @@
 const _ = require('lodash')
 
-module.exports = {
+const helpers = {
   assert: function(assertion, message) {
     if (!assertion) {
       console.trace()
@@ -16,6 +16,48 @@ module.exports = {
       }
     })
     return expanded
+  },
+
+  expandWeights2(weights) {
+    const expanded = []
+    var runningTotal = -1
+    _.forOwn(weights, (v, k) => {
+      const weight = {name: k, min:runningTotal + 1}
+      runningTotal = runningTotal + v
+      weight.max = runningTotal
+      expanded.push(weight)
+    })
+    console.log(expanded)
+    return expanded
+  },
+
+  weightedRoll(weights) {
+    // FIXME only works with kv pairs, not arrays :(
+    var total = 0
+    _.forOwn(weights, v=>total+=v)
+    console.log(weights)
+    expanded = this.expandWeights2(weights)
+    const roll = _.random(0, total-1)
+    const result = _.find(expanded, weight => {
+      return this.isInRange(roll, weight.min, weight.max)
+    }).name
+
+    return result
+  },
+
+  isInRange(n, min, max) {
+    return n >= min && n <= max
+  },
+
+  mergeWeights(w1, w2) {
+    const merged = {}
+    _.mergeWith(merged, w1, (objectValue = 0, sourceValue) => {
+      return objectValue + sourceValue
+    })
+    _.mergeWith(merged, w2, (objectValue = 0, sourceValue) => {
+      return objectValue + sourceValue
+    })
+    return merged
   },
 
   diceRoll: function(count, size) {
@@ -44,3 +86,13 @@ module.exports = {
     }
   }
 }
+
+// const weights1 = [200,100]
+// const weights2 = [2,1]
+// const weights = helpers.mergeWeights(weights1, weights2)
+// // console.log(weights)
+
+// console.log(helpers.weightedRoll(weights))
+
+
+module.exports = helpers

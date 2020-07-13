@@ -1,0 +1,17 @@
+{
+  "name": "Nanite Swarm",
+  "attackDesc": "engulf",
+  "diceCount": 1, 
+  "diceSize": 4, 
+  "hitBonus": 0, 
+  "damBonus": 0,
+  "hitAttribute": "int", 
+  "damAttribute": "int", 
+  "critRange": 20, 
+  "critMult": 2, 
+  "apCostBase": 6,
+  "apCostMin": 2,
+  "apThreshold": 10,
+  "apAttributes": ["dex"],
+  "qualities": []
+}

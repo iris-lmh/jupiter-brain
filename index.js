@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const readline = require('readline')
 
 const Game = require('./classes/Game')

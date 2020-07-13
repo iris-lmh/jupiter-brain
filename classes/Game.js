@@ -29,9 +29,6 @@ module.exports = class Game {
   
   loop(input) {
     this.state.messages = []
-    if (this.getPlayer().hp <= 0) {
-      this.addMessage('You are dead.')
-    }
     this.handleInput(input)
     
     while (this.state.pass && this.getPlayer().hp > 0) {
@@ -39,6 +36,10 @@ module.exports = class Game {
     }
     
     this.processActions()
+
+    if (this.getPlayer().hp <= 0) {
+      this.addMessage('You are dead.')
+    }
   }
   
   tick() {

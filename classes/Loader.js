@@ -12,6 +12,7 @@ module.exports = class Loader {
     }
   }
 
+  // TODO yaml templates would be cool
   loadTemplate(category, name) {
     const record = _.get(this, `templates.${category}.${name}`)
     if (!record) {

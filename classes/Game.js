@@ -81,32 +81,16 @@ module.exports = class Game {
     }
   }
 
-  expandWeights(weights) {
-    const expanded = []
-    _.forOwn(weights, (v, k) => {
-      for (var i=0; i<v; i++) {
-        expanded.push(k)
-      }
-    })
-    return expanded
-  }
-
   spawnCreatures() {
     const map = this.state.map
-
-    // const mapCountWeights = helpers.expandWeights(map.weights.creatureCount)
-    // const mapTypeWeights = helpers.expandWeights(map.weights.creatureType)
 
     const mapCountWeights = map.weights.creatureCount
     const mapTypeWeights = map.weights.creatureType
     
-    
     _.forOwn(this.state.map.cells, cell => {
       if (cell.room) {
-        const roomCountWeights = helpers.expandWeights([32,16,4,1])
-        const roomTypeWeights = helpers.expandWeights({android:3, drone:1})
-        // const countWeights = mapCountWeights.concat(roomCountWeights)
-        // const typeWeights = mapTypeWeights.concat(roomTypeWeights)
+        const roomCountWeights = cell.room.weights.creatureCount
+        const roomTypeWeights = cell.room.weights.creatureType
 
         const countWeights = helpers.mergeWeights(roomCountWeights, mapCountWeights)
         const typeWeights = helpers.mergeWeights(roomTypeWeights, mapTypeWeights)

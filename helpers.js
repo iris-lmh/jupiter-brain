@@ -10,16 +10,6 @@ const helpers = {
 
   expandWeights(weights) {
     const expanded = []
-    _.forOwn(weights, (v, k) => {
-      for (var i=0; i<v; i++) {
-        expanded.push(k)
-      }
-    })
-    return expanded
-  },
-
-  expandWeights2(weights) {
-    const expanded = []
     var runningTotal = -1
     _.forOwn(weights, (v, k) => {
       const weight = {name: k, min:runningTotal + 1}
@@ -27,34 +17,43 @@ const helpers = {
       weight.max = runningTotal
       expanded.push(weight)
     })
-    console.log(expanded)
     return expanded
   },
 
   weightedRoll(weights) {
-    // FIXME only works with kv pairs, not arrays :(
     var total = 0
-    _.forOwn(weights, v=>total+=v)
-    console.log(weights)
-    expanded = this.expandWeights2(weights)
+    _.forOwn(weights, v => {
+      total += parseInt(v)
+    })
+
+    expanded = this.expandWeights(weights)
     const roll = _.random(0, total-1)
     const result = _.find(expanded, weight => {
       return this.isInRange(roll, weight.min, weight.max)
-    }).name
-
-    return result
+    })
+    return result.name
   },
 
   isInRange(n, min, max) {
-    return n >= min && n <= max
+    const result = n >= min && n <= max
+    return result
   },
 
   mergeWeights(w1, w2) {
     const merged = {}
     _.mergeWith(merged, w1, (objectValue = 0, sourceValue) => {
+      if (parseInt(objectValue >= 0)) {
+        objectValue = parseInt(objectValue)
+      }
+      if (parseInt(sourceValue) >= 0) {
+        sourceValue = parseInt(sourceValue)
+      }
       return objectValue + sourceValue
     })
     _.mergeWith(merged, w2, (objectValue = 0, sourceValue) => {
+      if (parseInt(sourceValue) >= 0) {
+        sourceValue = parseInt(sourceValue)
+      }
       return objectValue + sourceValue
     })
     return merged
@@ -86,13 +85,5 @@ const helpers = {
     }
   }
 }
-
-// const weights1 = [200,100]
-// const weights2 = [2,1]
-// const weights = helpers.mergeWeights(weights1, weights2)
-// // console.log(weights)
-
-// console.log(helpers.weightedRoll(weights))
-
 
 module.exports = helpers

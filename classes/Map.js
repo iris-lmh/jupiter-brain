@@ -138,11 +138,7 @@ module.exports = class Map {
         const x = pointerX + dir[0]
         const y = pointerY + dir[1]
 
-        // TODO these weights should be expanded yknow, not inside of a loop that repeats a bunch of times lol
-        // const roomNeighborWeight = helpers.expandWeights(template.weights.neighborType)
-        // const mapRoomTypeWeight = helpers.expandWeights(this.weights.neighborType)
         const typeWeights = helpers.mergeWeights(template.weights.neighborType, this.weights.neighborType)
-        // const nextType = _.sample(roomNeighborWeight.concat(mapRoomTypeWeight))
         const nextType = helpers.weightedRoll(typeWeights)
   
         this.addCell(this.generateCell(nextType, x, y))

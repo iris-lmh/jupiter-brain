@@ -1,0 +1,14 @@
+desc: You are in long corridor lit by red emergency lights.
+exits:
+  - n
+icon: .
+creatures: []
+weights:
+  neighborType:
+    room: 2
+    corridor: 1
+  creatureCount:
+    - 200
+    - 50
+  creatureType:
+    drone: 1000

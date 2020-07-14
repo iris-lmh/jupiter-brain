@@ -1,0 +1,16 @@
+sizeX: 16
+sizeY: 8
+minRooms: 32
+maxRooms: 64
+straightness: 8
+weights:
+  creatureCount:
+    - 32
+    - 16
+    - 4
+    - 1
+  creatureType:
+    android: 300
+    drone: 100
+    avatar: 50
+  roomType: {}

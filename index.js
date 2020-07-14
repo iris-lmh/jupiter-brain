@@ -1,7 +1,7 @@
 const readline = require('readline')
 
-const Game = require('./classes/Game')
-const Renderer = require('./classes/Renderer')
+const Game = require('./src/classes/Game')
+const Renderer = require('./src/classes/Renderer')
 
 const rl = readline.createInterface({
   input: process.stdin,

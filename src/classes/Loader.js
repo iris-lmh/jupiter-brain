@@ -14,6 +14,7 @@ module.exports = class Loader {
     }
   }
 
+  // TODO should templates just be all in one big folder instead of worrying about categories?
   loadTemplate(category, name) {
     const record = _.get(this, `templates.${category}.${name}`)
     if (!record) {

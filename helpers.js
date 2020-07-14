@@ -3,33 +3,34 @@ const _ = require('lodash')
 const helpers = {
   assert: function(assertion, message) {
     if (!assertion) {
-      console.trace()
       throw message
     }
   },
 
-  expandWeights(weights) {
+  expandWeightTable(table) {
     const expanded = []
     var runningTotal = -1
-    _.forOwn(weights, (v, k) => {
-      const weight = {name: k, min:runningTotal + 1}
+    _.forOwn(table, (v, k) => {
+      const entry = {name: k, min:runningTotal + 1}
       runningTotal = runningTotal + v
-      weight.max = runningTotal
-      expanded.push(weight)
+      entry.max = runningTotal
+      expanded.push(entry)
     })
     return expanded
   },
 
-  weightedRoll(weights) {
+  weightedRoll() {
+    const merged = this.mergeWeights(arguments)
+    
     var total = 0
-    _.forOwn(weights, v => {
+    _.forOwn(merged, v => {
       total += parseInt(v)
     })
 
-    expanded = this.expandWeights(weights)
+    expanded = this.expandWeightTable(merged)
     const roll = _.random(0, total-1)
-    const result = _.find(expanded, weight => {
-      return this.isInRange(roll, weight.min, weight.max)
+    const result = _.find(expanded, table => {
+      return this.isInRange(roll, table.min, table.max)
     })
     return result.name
   },
@@ -39,23 +40,21 @@ const helpers = {
     return result
   },
 
-  mergeWeights(w1, w2) {
+  mergeWeights(tables) {
     const merged = {}
-    _.mergeWith(merged, w1, (objectValue = 0, sourceValue) => {
-      if (parseInt(objectValue >= 0)) {
-        objectValue = parseInt(objectValue)
-      }
-      if (parseInt(sourceValue) >= 0) {
-        sourceValue = parseInt(sourceValue)
-      }
-      return objectValue + sourceValue
-    })
-    _.mergeWith(merged, w2, (objectValue = 0, sourceValue) => {
-      if (parseInt(sourceValue) >= 0) {
-        sourceValue = parseInt(sourceValue)
-      }
-      return objectValue + sourceValue
-    })
+    for (var i=0; i < tables.length; i++) {
+      const table = tables[i]
+
+      _.mergeWith(merged, table, (objectValue = 0, sourceValue) => {
+        if (parseInt(objectValue >= 0)) {
+          objectValue = parseInt(objectValue)
+        }
+        if (parseInt(sourceValue) >= 0) {
+          sourceValue = parseInt(sourceValue)
+        }
+        return objectValue + sourceValue
+      })
+    }
     return merged
   },
 

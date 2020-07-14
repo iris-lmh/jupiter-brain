@@ -92,12 +92,9 @@ module.exports = class Game {
         const roomCountWeights = cell.room.weights.creatureCount
         const roomTypeWeights = cell.room.weights.creatureType
 
-        const countWeights = helpers.mergeWeights(roomCountWeights, mapCountWeights)
-        const typeWeights = helpers.mergeWeights(roomTypeWeights, mapTypeWeights)
-
-        const count = helpers.weightedRoll(countWeights)
+        const count = helpers.weightedRoll(roomCountWeights, mapCountWeights)
         for (var i=0; i<count; i++) {
-          const type = helpers.weightedRoll(typeWeights)
+          const type = helpers.weightedRoll(roomTypeWeights, mapTypeWeights)
           this.addCreature(type, cell.x, cell.y)
         }
       }

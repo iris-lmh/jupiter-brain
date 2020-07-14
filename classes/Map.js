@@ -138,8 +138,7 @@ module.exports = class Map {
         const x = pointerX + dir[0]
         const y = pointerY + dir[1]
 
-        const typeWeights = helpers.mergeWeights(template.weights.neighborType, this.weights.neighborType)
-        const nextType = helpers.weightedRoll(typeWeights)
+        const nextType = helpers.weightedRoll(template.weights.neighborType, this.weights.neighborType)
   
         this.addCell(this.generateCell(nextType, x, y))
         if (this.branchSteps < this.maxBranchSteps) {

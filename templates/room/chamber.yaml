@@ -1,0 +1,7 @@
+desc: You are in a big ole chamber.
+icon: x
+creatures: []
+weights:
+  neighborType:
+    chamber: 1
+    corridor: 1

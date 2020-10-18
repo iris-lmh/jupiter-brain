@@ -44,37 +44,43 @@ module.exports = class Renderer {
   }
 
   _renderMap(game) {
+    const wall = color.white('█')
     const lines = []
     const player = game.getPlayer()
     console.log(`size: ${game.state.map.sizeX}x${game.state.map.sizeY}`)
     console.log(`attempts: ${game.state.map.attempts}`)
     console.log(`${game.state.map.getRoomCount()} rooms\n`)
     // var result = ''
-    lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
+    // lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
+    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
-      lines.push('|')
+      // lines.push('|')
+      lines.push(wall)
       for (var x=0; x<game.state.map.sizeX; x++) {
         const cell = game.state.map.getCell(x, y)
         var icon
         if (cell.type) {
           icon = ' '
           const type = cell.type
+          // TODO define these characters to the respective yamls
           if (cell.x == player.x && cell.y == player.y) {
-            icon = '@'
-          } else if (type == 'room') {
+            icon = color.cyan('@')
+          } else if (type == 'chamber') {
             icon = '?'
           } else if (type == 'corridor') {
             icon = '•'
           } else {
           }
         } else {
-          icon = ' '
+          icon = wall
         }
         lines.push(icon)
       }
-      lines.push('|\n')
+      // lines.push('|\n')
+      lines.push(wall + '\n')
     }
-    lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
+    // lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
+    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
     console.log(lines.join(''))
     return lines.join('')
   }

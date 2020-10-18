@@ -101,7 +101,7 @@ module.exports = class Map {
     return neighbors
   }
 
-  makeBranches(pointerX, pointerY, type = 'room', lastDir = [0,0], branchWeight) {
+  makeBranches(pointerX, pointerY, type = 'chamber', lastDir = [0,0], branchWeight) {
     helpers.assert(typeof pointerX === 'number', 'typeof pointerX must be number')
     helpers.assert(typeof pointerY === 'number', 'typeof pointerY must be number')
     helpers.assert(typeof type === 'string', 'typeof type must be string')
@@ -157,29 +157,29 @@ module.exports = class Map {
           const neighborTypes = _.countBy(neighbors, n => n.type)
   
           if (cell.type) {
-            if (cell.type == 'room' && neighborTypes.room > 1) {
+            // console.log(cell.type)
+            if (cell.type == 'chamber' && neighborTypes.chamber > 1) {
               cell.type = 'corridor'
             }
             
-            if (cell.type == 'corridor' && neighborTypes.corridor == 1 && neighborTypes.room == undefined) {
-              cell.type = 'room'
+            if (cell.type == 'corridor' && neighborTypes.corridor == 1 && neighborTypes.chamber == undefined) {
+              cell.type = 'chamber'
             }
-            if (cell.type == 'corridor' && neighborTypes.corridor == undefined && neighborTypes.room == 1) {
+            if (cell.type == 'corridor' && neighborTypes.corridor == undefined && neighborTypes.chamber == 1) {
               // cell = null
               cell = this.generateCell(null, x, y)
             }
   
           }
           
-          if (!cell.type && neighborTypes.room > 1 && neighborTypes.corridor == 1) {
+          if (!cell.type && neighborTypes.chamber > 1 && neighborTypes.corridor == 1) {
             cell = this.generateCell('corridor', x, y)
           }
   
           if (cell.x == this.startX && cell.y == this.startY) {
-            cell.type = 'room'
+            cell.type = 'chamber'
           }
           this.addCell(cell)
-          // if (cell == 'room')
         }
       }
     }
@@ -234,10 +234,10 @@ module.exports = class Map {
     this.startY = _.random(minY, maxY)
     // this.startX = _.random(0, this.sizeX-1)
     // this.startY = _.random(0, this.sizeY-1)
-    const startCell = this.generateCell('room', this.startX, this.startY)
+    const startCell = this.generateCell('chamber', this.startX, this.startY)
     this.addCell(startCell)
     this.startRoom = startCell.room
-    this.makeBranches(startCell.x, startCell.y, 'room', [0,0], [1,2,2,2,3,3,3,4,4,4])
+    this.makeBranches(startCell.x, startCell.y, 'chamber', [0,0], [1,2,2,2,3,3,3,4,4,4])
 
     
 
@@ -249,9 +249,7 @@ module.exports = class Map {
       this.processCells()
       this.connectCells()
       this.generateRooms()
-
       this.startRoom = this.getCell(this.startX, this.startY)
-
     }
   }
 }

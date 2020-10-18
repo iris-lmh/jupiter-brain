@@ -5,7 +5,7 @@ icon: .
 creatures: []
 weights:
   neighborType:
-    room: 2
+    chamber: 2
     corridor: 1
   creatureCount:
     - 200

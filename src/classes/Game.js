@@ -5,7 +5,7 @@ const commandList = require('../command-list.json')
 
 const Loader = require('./Loader')
 const Creature = require('./Creature')
-const Room = require('./Room')
+const hydrateRoom = require('./hydrateRoom')
 const Map = require('./Map')
 
 module.exports = class Game {
@@ -48,7 +48,7 @@ module.exports = class Game {
       if (creature.hp > 0 && player.hp > 0) {
         while (creature.ap > 0 && creature.ap >= creature.wielding.apCost) {
           creature.target = 'player'
-          creature.ap -= creature.getApCost()
+          creature.ap -= this.getApCost(creature)
           this.addAction({type: 'attack', attackerId: creature.id, defenderId: creature.target})
         }
       }
@@ -116,6 +116,41 @@ module.exports = class Game {
     return _.filter(this.state.creatures, creature => creature.id !== excludeId)
   }
 
+  getCreatureAc(creature) {
+    var armor = creature.wearing
+    var dexMod = helpers.calculateAttributeMod(creature.attributes.dex)
+    var total = 0
+    total += creature.baseAc
+    if (armor) {
+      total += armor.acBonus
+      if (armor.maxDex < dexMod) {
+        dexMod = armor.maxDex
+      }
+    }
+    total += dexMod
+    return total
+  }
+
+  getApCost(creature) {
+    const weapon = creature.wielding
+    var netCost = weapon.apCostBase
+    var attributeTotal = 0
+    weapon.apAttributes.forEach(attribute => {
+      attributeTotal += this.getAttributeMod(creature, attribute)
+    })
+    attributeTotal = Math.floor(attributeTotal/weapon.apAttributes.length)
+    
+    netCost += weapon.apThreshold - attributeTotal
+    if (netCost < weapon.apCostMin) {netCost = weapon.apCostMin}
+    
+    return netCost
+  }
+
+  getAttributeMod(creature, attributeStr) {
+    const attribute = creature.attributes[attributeStr]
+    return Math.floor((attribute - 10)/2)
+  }
+
   getNearbyCreaturesWithout(excludeId) {
     const player = this.getPlayer()
     return _.filter(this.state.creatures, creature => creature.id !== excludeId && creature.x === player.x && creature.y === player.y)
@@ -141,6 +176,25 @@ module.exports = class Game {
     return this.state.map.getCell(player.x, player.y).room
   }
 
+  // ROLLERS
+
+  // rollHealth(creature) {
+  //   if (creature.id == 'player') {
+  //     return creature.hitDie + creature.level * helpers.calculateAttributeMod(creature.attributes.con)
+  //   } else {
+  //     var hp = helpers.diceRoll(creature.level, creature.hitDie)
+  //     if (hp < creature.hitDie/2) {hp = creature.hitDie/2}
+  //     hp +=  creature.level * helpers.calculateAttributeMod(creature.attributes.con)
+  //     return hp
+  //   }
+  // }
+
+  rollInitiative(creature) {
+    return helpers.diceRoll(1, 20)
+      + helpers.calculateAttributeMod(creature.attributes.dex)
+      + helpers.calculateAttributeMod(creature.attributes.wis)
+  }
+
 
   // CALCULATORS
 
@@ -150,7 +204,7 @@ module.exports = class Game {
     const hitNatural = helpers.diceRoll(1, 20)
     const crit = hitNatural >= weapon.critRange
     
-    const hitBonus = weapon.hitBonus + helpers.getAttributeMod(attacker.attributes[weapon.hitAttribute])
+    const hitBonus = weapon.hitBonus + helpers.calculateAttributeMod(attacker.attributes[weapon.hitAttribute])
     const hit = hitNatural + hitBonus
   
     return {roll: hit, crit: crit}
@@ -159,7 +213,7 @@ module.exports = class Game {
   calculateDamage(attacker, didCrit) {
     const weapon = attacker.wielding
     const critMultiplier = didCrit ? weapon.critMult : 1
-    const damageBonus = weapon.damBonus + helpers.getAttributeMod(attacker.attributes[weapon.damAttribute])
+    const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker.attributes[weapon.damAttribute])
     const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
     const damage = 
       (dice + damageBonus) 
@@ -231,7 +285,7 @@ module.exports = class Game {
       }
     }
     const player = this.getCreature('player')
-    player.ap -= player.getApCost()
+    player.ap -= this.getApCost(player)
     this.addAction({type: 'attack', attackerId: attackerId, defenderId: defenderId})
   }
 
@@ -262,7 +316,7 @@ module.exports = class Game {
       ? `You miss (${hit.roll}) the ${defender.name}.`
       : `The ${attacker.name} misses (${hit.roll}) you.`
   
-      if (hit.roll > defender.getAc()) {
+      if (hit.roll > this.getCreatureAc(defender)) {
         this.addMessage(hitMsg)
         if (defender.hp - damage > 0) {
           defender.hp -= damage
@@ -360,7 +414,7 @@ module.exports = class Game {
   }
 
   addRoom(templateName) {
-    const room = new Room(templateName)
+    const room = hydrateRoom(templateName)
     if (this.state.rooms.length <= 0) {
       this.state.currentRoomId = room.id
     }

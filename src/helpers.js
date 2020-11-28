@@ -11,7 +11,7 @@ const helpers = {
     const expanded = []
     var runningTotal = -1
     _.forOwn(table, (v, k) => {
-      const entry = {name: k, min:runningTotal + 1}
+      const entry = {name: k, min: runningTotal + 1}
       runningTotal = runningTotal + v
       entry.max = runningTotal
       expanded.push(entry)
@@ -66,7 +66,18 @@ const helpers = {
     return sum
   },
 
-  getAttributeMod: function(n) {
+  rollHealth(creature) {
+    if (creature.id == 'player') {
+      return creature.hitDie + creature.level * this.calculateAttributeMod(creature.attributes.con)
+    } else {
+      var hp = this.diceRoll(creature.level, creature.hitDie)
+      if (hp < creature.hitDie/2) {hp = creature.hitDie/2}
+      hp +=  creature.level * this.calculateAttributeMod(creature.attributes.con)
+      return hp
+    }
+  },
+
+  calculateAttributeMod: function(n) {
     return Math.floor((n - 10)/2)
   },
 

@@ -36,12 +36,12 @@ module.exports = function hydrate(loader, templateName = 'default', x = 0 , y = 
   output.apRegen = template.apRegen || 5
 
   if (template.wielding) {
-    output.wielding = hydrateWeapon(output.loader, template.wielding)
+    output.wielding = hydrateWeapon(loader, template.wielding)
   } else {
     output.wielding = null
   }
   if (template.wearing) {
-    output.wearing = new hydrateArmor(output.loader, template.wearing)
+    output.wearing = new hydrateArmor(loader, template.wearing)
   } else {
     output.wearing = null
   }

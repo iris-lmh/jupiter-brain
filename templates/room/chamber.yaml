@@ -1,6 +1,8 @@
 desc: You are in a big ole chamber.
 icon: x
 creatures: []
+loot:
+  [default, 0.2]
 weights:
   neighborType:
     chamber: 1

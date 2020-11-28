@@ -11,7 +11,7 @@ weights:
     - 4
     - 1
   creatureType:
-    android: 300
-    drone: 100
-    avatar: 50
+    android: 30
+    drone: 10
+    avatar: 5
   roomType: {}

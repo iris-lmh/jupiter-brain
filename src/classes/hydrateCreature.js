@@ -6,6 +6,7 @@ const hydrateWeapon = require('./hydrateWeapon')
 const hydrateArmor = require('./hydrateArmor')
 
 module.exports = function hydrate(loader, templateName = 'default', x = 0 , y = 0) {
+  const template = loader.loadTemplate('creature', templateName)
   const output = {}
 
   // TODO move back to entity once its ECS-ified
@@ -13,8 +14,6 @@ module.exports = function hydrate(loader, templateName = 'default', x = 0 , y = 
   output.y = y
   output.id = _.uniqueId()
 
-  output.loader = loader
-  const template = output.loader.loadTemplate('creature', templateName)
   output.id = template.id || output.id
   output.name = template.name || 'Creature'
   output.remainsName = template.remainsName || 'corpse'

@@ -1,6 +1,6 @@
 module.exports = function hydrate(loader, templateName) {
-  const output = {}
   const template = loader.loadTemplate('weapon', templateName)
+  const output = {}
 
   output.name = template.name || 'Weapon'
   output.attackDesc = template.attackDesc || 'hit'

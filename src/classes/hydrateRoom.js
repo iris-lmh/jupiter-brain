@@ -1,18 +1,18 @@
 module.exports = function hydrate(loader, templateName) {
-  const room = {}
-  room.loader = loader
-  const template = room.loader.loadTemplate('room', templateName)
-  room.name = template.name || 'Room'
-  room.icon = template.icon || 'x'
-  room.creatures = template.creatures || []
-  room.desc = template.desc || 'No room description.'
-  room.weights = template.weights || {
+  const template = loader.loadTemplate('room', templateName)
+  const output = {}
+  
+  output.name = template.name || 'Room'
+  output.icon = template.icon || 'x'
+  output.creatures = template.creatures || []
+  output.desc = template.desc || 'No output description.'
+  output.weights = template.weights || {
     "creatureCount":[],
     "creatureType": {},
     "neighborType": {}
   }
 
-  room.exits = []
+  output.exits = []
 
-  return room
+  return output
 }

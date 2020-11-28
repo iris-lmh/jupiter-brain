@@ -4,7 +4,7 @@ const helpers = require('../helpers')
 const commandList = require('../command-list.json')
 
 const Loader = require('./Loader')
-const Creature = require('./Creature')
+const hydrateCreature = require('./hydrateCreature')
 const hydrateRoom = require('./hydrateRoom')
 const Map = require('./Map')
 
@@ -409,7 +409,7 @@ module.exports = class Game {
   }
 
   addCreature(templateName, x, y) {
-    const creature = new Creature(this.loader, templateName, x, y)
+    const creature = hydrateCreature(this.loader, templateName, x, y)
     this.state.creatures.push(creature)
   }
 

@@ -1,8 +1,6 @@
 module.exports = function hydrate(loader, templateName) {
+  const template = loader.loadTemplate('armor', templateName)
   const output = {}
-  
-  output.loader = loader
-  const template = output.loader.loadTemplate('armor', templateName)
 
   output.name = template.name || 'Armor'
   output.acBonus = template.acBonus || 0

@@ -1,5 +1,5 @@
 desc: You are in a big ole chamber.
-icon: x
+icon: '?'
 creatures: []
 loot:
   [default, 0.2]

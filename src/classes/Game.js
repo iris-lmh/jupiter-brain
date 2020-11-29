@@ -405,13 +405,6 @@ module.exports = class Game {
           } else {
             this.state.uiContext = 'inventory'
           }
-          // TODO this would eventually be a context change
-          // this.addMessage(`Your weapon: ${player.wielding.name}`, )
-          // this.addMessage(`Your armor: ${player.wearing.name}`)
-          // this.addMessage(`Your inventory:`)
-          // player.inventory.forEach((itemId, i) => {
-          //   this.addMessage(`${i} - ${this.getItem(itemId).name} ${itemId}`)
-          // })
           break;
         case 't':
           this.handleTarget('player', suffix)

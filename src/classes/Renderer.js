@@ -34,7 +34,7 @@ module.exports = class Renderer {
     game.getNearbyItems().forEach((item, i) => {
       if (!item.stored) {
         const article = 'aeiou'.includes(item.name[0].toLowerCase()) ? 'an' : 'a'
-        lines.push(`${i} - There is ${article} ${item.name} ${item.id}.`)
+        lines.push(`  ${i}. There is ${article} ${item.name} ${item.id}.`)
       }
     })
     return lines.join('\n')
@@ -79,11 +79,9 @@ module.exports = class Renderer {
           // TODO define these characters to the respective yamls
           if (cell.x == player.x && cell.y == player.y) {
             icon = color.cyan('@')
-          } else if (type == 'room-chamber') {
-            icon = '?'
-          } else if (type == 'room-corridor') {
-            icon = '•'
-          } else {
+          } 
+          else {
+            icon = cell.room.icon
           }
         } else {
           icon = wall

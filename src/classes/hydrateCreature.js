@@ -4,6 +4,7 @@ const helpers = require('../helpers')
 // const Entity = require('./Entity')
 const hydrateWeapon = require('./hydrateWeapon')
 const hydrateArmor = require('./hydrateArmor')
+const hydrateItem = require('./hydrateItem')
 
 module.exports = function hydrate(loader, templateName = 'default', x = 0 , y = 0) {
   const template = loader.loadTemplate('creature', templateName)
@@ -17,6 +18,7 @@ module.exports = function hydrate(loader, templateName = 'default', x = 0 , y = 
   output.id = template.id || output.id
   output.name = template.name || 'Creature'
   output.remainsName = template.remainsName || 'corpse'
+  output.dead = false
   output.target = null
   output.attributes = template.attributes || {
     str: 10,

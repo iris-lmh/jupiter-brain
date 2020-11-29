@@ -5,6 +5,7 @@ const commandList = require('../command-list.json')
 
 const Loader = require('./Loader')
 const hydrateCreature = require('./hydrateCreature')
+const hydrateItem = require('./hydrateItem')
 const hydrateRoom = require('./hydrateRoom')
 const Map = require('./Map')
 
@@ -18,6 +19,7 @@ module.exports = class Game {
       map: new Map(this.loader, 'map'),
       rooms: [],
       creatures: [],
+      items: [],
       currentRoomId: 'cellar',
       initiative: []
     }
@@ -25,6 +27,10 @@ module.exports = class Game {
     this.state.map.generateCells()
     this.addCreature('player', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
+    this.state.creatures.forEach(creature => {
+      const itemId = this.addItem('knife', this.state.map.startX, this.state.map.startY)
+      this.creatureGrabItem(creature.id, itemId)
+    })
   }
   
   loop(input) {
@@ -131,6 +137,10 @@ module.exports = class Game {
     return total
   }
 
+  getItem(id) {
+    return _.find(this.state.items, item => item.id == id)
+  }
+
   getApCost(creature) {
     const weapon = creature.wielding
     var netCost = weapon.apCostBase
@@ -156,6 +166,11 @@ module.exports = class Game {
     return _.filter(this.state.creatures, creature => creature.id !== excludeId && creature.x === player.x && creature.y === player.y)
   }
 
+  getNearbyItems() {
+    const player = this.getPlayer()
+    return _.filter(this.state.items, item => item.x === player.x && item.y === player.y)
+  }
+
   getTargetOf(targeterId) {
     const targeter = this.getCreature(targeterId)
     return this.getCreature(targeter.target)
@@ -176,18 +191,34 @@ module.exports = class Game {
     return this.state.map.getCell(player.x, player.y).room
   }
 
-  // ROLLERS
+  // TODO these need to be done with actions. these functions should basically be action processors... right?
 
-  // rollHealth(creature) {
-  //   if (creature.id == 'player') {
-  //     return creature.hitDie + creature.level * helpers.calculateAttributeMod(creature.attributes.con)
-  //   } else {
-  //     var hp = helpers.diceRoll(creature.level, creature.hitDie)
-  //     if (hp < creature.hitDie/2) {hp = creature.hitDie/2}
-  //     hp +=  creature.level * helpers.calculateAttributeMod(creature.attributes.con)
-  //     return hp
-  //   }
-  // }
+  creatureGrabItem(creatureId, itemId) {
+    const creature = this.getCreature(creatureId)
+    const item = this.getItem(itemId)
+    creature.inventory.push(itemId)
+    item.stored = true
+  }
+
+  creatureDropItem(creatureId, itemId) {
+    const creature = this.getCreature(creatureId)
+    const item = this.getItem(itemId)
+    console.log('itemId:', itemId)
+    creature.inventory = _.without(creature.inventory, itemId)
+    item.stored = false
+    item.x = creature.x
+    item.y = creature.y
+  }
+
+  creatureDie(creatureId) {
+    const creature = this.getCreature(creatureId)
+    // console.log(`The ${creature} dies.`)
+    creature.dead = true
+    creature.inventory.forEach(itemId => {
+      // this.addMessage(this.getItem(itemId).name)
+      this.creatureDropItem(creature.id, itemId)
+    })
+  }
 
   rollInitiative(creature) {
     return helpers.diceRoll(1, 20)
@@ -236,6 +267,24 @@ module.exports = class Game {
   }
 
   // HANDLERS
+
+  handleGrabItem(commandSuffix) {
+    const index = commandSuffix
+    const player = this.getPlayer()
+    const item = this.state.items[index]
+    this.creatureGrabItem(player.id, item.id)
+  }
+
+  handleDropItem(commandSuffix) {
+    const index = commandSuffix
+    const player = this.getPlayer()
+    // if (index < player.inventory.length - 1) {
+      const itemId = player.inventory[index]
+      const item = this.getItem(itemId)
+  
+      this.creatureDropItem(player.id, itemId)
+    // }
+  }
 
   handleMove(commandSuffix) {
     const room = this.getCurrentRoom()
@@ -316,16 +365,20 @@ module.exports = class Game {
       ? `You miss (${hit.roll}) the ${defender.name}.`
       : `The ${attacker.name} misses (${hit.roll}) you.`
   
-      if (hit.roll > this.getCreatureAc(defender)) {
-        this.addMessage(hitMsg)
-        if (defender.hp - damage > 0) {
-          defender.hp -= damage
-        } else {
-          defender.hp = 0
-        }
+    if (hit.roll > this.getCreatureAc(defender)) {
+      this.addMessage(hitMsg)
+      if (defender.hp - damage > 0) {
+        defender.hp -= damage
       } else {
-        this.addMessage(missMsg)
+        defender.hp = 0
       }
+    } else {
+      this.addMessage(missMsg)
+    }
+    
+    if (enemyIsKilled) {
+      this.creatureDie(defenderId)
+    }
   }
 
   handleLook() {
@@ -347,7 +400,10 @@ module.exports = class Game {
           // TODO this would eventually be a context change
           this.addMessage(`Your weapon: ${player.wielding.name}`, )
           this.addMessage(`Your armor: ${player.wearing.name}`)
-          this.addMessage(`Your inventory:\n ${player.inventory.join('\n')}`)
+          this.addMessage(`Your inventory:`)
+          player.inventory.forEach((itemId, i) => {
+            this.addMessage(`${i} - ${this.getItem(itemId).name}`)
+          })
           break;
         case 't':
           this.handleTarget('player', suffix)
@@ -360,6 +416,12 @@ module.exports = class Game {
           break;
         case 'n': case 's': case 'e': case 'w':
           this.handleMove(prefix)
+          break;
+        case 'g':
+          this.handleGrabItem(suffix)
+          break;
+        case 'd':
+          this.handleDropItem(suffix)
           break;
         default:
           this.addMessage('Unknown command: ' + input)
@@ -411,6 +473,13 @@ module.exports = class Game {
   addCreature(templateName, x, y) {
     const creature = hydrateCreature(this.loader, templateName, x, y)
     this.state.creatures.push(creature)
+    return creature.id
+  }
+
+  addItem(templateName, x, y) {
+    const item = hydrateItem(this.loader, templateName, x, y)
+    this.state.items.push(item)
+    return item.id
   }
 
   addRoom(templateName) {

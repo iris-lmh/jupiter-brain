@@ -12,6 +12,11 @@ module.exports = class Renderer {
     const room = game.getCurrentRoom()
     lines.push(room.desc)
     const creatures = game.getNearbyCreaturesWithout('player')
+    const items = game.getNearbyItems()
+
+    // if (creatures.length) {
+      lines.push("\nCREATURES")
+    // }
     creatures.forEach((creature, i) => {
       // const creature = game.getCreature(creatureId)
       const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
@@ -20,6 +25,16 @@ module.exports = class Renderer {
       } 
       else if (creature.hp <= 0) {
         lines.push(`${i} - There is ${article} ${creature.name} ${creature.remainsName}.`)
+      }
+    })
+
+    // if (items.length) {
+      lines.push("\nITEMS")
+    // }
+    items.forEach((item, i) => {
+      if (!item.stored) {
+        const article = 'aeiou'.includes(item.name[0].toLowerCase()) ? 'an' : 'a'
+        lines.push(`${i} - There is ${article} ${item.name}.`)
       }
     })
     return lines

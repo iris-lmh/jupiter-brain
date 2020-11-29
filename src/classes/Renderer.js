@@ -31,10 +31,10 @@ module.exports = class Renderer {
     // if (items.length) {
       lines.push("\nITEMS")
     // }
-    items.forEach((item, i) => {
+    game.getNearbyItems().forEach((item, i) => {
       if (!item.stored) {
         const article = 'aeiou'.includes(item.name[0].toLowerCase()) ? 'an' : 'a'
-        lines.push(`${i} - There is ${article} ${item.name}.`)
+        lines.push(`${i} - There is ${article} ${item.name} ${item.id}.`)
       }
     })
     return lines
@@ -62,9 +62,9 @@ module.exports = class Renderer {
     const wall = color.white('█')
     const lines = []
     const player = game.getPlayer()
-    console.log(`size: ${game.state.map.sizeX}x${game.state.map.sizeY}`)
-    console.log(`attempts: ${game.state.map.attempts}`)
-    console.log(`${game.state.map.getRoomCount()} rooms\n`)
+    // console.log(`size: ${game.state.map.sizeX}x${game.state.map.sizeY}`)
+    // console.log(`attempts: ${game.state.map.attempts}`)
+    // console.log(`${game.state.map.getRoomCount()} rooms\n`)
     // var result = ''
     // lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')

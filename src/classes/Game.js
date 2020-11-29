@@ -28,7 +28,7 @@ module.exports = class Game {
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
     this.state.creatures.forEach(creature => {
-      const itemId = this.addItem('weapon-knife', this.state.map.startX, this.state.map.startY)
+      const itemId = this.addItem('weapon-knife', creature.x, creature.y)
       this.creatureGrabItem(creature.id, itemId)
     })
   }
@@ -168,7 +168,7 @@ module.exports = class Game {
 
   getNearbyItems() {
     const player = this.getPlayer()
-    return _.filter(this.state.items, item => item.x === player.x && item.y === player.y)
+    return _.filter(this.state.items, item => item.x === player.x && item.y === player.y && !item.stored)
   }
 
   getTargetOf(targeterId) {
@@ -203,7 +203,7 @@ module.exports = class Game {
   creatureDropItem(creatureId, itemId) {
     const creature = this.getCreature(creatureId)
     const item = this.getItem(itemId)
-    console.log('itemId:', itemId)
+    console.log('creatureDropItem', item)
     creature.inventory = _.without(creature.inventory, itemId)
     item.stored = false
     item.x = creature.x
@@ -271,8 +271,13 @@ module.exports = class Game {
   handleGrabItem(commandSuffix) {
     const index = commandSuffix
     const player = this.getPlayer()
-    const item = this.state.items[index]
-    this.creatureGrabItem(player.id, item.id)
+    const item = this.getNearbyItems()[index]
+    if (!item.stored) {
+      this.creatureGrabItem(player.id, item.id)
+    }
+    else {
+      this.addMessage('No item found.')
+    }
   }
 
   handleDropItem(commandSuffix) {
@@ -353,7 +358,7 @@ module.exports = class Game {
   
     const damage = this.calculateDamage(attacker, hit.crit)
   
-    const killed = (damage >= defender.hp) && defender.hp > 0
+    const killed = (damage >= defender.hp) && !defender.dead
     const enemyIsKilled = killed && attackerId == 'player' ? ', killing it' : ''
     const playerIsKilled = killed && attackerId != 'player' ? ', killing you' : ''
   
@@ -371,13 +376,10 @@ module.exports = class Game {
         defender.hp -= damage
       } else {
         defender.hp = 0
+        this.creatureDie(defenderId)
       }
     } else {
       this.addMessage(missMsg)
-    }
-    
-    if (enemyIsKilled) {
-      this.creatureDie(defenderId)
     }
   }
 
@@ -390,7 +392,7 @@ module.exports = class Game {
     input = input.replace(' ', '')
     const player = this.getPlayer()
     const prefix = input[0]
-    const suffix = input[1]
+    const suffix = input.slice(1)
     if (suffix == '?') {
       const helpMsg = commandList[prefix].help
       this.addMessage(helpMsg)
@@ -402,7 +404,7 @@ module.exports = class Game {
           this.addMessage(`Your armor: ${player.wearing.name}`)
           this.addMessage(`Your inventory:`)
           player.inventory.forEach((itemId, i) => {
-            this.addMessage(`${i} - ${this.getItem(itemId).name}`)
+            this.addMessage(`${i} - ${this.getItem(itemId).name} ${itemId}`)
           })
           break;
         case 't':

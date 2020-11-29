@@ -4,4 +4,4 @@ creatures: []
 weights:
   neighborType:
     room: 1
-    corridor: 2
+    room-corridor: 2

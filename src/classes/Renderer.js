@@ -80,9 +80,9 @@ module.exports = class Renderer {
           // TODO define these characters to the respective yamls
           if (cell.x == player.x && cell.y == player.y) {
             icon = color.cyan('@')
-          } else if (type == 'chamber') {
+          } else if (type == 'room-chamber') {
             icon = '?'
-          } else if (type == 'corridor') {
+          } else if (type == 'room-corridor') {
             icon = '•'
           } else {
           }

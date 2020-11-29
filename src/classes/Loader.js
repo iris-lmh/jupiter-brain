@@ -6,22 +6,17 @@ module.exports = class Loader {
   constructor() {
     this.templatesPath = './templates/'
     this.templates = {
-      weapon: {},
-      armor: {},
-      creature: {},
-      map: {},
-      room: {}
     }
   }
 
   // TODO should templates just be all in one big folder instead of worrying about categories?
-  loadTemplate(category, name) {
-    const record = _.get(this, `templates.${category}.${name}`)
+  loadTemplate(name) {
+    const record = _.get(this, `templates.${name}`)
     if (!record) {
-      const path = `${this.templatesPath}${category}/${name}.yaml`
+      const path = `${this.templatesPath}${name}.yaml`
       const str = fs.readFileSync(path, 'utf8')
       const template = YAML.parse(str)
-      this.templates[category][name] = template
+      this.templates[name] = template
       return template
     } else {
       return record

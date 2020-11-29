@@ -5,5 +5,5 @@ loot:
   [default, 0.2]
 weights:
   neighborType:
-    chamber: 1
-    corridor: 1
+    room-chamber: 1
+    room-corridor: 1

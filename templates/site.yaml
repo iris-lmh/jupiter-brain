@@ -1,3 +1,4 @@
+name: Test Site
 sizeX: 16
 sizeY: 8
 minRooms: 32
@@ -10,7 +11,7 @@ weights:
     - 4
     - 1
   creatureType:
-    android: 300
-    drone: 100
-    avatar: 50
+    creature-android: 30
+    creature-drone: 10
+    creature-avatar: 5
   roomType: {}

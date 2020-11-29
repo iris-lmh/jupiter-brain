@@ -9,5 +9,5 @@ attributes:
   int: 12
   wis: 10
   cha: 12
-wielding: pistol
-wearing: ballistic-vest
+wielding: weapon-pistol
+wearing: armor-ballistic-vest

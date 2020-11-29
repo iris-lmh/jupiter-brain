@@ -1,11 +1,13 @@
-name: Knife
-attackDesc: stab
+name: Nanite Swarm
+inherits: item
+subtype: weapon
+attackDesc: engulf
 diceCount: 1
 diceSize: 4
 hitBonus: 0
 damBonus: 0
-hitAttribute: dex
-damAttribute: str
+hitAttribute: int
+damAttribute: int
 critRange: 20
 critMult: 2
 apCostBase: 6

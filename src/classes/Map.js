@@ -7,7 +7,7 @@ const hydrateRoom = require('./hydrateRoom')
 module.exports = class Map {
   constructor(loader, templateName) {
     this.loader = loader
-    const template = this.loader.loadTemplate('map', templateName)
+    const template = this.loader.loadTemplate(templateName)
 
     this.sizeX = template.sizeX || 0
     this.sizeY = template.sizeY || 0
@@ -101,14 +101,14 @@ module.exports = class Map {
     return neighbors
   }
 
-  makeBranches(pointerX, pointerY, type = 'chamber', lastDir = [0,0], branchWeight) {
+  makeBranches(pointerX, pointerY, type = 'room-chamber', lastDir = [0,0], branchWeight) {
     helpers.assert(typeof pointerX === 'number', 'typeof pointerX must be number')
     helpers.assert(typeof pointerY === 'number', 'typeof pointerY must be number')
     helpers.assert(typeof type === 'string', 'typeof type must be string')
     helpers.assert(Array.isArray(lastDir), 'lastDir must be an array')
     helpers.assert(Array.isArray(branchWeight), 'branchWeight must be an array')
 
-    const template = this.loader.loadTemplate('room', type)
+    const template = this.loader.loadTemplate(type)
     
     this.branchSteps++
     const defaultBranchWeight = [0,1,1,1,2,2,3]
@@ -158,26 +158,26 @@ module.exports = class Map {
   
           if (cell.type) {
             // console.log(cell.type)
-            if (cell.type == 'chamber' && neighborTypes.chamber > 1) {
-              cell.type = 'corridor'
+            if (cell.type == 'room-chamber' && neighborTypes['room-chamber'] > 1) {
+              cell.type = 'room-corridor'
             }
             
-            if (cell.type == 'corridor' && neighborTypes.corridor == 1 && neighborTypes.chamber == undefined) {
-              cell.type = 'chamber'
+            if (cell.type == 'room-corridor' && neighborTypes['room-corridor'] == 1 && neighborTypes['room-chamber'] == undefined) {
+              cell.type = 'room-chamber'
             }
-            if (cell.type == 'corridor' && neighborTypes.corridor == undefined && neighborTypes.chamber == 1) {
+            if (cell.type == 'room-corridor' && neighborTypes['room-corridor'] == undefined && neighborTypes['room-chamber'] == 1) {
               // cell = null
               cell = this.generateCell(null, x, y)
             }
   
           }
           
-          if (!cell.type && neighborTypes.chamber > 1 && neighborTypes.corridor == 1) {
-            cell = this.generateCell('corridor', x, y)
+          if (!cell.type && neighborTypes['room-chamber'] > 1 && neighborTypes['room-corridor'] == 1) {
+            cell = this.generateCell('room-corridor', x, y)
           }
   
           if (cell.x == this.startX && cell.y == this.startY) {
-            cell.type = 'chamber'
+            cell.type = 'room-chamber'
           }
           this.addCell(cell)
         }
@@ -195,7 +195,7 @@ module.exports = class Map {
           var shouldConnect = false
           
           // TODO make algorythm more comprehensive
-          if (cell.type === 'corridor' && neighbor.type === 'corridor') {
+          if (cell.type === 'room-corridor' && neighbor.type === 'room-corridor') {
             shouldConnect = true
           }
 
@@ -234,10 +234,10 @@ module.exports = class Map {
     this.startY = _.random(minY, maxY)
     // this.startX = _.random(0, this.sizeX-1)
     // this.startY = _.random(0, this.sizeY-1)
-    const startCell = this.generateCell('chamber', this.startX, this.startY)
+    const startCell = this.generateCell('room-chamber', this.startX, this.startY)
     this.addCell(startCell)
     this.startRoom = startCell.room
-    this.makeBranches(startCell.x, startCell.y, 'chamber', [0,0], [1,2,2,2,3,3,3,4,4,4])
+    this.makeBranches(startCell.x, startCell.y, 'room-chamber', [0,0], [1,2,2,2,3,3,3,4,4,4])
 
     
 

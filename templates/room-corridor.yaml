@@ -5,10 +5,10 @@ icon: .
 creatures: []
 weights:
   neighborType:
-    chamber: 2
-    corridor: 1
+    room-chamber: 2
+    room-corridor: 1
   creatureCount:
     - 200
     - 50
   creatureType:
-    drone: 1000
+    creature-drone: 1000

@@ -25,10 +25,10 @@ module.exports = class Game {
     }
     
     this.state.map.generateCells()
-    this.addCreature('player', this.state.map.startX, this.state.map.startY)
+    this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
     this.state.creatures.forEach(creature => {
-      const itemId = this.addItem('knife', this.state.map.startX, this.state.map.startY)
+      const itemId = this.addItem('weapon-knife', this.state.map.startX, this.state.map.startY)
       this.creatureGrabItem(creature.id, itemId)
     })
   }
@@ -467,7 +467,7 @@ module.exports = class Game {
   }
 
   addPlayer() {
-    this.addCreature('player')
+    this.addCreature('creature-player')
   }
 
   addCreature(templateName, x, y) {

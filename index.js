@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 })
 
 function prompt() {
-  console.clear() // TODO maybe this console.clear should belong to the renderer
+  console.clear()
   rl.question(renderer.render(game), (input) => {
     game.loop(input)
     prompt()

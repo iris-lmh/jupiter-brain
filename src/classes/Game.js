@@ -13,6 +13,7 @@ module.exports = class Game {
   constructor() {
     this.loader = new Loader()
     this.state = {
+      uiContext: 'map',
       actions: [],
       messages: [],
       pass: false,
@@ -399,13 +400,18 @@ module.exports = class Game {
     } else if (input && this.getPlayer().hp > 0) {
       switch(prefix) {
         case 'i':
+          if (this.state.uiContext === 'inventory') {
+            this.state.uiContext = 'map'
+          } else {
+            this.state.uiContext = 'inventory'
+          }
           // TODO this would eventually be a context change
-          this.addMessage(`Your weapon: ${player.wielding.name}`, )
-          this.addMessage(`Your armor: ${player.wearing.name}`)
-          this.addMessage(`Your inventory:`)
-          player.inventory.forEach((itemId, i) => {
-            this.addMessage(`${i} - ${this.getItem(itemId).name} ${itemId}`)
-          })
+          // this.addMessage(`Your weapon: ${player.wielding.name}`, )
+          // this.addMessage(`Your armor: ${player.wearing.name}`)
+          // this.addMessage(`Your inventory:`)
+          // player.inventory.forEach((itemId, i) => {
+          //   this.addMessage(`${i} - ${this.getItem(itemId).name} ${itemId}`)
+          // })
           break;
         case 't':
           this.handleTarget('player', suffix)

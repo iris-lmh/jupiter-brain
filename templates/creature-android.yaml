@@ -1,4 +1,5 @@
 name: Android
+inherits: creature
 level: 1
 hitDie: 6
 attributes:

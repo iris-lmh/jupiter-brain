@@ -2,7 +2,7 @@ name: Nanite Swarm
 inherits: item
 subtype: weapon
 attackDesc: engulf
-diceCount: 1
+diceCount: 2
 diceSize: 4
 hitBonus: 0
 damBonus: 0

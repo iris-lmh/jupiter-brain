@@ -5,9 +5,9 @@ const color = require('../color')
 const commandList = require('../command-list.json')
 
 const Loader = require('./Loader')
-const hydrateItem = require('./hydrateItem')
+// const hydrateItem = require('./hydrateItem')
 const hydrateEntity = require('./hydrateEntity')
-const hydrateRoom = require('./hydrateRoom')
+// const hydrateRoom = require('./hydrateRoom')
 const Map = require('./Map')
 
 module.exports = class Game {
@@ -22,21 +22,15 @@ module.exports = class Game {
       rooms: [],
       creatures: [],
       items: [],
-      currentRoomId: 'cellar',
+      entities: [],
+      currentRoomId: null,
       initiative: []
     }
     
     this.state.map.generateCells()
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
     const player = this.getPlayer()
-    // const item = this.addWeapon('weapon-pistol', player.x, player.y)
-    // this.handleGrabItem(0)
-    // this.handleEquipItem(0)
     this.spawnCreatures()
-    // this.state.creatures.forEach(creature => {
-    //   const itemId = this.addItem('weapon-knife', creature.x, creature.y)
-    //   this.creatureGrabItem(creature.id, itemId)
-    // })
   }
   
   loop(input) {
@@ -59,7 +53,6 @@ module.exports = class Game {
     this.getNearbyCreaturesWithout('player').forEach(creature => {
       if (creature.hp > 0 && player.hp > 0) {
         const weapon = creature.wielding
-        console.log(creature)
         while (creature.ap > 0 && creature.ap >= weapon.apCost) {
           creature.target = 'player'
           creature.ap -= this.getApCost(creature)
@@ -103,6 +96,7 @@ module.exports = class Game {
     
     _.forOwn(this.state.map.cells, cell => {
       if (cell.room) {
+        
         const roomCountWeights = cell.room.weights.creatureCount
         const roomTypeWeights = cell.room.weights.creatureType
 
@@ -490,34 +484,15 @@ module.exports = class Game {
     this.state.messages.push(message)
   }
 
-  addPlayer() {
-    this.addCreature('creature-player')
-  }
-
   addCreature(templateName, x, y) {
     const creature = hydrateEntity(this.loader, templateName, x, y)
     this.state.creatures.push(creature)
     return creature.id
   }
 
-  // addItem(templateName, x, y) {
-  //   const item = hydrateItem(this.loader, templateName, x, y)
-  //   this.state.items.push(item)
-  //   return item.id
-  // }
-
-  addWeapon(templateName, x, y) {
-    const item = hydrateEntity(this.loader, templateName, x, y)
-    this.state.items.push(item)
-    return item.id
-  }
-
-  addRoom(templateName) {
-    const room = hydrateRoom(templateName)
-    if (this.state.rooms.length <= 0) {
-      this.state.currentRoomId = room.id
-    }
-    this.state.rooms.push(room)
-    return room
+  addEntity(templateName, x, y) {
+    const entity = hydrateEntity(this.loader, templateName, x, y)
+    this.state.entities.push(entity)
+    return entity.id
   }
 }

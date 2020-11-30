@@ -1,8 +1,7 @@
 const _ = require('lodash')
 
 const helpers = require('../helpers')
-
-const hydrateRoom = require('./hydrateRoom')
+const hydrateEntity = require('./hydrateEntity')
 
 module.exports = class Map {
   constructor(loader, templateName) {
@@ -67,7 +66,7 @@ module.exports = class Map {
   generateRooms() {
     _.forOwn(this.cells, cell => {
       if (cell.type) {
-        const room = hydrateRoom(this.loader, cell.type)
+        const room = hydrateEntity(this.loader, cell.type)
         const exits = this.getExits(cell)
         room.exits = exits
         cell.room = room

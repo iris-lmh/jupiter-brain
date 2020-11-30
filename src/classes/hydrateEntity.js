@@ -3,9 +3,7 @@ const helpers = require('../helpers')
 
 function inherit(loader, templateName, hierarchy = []) {
   const template = loader.loadTemplate(templateName)
-
   hierarchy.push(template)
-  
   if (template.inherits) {
     return inherit(loader, template.inherits, hierarchy)
   } else {
@@ -27,6 +25,7 @@ module.exports = function hydrate(loader, templateName, x, y) {
     if (output.wielding) {
       output.wielding = hydrate(loader, output.wielding)
     }
+  } else if (output.type === 'room') {
   }
 
   return output

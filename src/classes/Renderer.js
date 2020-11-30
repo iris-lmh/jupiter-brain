@@ -94,7 +94,6 @@ module.exports = class Renderer {
     lines.push(`\nWEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
     lines.push(`\nCARRYING:`)
     player.inventory.forEach((item, i) => {
-      console.log(item)
       lines.push(`\n  ${i}. ${item.name} ${item.id}`)
     })
     return lines.join('')

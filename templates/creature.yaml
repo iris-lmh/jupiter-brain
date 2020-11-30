@@ -1,6 +1,7 @@
 name: Creature
 inherits: entity
 type: creature
+remainsName: corpse
 level: 1
 hitDie: 8
 attributes:
@@ -12,3 +13,10 @@ attributes:
   cha: 10
 wielding: null
 wearing: null
+dead: false
+target: null
+baseAc: 10
+ap: 5
+apMax: 6
+apRegen: 5
+inventory: []

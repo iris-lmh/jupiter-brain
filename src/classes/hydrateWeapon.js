@@ -1,6 +1,14 @@
-module.exports = function hydrate(loader, templateName) {
+const hydrateItem = require('./hydrateItem')
+
+module.exports = function hydrate(loader, templateName, x, y) {
   const template = loader.loadTemplate(templateName)
-  const output = {}
+  const output = hydrateItem(loader, 'item', x, y)
+
+  // FIXME inheritance please
+  // output.id = _.uniqueId()
+  // output.x = x
+  // output.y = y
+  // stored = false
 
   output.name = template.name || 'Weapon'
   output.attackDesc = template.attackDesc || 'hit'
@@ -18,6 +26,8 @@ module.exports = function hydrate(loader, templateName) {
   output.apThreshold = template.apThreshold || 0
   output.apAttributes = template.apAttributes || ['str']
   output.qualities = template.qualities || []
+  output.equipable = template.equipable || true
+  output.slot = template.slot || 'wielding'
 
   return output
 }

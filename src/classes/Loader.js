@@ -9,7 +9,7 @@ module.exports = class Loader {
     }
   }
 
-  // TODO should templates just be all in one big folder instead of worrying about categories?
+  // FIXME something about the caching is causing an infinite loop HELP
   loadTemplate(name) {
     const record = _.get(this, `templates.${name}`)
     if (!record) {

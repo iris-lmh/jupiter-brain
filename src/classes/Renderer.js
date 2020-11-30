@@ -3,9 +3,7 @@ const _ = require('lodash')
 const color = require('../color')
 
 module.exports = class Renderer {
-  constructor() {
-
-  }
+  constructor() {}
 
   _renderRoom(game) {
     const lines = []
@@ -64,19 +62,14 @@ module.exports = class Renderer {
     const wall = color.white('█')
     const lines = []
     const player = game.getPlayer()
-    // var result = ''
-    // lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
-      // lines.push('|')
       lines.push(wall)
       for (var x=0; x<game.state.map.sizeX; x++) {
         const cell = game.state.map.getCell(x, y)
         var icon
         if (cell.type) {
           icon = ' '
-          const type = cell.type
-          // TODO define these characters to the respective yamls
           if (cell.x == player.x && cell.y == player.y) {
             icon = color.cyan('@')
           } 
@@ -88,10 +81,8 @@ module.exports = class Renderer {
         }
         lines.push(icon)
       }
-      // lines.push('|\n')
       lines.push(wall + '\n')
     }
-    // lines.push(' ' + _.repeat('-', game.state.map.sizeX) + '\n')
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
     return lines.join('')
   }
@@ -99,11 +90,12 @@ module.exports = class Renderer {
   _renderInventory(game) {
     const lines = []
     const player = game.getPlayer()
-    lines.push(`WIELDING: ${player.wielding.name}`, )
-    lines.push(`\nWEARING: ${player.wearing.name}`)
+    lines.push(`WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
+    lines.push(`\nWEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
     lines.push(`\nCARRYING:`)
-    player.inventory.forEach((itemId, i) => {
-      lines.push(`\n  ${i}. ${game.getItem(itemId).name} ${itemId}`)
+    player.inventory.forEach((item, i) => {
+      console.log(item)
+      lines.push(`\n  ${i}. ${item.name} ${item.id}`)
     })
     return lines.join('')
   }
@@ -134,7 +126,7 @@ module.exports = class Renderer {
       } else if (targetHpPercent > 0) {
         targetStatus = color.red('Mortally Wounded')
       } else if (targetHpPercent <= 0) {
-        targetStatus = color.reversed(color.red('Dead'))
+        targetStatus = color.redBg( color.black(' Dead ') )
       }
       targetLine = target.id 
         ? `Target: ${target.name} | ${targetStatus}` 
@@ -144,7 +136,11 @@ module.exports = class Renderer {
     const selfLine = 
       `Self: ${game.getPlayer().hp}/${game.getPlayer().hpMax} hp | ${game.getPlayer().ap}/${game.getPlayer().apMax} ap`
 
-    lines.push(game.state.messages.join('\n'))
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\n'))
+      lines.push('')
+    }
 
     lines.push(`${selfLine} // ${targetLine}`)
 

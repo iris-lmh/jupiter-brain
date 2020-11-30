@@ -1,5 +1,6 @@
 name: Avatar
 remainsName: remains
+inherits: creature
 level: 5
 hitDie: 12
 attributes:

@@ -1,6 +1,7 @@
 name: Knife
-inherits: item
-subtype: weapon
+inherits: weapon
+equipable: true
+slot: wielding
 attackDesc: stab
 diceCount: 1
 diceSize: 4

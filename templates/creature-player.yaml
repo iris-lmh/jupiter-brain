@@ -1,5 +1,6 @@
 id: player
 name: Player
+inherits: creature
 level: 1
 hitDie: 8
 attributes:
@@ -9,5 +10,5 @@ attributes:
   int: 12
   wis: 10
   cha: 12
-wielding: weapon-pistol
-wearing: armor-ballistic-vest
+# wielding: weapon-pistol
+# wearing: armor-ballistic-vest

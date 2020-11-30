@@ -1,6 +1,5 @@
 name: Pistol
-inherits: item
-subtype: weapon
+inherits: weapon
 attackDesc: shoot
 diceCount: 2
 diceSize: 6

@@ -29,7 +29,6 @@ module.exports = class Game {
     
     this.state.map.generateCells()
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
-    const player = this.getPlayer()
     this.spawnCreatures()
   }
   
@@ -414,10 +413,17 @@ module.exports = class Game {
     } else if (input && this.getPlayer().hp > 0) {
       switch(prefix) {
         case 'i':
-          if (this.state.uiContext === 'inventory') {
-            this.state.uiContext = 'map'
-          } else {
+          if (this.state.uiContext !== 'inventory') {
             this.state.uiContext = 'inventory'
+          } else {
+            this.state.uiContext = 'map'
+          }
+          break;
+        case 'c':
+          if (this.state.uiContext !== 'characterSheet') {
+            this.state.uiContext = 'characterSheet'
+          } else {
+            this.state.uiContext = 'map'
           }
           break;
         case 't':

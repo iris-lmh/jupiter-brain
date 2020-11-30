@@ -16,7 +16,6 @@ module.exports = class Renderer {
       lines.push("\nCREATURES")
     }
     creatures.forEach((creature, i) => {
-      // const creature = game.getCreature(creatureId)
       const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
       if (creature.hp > 0) {
         lines.push(`  ${i}. There is ${article} ${creature.name}. ${creature.hp} hp`)
@@ -91,12 +90,25 @@ module.exports = class Renderer {
     const lines = []
     const player = game.getPlayer()
     lines.push(`WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
-    lines.push(`\nWEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
-    lines.push(`\nCARRYING:`)
+    lines.push(`WEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
+    lines.push(`CARRYING:`)
     player.inventory.forEach((item, i) => {
-      lines.push(`\n  ${i}. ${item.name} ${item.id}`)
+      lines.push(`  ${i}. ${item.name} ${item.id}`)
     })
-    return lines.join('')
+    return lines.join('\n')
+  }
+
+  _renderCharacterSheet(game) {
+    const lines = []
+    const player = game.getPlayer()
+    lines.push(`LVL: ${player.level}`)
+    lines.push(`INT: ${player.attributes.int}`)
+    lines.push(`WIS: ${player.attributes.wis}`)
+    lines.push(`CHA: ${player.attributes.cha}`)
+    lines.push(`STR: ${player.attributes.str}`)
+    lines.push(`DEX: ${player.attributes.dex}`)
+    lines.push(`CON: ${player.attributes.con}`)
+    return lines.join('\n')
   }
 
   render(game) {
@@ -109,6 +121,9 @@ module.exports = class Renderer {
     } 
     else if (game.state.uiContext === 'inventory') {
       lines.push(this._renderInventory(game))
+    }
+    else if (game.state.uiContext === 'characterSheet') {
+      lines.push(this._renderCharacterSheet(game))
     }
     
     const target = game.getTargetOf('player')

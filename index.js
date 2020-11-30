@@ -9,7 +9,7 @@ const rl = readline.createInterface({
 })
 
 function prompt() {
-  console.clear()
+  // console.clear()
   rl.question(renderer.render(game), (input) => {
     game.loop(input)
     prompt()

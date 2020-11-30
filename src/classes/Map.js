@@ -156,7 +156,6 @@ module.exports = class Map {
           const neighborTypes = _.countBy(neighbors, n => n.type)
   
           if (cell.type) {
-            // console.log(cell.type)
             if (cell.type == 'room-chamber' && neighborTypes['room-chamber'] > 1) {
               cell.type = 'room-corridor'
             }

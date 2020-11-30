@@ -3,12 +3,5 @@ name: Player
 inherits: creature
 level: 1
 hitDie: 8
-attributes:
-  str: 10
-  dex: 14
-  con: 14
-  int: 12
-  wis: 10
-  cha: 12
-wielding: weapon-pistol
+wielding: weapon-knife
 # wearing: armor-ballistic-vest

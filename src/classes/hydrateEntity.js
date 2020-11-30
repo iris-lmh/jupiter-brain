@@ -11,22 +11,13 @@ function inherit(loader, templateName, hierarchy = []) {
   }
 }
 
-module.exports = function hydrate(loader, templateName, x, y) {
+module.exports = function hydrateEntity(loader, templateName, x, y) {
   const hierarchy = inherit(loader, templateName)
   const output = _.merge({}, ...hierarchy)
   
   output.id = output.id || _.uniqueId()
   output.x = x
   output.y = y
-
-  if (output.type === 'creature') {
-    output.hpMax = helpers.rollHealth(output)
-    output.hp = output.hpMax
-    if (output.wielding) {
-      output.wielding = hydrate(loader, output.wielding)
-    }
-  } else if (output.type === 'room') {
-  }
 
   return output
 }

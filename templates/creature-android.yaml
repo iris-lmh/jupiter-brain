@@ -10,3 +10,4 @@ attributes:
   wis: 8
   cha: 8
 wielding: weapon-knife
+loot: [loot-weapons-basic]

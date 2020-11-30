@@ -20,3 +20,4 @@ ap: 5
 apMax: 6
 apRegen: 5
 inventory: []
+loot: null

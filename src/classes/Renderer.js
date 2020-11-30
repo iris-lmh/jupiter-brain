@@ -59,6 +59,7 @@ module.exports = class Renderer {
       '(l)ook',
       '(g)rab',
       '(d)rop',
+      'e(q)uip',
       '(i)nventory',
       '(c)haracter',
       // 'c',
@@ -125,21 +126,16 @@ module.exports = class Renderer {
     return lines.join('\n')
   }
 
-  render(game) {
-    const lines = []
-    const prompt = '> '
-  
-    if (game.state.uiContext === 'map') {
-      lines.push(this._renderMap(game))
-      lines.push(this._renderRoom(game))
-    } 
-    else if (game.state.uiContext === 'inventory') {
-      lines.push(this._renderInventory(game))
-    }
-    else if (game.state.uiContext === 'characterSheet') {
-      lines.push(this._renderCharacterSheet(game))
-    }
-    
+  _renderMessageHistory(game) {
+    const lines = game.state.messageHistory 
+    return lines.join('\n')
+  }
+
+  _renderSelfLine(game) {
+    return `Self: ${game.getPlayer().hp}/${game.getPlayer().hpMax} hp | ${game.getPlayer().ap}/${game.getPlayer().apMax} ap`
+  }
+
+  _renderTargetLine(game) {
     const target = game.getTargetOf('player')
     var targetLine = 'No target'
     if (target) {
@@ -160,17 +156,52 @@ module.exports = class Renderer {
         ? `Target: ${target.name} | ${targetStatus}` 
         : `Target: ${target.name}`
     }
+    return targetLine
+  }
+
+  render(game) {
+    const lines = []
+    const prompt = '> '
   
-    const selfLine = 
-      `Self: ${game.getPlayer().hp}/${game.getPlayer().hpMax} hp | ${game.getPlayer().ap}/${game.getPlayer().apMax} ap`
+    if (game.state.uiContext === 'map') {
+      lines.push(this._renderMap(game))
+      lines.push(this._renderRoom(game))
 
-    lines.push('')
-    if (game.state.messages.length) {
-      lines.push(game.state.messages.join('\n'))
       lines.push('')
-    }
+      if (game.state.messages.length) {
+        lines.push(game.state.messages.join('\n'))
+        lines.push('')
+      }
 
-    lines.push(`${selfLine} // ${targetLine}`)
+      lines.push(`${this._renderSelfLine(game)} // ${this._renderTargetLine(game)}`)
+    } 
+    else if (game.state.uiContext === 'inventory') {
+      lines.push('INVENTORY')
+      lines.push('')
+      lines.push(this._renderInventory(game))
+      lines.push('')
+      lines.push(this._renderSelfLine(game))
+    }
+    else if (game.state.uiContext === 'characterSheet') {
+      lines.push('CHARACTER SHEET')
+      lines.push('')
+      lines.push(this._renderCharacterSheet(game))
+      lines.push('')
+      lines.push(this._renderSelfLine(game))
+    }
+    else if (game.state.uiContext === 'messageHistory') {
+      lines.push('MESSAGE HISTORY')
+      lines.push('')
+      lines.push(this._renderMessageHistory(game))
+    }
+    
+    // lines.push('')
+    // if (game.state.messages.length) {
+    //   lines.push(game.state.messages.join('\n'))
+    //   lines.push('')
+    // }
+
+    // lines.push(`${this._renderSelfLine(game)} // ${this._renderTargetLine(game)}`)
 
     lines.push(this._renderCommands(game))
 

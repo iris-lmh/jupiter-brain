@@ -1,0 +1,9 @@
+weights:
+  itemType:
+    weapon-pistol: 1
+    weapon-knife: 20
+  itemCount:
+    - 64
+    - 16
+    - 4
+    - 1

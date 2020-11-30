@@ -5,9 +5,7 @@ const color = require('../color')
 const commandList = require('../command-list.json')
 
 const Loader = require('./Loader')
-// const hydrateItem = require('./hydrateItem')
 const hydrateEntity = require('./hydrateEntity')
-// const hydrateRoom = require('./hydrateRoom')
 const Map = require('./Map')
 
 module.exports = class Game {
@@ -17,6 +15,7 @@ module.exports = class Game {
       uiContext: 'map',
       actions: [],
       messages: [],
+      messageHistory: [],
       pass: false,
       map: new Map(this.loader, 'map'),
       rooms: [],
@@ -24,7 +23,7 @@ module.exports = class Game {
       items: [],
       entities: [],
       currentRoomId: null,
-      initiative: []
+      initiative: [],
     }
     
     this.state.map.generateCells()
@@ -212,11 +211,16 @@ module.exports = class Game {
 
   creatureDie(creatureId) {
     const creature = this.getCreature(creatureId)
+    creature.hp = 0
     creature.dead = true
     creature.inventory.forEach(item => {
       // this.addMessage(this.getItem(itemId).name)
       this.creatureDropItem(creature.id, item.id)
     })
+    const player = this.getPlayer()
+    if (creatureId === player.target) {
+      player.target = null
+    }
   }
 
   rollInitiative(creature) {
@@ -230,13 +234,13 @@ module.exports = class Game {
 
   calculateHit(attacker) {
     const weapon = attacker.wielding
-    // const weapon = this.getItem(attacker.wielding)
     
     const hitNatural = helpers.diceRoll(1, 20)
     const crit = hitNatural >= weapon.critRange
     
     const hitBonus = weapon.hitBonus + helpers.calculateAttributeMod(attacker.attributes[weapon.hitAttribute])
-    const hit = hitNatural + hitBonus
+    const playerBonus = attacker.id === 'player' ? 2 : 0
+    const hit = hitNatural + hitBonus + playerBonus
   
     return {roll: hit, crit: crit}
   }
@@ -314,15 +318,16 @@ module.exports = class Game {
     }
   }
 
-  handleTarget(targeterId, index) {
-    // FIXME Handlers are only for the player!
+  handleTarget(commandSuffix) {
+    // FIXME Maybe do targeting with actions.
+    const index = parseInt(commandSuffix)
     var targetId
-    const inValidIndex = !parseInt(index) >= 0
-    if (inValidIndex) {
-      const target = this.getFirstValidTargetOf(targeterId)
-      targetId = this.getFirstValidTargetOf(targeterId) ? target.id : null
+    const player = this.getPlayer()
+    const invalidIndex = !(index >= 0)
+    if (invalidIndex) {
+      const target = this.getFirstValidTargetOf(player.id)
+      targetId = this.getFirstValidTargetOf(player.id) ? target.id : null
     } else {
-      index = parseInt(index)
       if (index + 1 > this.getNearbyCreaturesWithout('player').length) {
         this.addMessage(`No such option: ${index}`)
         index = 0
@@ -335,25 +340,19 @@ module.exports = class Game {
     } else {
       this.addMessage('No valid targets.')
     }
-    this.setTargetOf(targeterId, targetId)
+    this.setTargetOf(player.id, targetId)
   }
 
-  handleAttack(attackerId, defenderId) {
-    // FIXME Handlers are only for the player!
-    helpers.assert(typeof attackerId === 'string', `expected attackerId to be string, got ${attackerId}`)
-    helpers.assert(typeof defenderId === 'string' || defenderId === null, `expected defenderId to be string or null, got ${defenderId}`)
-
-    if (!defenderId) {
-      this.handleTarget(attackerId)
-      if (this.getTargetOf(attackerId)) {
-        defenderId = this.getTargetOf(attackerId).id
-      } else {
-        return
-      }
+  handleAttack() {
+    const player = this.getPlayer()
+    const target = this.getTargetOf(player.id) || this.getFirstValidTargetOf(player.id)
+    if (!target) {
+      this.addMessage('No valid targets.')
+      return
     }
-    const player = this.getCreature('player')
+
     player.ap -= this.getApCost(player)
-    this.addAction({type: 'attack', attackerId: attackerId, defenderId: defenderId})
+    this.addAction({type: 'attack', attackerId: player.id, defenderId: target.id})
   }
 
   processAttack(attackerId, defenderId) {
@@ -426,8 +425,18 @@ module.exports = class Game {
             this.state.uiContext = 'map'
           }
           break;
+        case 'M':
+          if (this.state.uiContext !== 'messageHistory') {
+            this.state.uiContext = 'messageHistory'
+          } else {
+            this.state.uiContext = 'map'
+          }
+          break;
+        case 'm':
+          this.state.uiContext = 'map'
+          break;
         case 't':
-          this.handleTarget('player', suffix)
+          this.handleTarget(suffix)
           break;
         case 'a':
           this.handleAttack(player.id, player.target)
@@ -488,17 +497,62 @@ module.exports = class Game {
 
   addMessage(message) {
     this.state.messages.push(message)
+    this.state.messageHistory.push(message)
+    if (this.state.messageHistory.length > 100) {
+      this.state.messageHistory.shift()
+    }
   }
 
   addCreature(templateName, x, y) {
     const creature = hydrateEntity(this.loader, templateName, x, y)
     this.state.creatures.push(creature)
-    return creature.id
+
+    if (creature.type === 'creature') {
+      creature.hpMax = helpers.rollHealth(creature)
+      creature.hp = creature.hpMax
+      if (creature.wielding) {
+        const hydrated = hydrateEntity(this.loader, creature.wielding)
+        creature.wielding = hydrated
+        creature.wielding.stored = true
+        this.state.items.push(creature.wielding)
+      }
+      creature.inventory.forEach((item, i)=> {
+        const hydrated = hydrateEntity(this.loader, item)
+        hydrated.stored = true
+        creature.inventory[i] = hydrated
+        this.state.items.push(hydrated)
+      })
+      if (creature.loot && creature.loot.length) {
+        const lootTables = creature.loot.map(tableName => {
+          return this.loader.loadTemplate(tableName)
+        })
+        const counts = lootTables.map(table => {
+          return table.weights.itemCount
+        })
+        const types = lootTables.map(table => {
+          return table.weights.itemType
+        })
+        const count = helpers.weightedRoll(...counts)
+        for (var i=0; i<count; i++) {
+          const type = helpers.weightedRoll(...types)
+          const item = this.addItem(type)
+          this.creatureGrabItem(creature.id, item.id)
+        }
+  
+      }
+    }
+    return creature
+  }
+
+  addItem(templateName, x, y) {
+    const item = hydrateEntity(this.loader, templateName, x, y)
+    this.state.items.push(item)
+    return item
   }
 
   addEntity(templateName, x, y) {
     const entity = hydrateEntity(this.loader, templateName, x, y)
     this.state.entities.push(entity)
-    return entity.id
+    return entity
   }
 }

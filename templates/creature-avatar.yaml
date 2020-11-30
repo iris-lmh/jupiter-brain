@@ -2,7 +2,7 @@ name: Avatar
 remainsName: remains
 inherits: creature
 level: 5
-hitDie: 12
+hitDie: 10
 attributes:
   str: 12
   dex: 14
@@ -11,3 +11,4 @@ attributes:
   wis: 10
   cha: 8
 wielding: weapon-nanite-swarm
+loot: [loot-avatar]

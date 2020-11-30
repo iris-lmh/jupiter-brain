@@ -363,43 +363,45 @@ module.exports = class Game {
     const attacker = this.getCreature(attackerId)
     const defender = this.getCreature(defenderId)
 
-    helpers.assert(typeof attacker === 'object', `expected attacker to be string, got ${attacker}`)
-    helpers.assert(typeof defender === 'object', `expected defender to be object, got ${defender}`)
-
-    const weapon = attacker.wielding
-    // const weapon = this.getItem(attacker.wielding)
-    const hit = this.calculateHit(attacker, defender)
+    if (!attacker.dead) {
+      helpers.assert(typeof attacker === 'object', `expected attacker to be string, got ${attacker}`)
+      helpers.assert(typeof defender === 'object', `expected defender to be object, got ${defender}`)
   
-    const damage = this.calculateDamage(attacker, hit.crit)
-  
-    const killed = (damage >= defender.hp) && !defender.dead
-    const enemyIsKilled = killed && attackerId == 'player' ? ', killing it' : ''
-    const playerIsKilled = killed && attackerId != 'player' ? ', killing you' : ''
-  
-    const hitMsg = attackerId == 'player' 
-      ? `You${hit.crit ? ' critically ' : ' '}${weapon.attackDesc} (${hit.roll}) the ${defender.name} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
-      : `The ${attacker.name}${hit.crit ? ' critically ' : ' '}${weapon.attackDesc}s (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
-  
-    const missMsg = attackerId == 'player'
-      ? `You miss (${hit.roll}) the ${defender.name}.`
-      : `The ${attacker.name} misses (${hit.roll}) you.`
-  
-    if (hit.roll > this.getCreatureAc(defender)) {
-      this.addMessage(hitMsg)
-      if (defender.hp - damage > 0) {
-        defender.hp -= damage
+      const weapon = attacker.wielding
+      // const weapon = this.getItem(attacker.wielding)
+      const hit = this.calculateHit(attacker, defender)
+    
+      const damage = this.calculateDamage(attacker, hit.crit)
+    
+      const killed = (damage >= defender.hp) && !defender.dead
+      const enemyIsKilled = killed && attackerId == 'player' ? ', killing it' : ''
+      const playerIsKilled = killed && attackerId != 'player' ? ', killing you' : ''
+    
+      const hitMsg = attackerId == 'player' 
+        ? `You${hit.crit ? ' critically ' : ' '}${weapon.attackDesc} (${hit.roll}) the ${defender.name} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
+        : `The ${attacker.name}${hit.crit ? ' critically ' : ' '}${weapon.attackDesc}s (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
+    
+      const missMsg = attackerId == 'player'
+        ? `You miss (${hit.roll}) the ${defender.name}.`
+        : `The ${attacker.name} misses (${hit.roll}) you.`
+      
+      if (hit.roll > this.getCreatureAc(defender)) {
+        this.addMessage(hitMsg)
+        if (defender.hp - damage > 0) {
+          defender.hp -= damage
+        } else {
+          defender.hp = 0
+          this.creatureDie(defenderId)
+        }
       } else {
-        defender.hp = 0
-        this.creatureDie(defenderId)
+        this.addMessage(missMsg)
       }
-    } else {
-      this.addMessage(missMsg)
     }
   }
 
   handleLook() {
-    this.addMessage('lookit that huh')
-    helpers.deductAp(this.getPlayer(), 1)
+    const room = this.getCurrentRoom()
+    this.addMessage(room.desc)
   }
 
   handleInput(input) {

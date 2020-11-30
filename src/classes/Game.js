@@ -404,6 +404,35 @@ module.exports = class Game {
     this.addMessage(room.desc)
   }
 
+  handleContextInventory() {
+    console.log(this)
+    if (this.state.uiContext !== 'inventory') {
+      this.state.uiContext = 'inventory'
+    } else {
+      this.state.uiContext = 'map'
+    }
+  }
+
+  handleContextCharacterSheet() {
+    if (this.state.uiContext !== 'characterSheet') {
+      this.state.uiContext = 'characterSheet'
+    } else {
+      this.state.uiContext = 'map'
+    }
+  }
+
+  handleContextMessageHistory() {
+    if (this.state.uiContext !== 'messageHistory') {
+      this.state.uiContext = 'messageHistory'
+    } else {
+      this.state.uiContext = 'map'
+    }
+  }
+
+  handleContextMap() {
+    this.state.uiContext = 'map'
+  }
+
   handleInput(input) {
     input = input.replace(' ', '')
     const player = this.getPlayer()
@@ -413,54 +442,90 @@ module.exports = class Game {
       const helpMsg = commandList[prefix].help
       this.addMessage(helpMsg)
     } else if (input && this.getPlayer().hp > 0) {
-      switch(prefix) {
-        case 'i':
-          if (this.state.uiContext !== 'inventory') {
-            this.state.uiContext = 'inventory'
-          } else {
-            this.state.uiContext = 'map'
+      const commands = {
+        map: {
+          // context switchers
+          c: {
+            longForm: '(c)haracter sheet',
+            help: '',
+            handler: this.handleContextCharacterSheet.bind(this)
+          },
+          i: {
+            longForm: '(i)nventory',
+            help: '',
+            handler: this.handleContextInventory.bind(this)
+          },
+          M: {
+            longForm: '(M)essage history',
+            help: '',
+            handler: this.handleContextMessageHistory.bind(this)
+          },
+
+          // other commands
+          t: {
+            longForm: '(t)arget',
+            help: '',
+            handler: this.handleTarget.bind(this)
+          },
+          a: {
+            longForm: '(a)ttack',
+            help: '',
+            handler: this.handleAttack.bind(this)
+          },
+          l: {
+            longForm: '(l)ook',
+            help: '',
+            handler: this.handleLook.bind(this)
+          },
+          g: {
+            longForm: '(g)rab item',
+            help: '',
+            handler: this.handleGrabItem.bind(this)
+          },
+        },
+        inventory: {
+          // context switchers
+          c: {handler: this.handleContextCharacterSheet.bind(this)},
+          i: {handler: this.handleContextInventory.bind(this)},
+          m: {handler: this.handleContextMap.bind(this)},
+          M: {handler: this.handleContextMessageHistory.bind(this)},
+
+          // other commands
+          d: {
+            longForm: '(d)rop',
+            help: '',
+            handler: this.handleDropItem.bind(this)
+          },
+          q: {
+            longForm: 'e(q)uip',
+            help: '',
+            handler: this.handleEquipItem.bind(this)
           }
-          break;
-        case 'c':
-          if (this.state.uiContext !== 'characterSheet') {
-            this.state.uiContext = 'characterSheet'
-          } else {
-            this.state.uiContext = 'map'
-          }
-          break;
-        case 'M':
-          if (this.state.uiContext !== 'messageHistory') {
-            this.state.uiContext = 'messageHistory'
-          } else {
-            this.state.uiContext = 'map'
-          }
-          break;
-        case 'm':
-          this.state.uiContext = 'map'
-          break;
-        case 't':
-          this.handleTarget(suffix)
-          break;
-        case 'a':
-          this.handleAttack(player.id, player.target)
-          break;
-        case 'l':
-          this.handleLook(suffix)
-          break;
-        case 'n': case 's': case 'e': case 'w':
-          this.handleMove(prefix)
-          break;
-        case 'g':
-          this.handleGrabItem(suffix)
-          break;
-        case 'd':
-          this.handleDropItem(suffix)
-          break;
-        case 'q':
-          this.handleEquipItem(suffix)
-          break;
-        default:
-          this.addMessage('Unknown command: ' + input)
+        },
+        characterSheet: {
+          // context switchers
+          c: {handler: this.handleContextCharacterSheet.bind(this)},
+          i: {handler: this.handleContextInventory.bind(this)},
+          m: {handler: this.handleContextMap.bind(this)},
+          M: {handler: this.handleContextMessageHistory.bind(this)},
+        },
+        messageHistory: {
+          // context switchers
+          c: {handler: this.handleContextCharacterSheet.bind(this)},
+          i: {handler: this.handleContextInventory.bind(this)},
+          m: {handler: this.handleContextMap.bind(this)},
+          M: {handler: this.handleContextMessageHistory.bind(this)},
+        },
+      }
+
+      if (this.state.uiContext === 'map' && 'nsew'.includes(prefix)) {
+        this.handleMove(prefix)
+      }
+      else if (commands[this.state.uiContext][prefix]) {
+        commands[this.state.uiContext][prefix].handler(suffix)
+      } 
+      else {
+        this.addMessage('Invalid command: ' + input)
       }
     } else {
       this.state.pass = true

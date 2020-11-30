@@ -5,3 +5,7 @@ level: 1
 hitDie: 8
 wielding: weapon-knife
 # wearing: armor-ballistic-vest
+apMax: 10
+ap: 10
+apRegen: 10
+exp: 0

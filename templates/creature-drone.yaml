@@ -12,3 +12,6 @@ attributes:
   cha: 8
 wielding: weapon-knife
 loot: [loot-weapons-basic]
+apMax: 5
+ap: 5
+apRegen: 5

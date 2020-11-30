@@ -28,6 +28,7 @@ module.exports = class Game {
     
     this.state.map.generateCells()
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
+    this.addCreature('creature-android', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
   }
   

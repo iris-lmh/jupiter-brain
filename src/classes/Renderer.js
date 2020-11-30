@@ -38,21 +38,35 @@ module.exports = class Renderer {
   }
 
   _renderCommands(game) {
-    const exits = game.getCurrentRoom().exits
+    const exits = game.getCurrentRoom().exits.map(exit => {
+      if (exit === 'n') {
+        return '(n)orth'
+      }
+      else if (exit === 's') {
+        return '(s)outh'
+      }
+      else if (exit === 'e') {
+        return '(e)ast'
+      }
+      else if (exit === 'w') {
+        return '(w)est'
+      }
+    })
     const commands = [
-      't',
-      'a',
+      '(t)arget',
+      '(a)ttack',
       // 'm',
-      'l',
-      'i',
-      'g',
-      'd',
+      '(l)ook',
+      '(g)rab',
+      '(d)rop',
+      '(i)nventory',
+      '(c)haracter',
       // 'c',
       // 'S',
       '?'
     ]
     const lines = [
-      `\nAvailable commands: ${exits.concat(commands).join(', ')}`
+      `\nCOMMANDS: ${exits.concat(commands).join(', ')}`
     ]
     return lines.join('\n')
   }

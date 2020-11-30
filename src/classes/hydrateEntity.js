@@ -24,6 +24,9 @@ module.exports = function hydrate(loader, templateName, x, y) {
   if (output.type === 'creature') {
     output.hpMax = helpers.rollHealth(output)
     output.hp = output.hpMax
+    if (output.wielding) {
+      output.wielding = hydrate(loader, output.wielding)
+    }
   }
 
   return output

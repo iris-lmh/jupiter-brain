@@ -29,9 +29,9 @@ module.exports = class Game {
     this.state.map.generateCells()
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
     const player = this.getPlayer()
-    const item = this.addWeapon('weapon-pistol', player.x, player.y)
-    this.handleGrabItem(0)
-    this.handleEquipItem(0)
+    // const item = this.addWeapon('weapon-pistol', player.x, player.y)
+    // this.handleGrabItem(0)
+    // this.handleEquipItem(0)
     this.spawnCreatures()
     // this.state.creatures.forEach(creature => {
     //   const itemId = this.addItem('weapon-knife', creature.x, creature.y)
@@ -59,6 +59,7 @@ module.exports = class Game {
     this.getNearbyCreaturesWithout('player').forEach(creature => {
       if (creature.hp > 0 && player.hp > 0) {
         const weapon = creature.wielding
+        console.log(creature)
         while (creature.ap > 0 && creature.ap >= weapon.apCost) {
           creature.target = 'player'
           creature.ap -= this.getApCost(creature)

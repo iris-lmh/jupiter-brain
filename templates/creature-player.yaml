@@ -10,5 +10,5 @@ attributes:
   int: 12
   wis: 10
   cha: 12
-# wielding: weapon-pistol
+wielding: weapon-pistol
 # wearing: armor-ballistic-vest

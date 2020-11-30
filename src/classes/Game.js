@@ -485,10 +485,26 @@ module.exports = class Game {
         },
         inventory: {
           // context switchers
-          c: {handler: this.handleContextCharacterSheet.bind(this)},
-          i: {handler: this.handleContextInventory.bind(this)},
-          m: {handler: this.handleContextMap.bind(this)},
-          M: {handler: this.handleContextMessageHistory.bind(this)},
+          m: {
+            longForm: '(m)ap',
+            help: '',
+            handler: this.handleContextMap.bind(this)
+          },
+          c: {
+            longForm: '(c)haracter sheet',
+            help: '',
+            handler: this.handleContextCharacterSheet.bind(this)
+          },
+          i: {
+            longForm: '(i)nventory',
+            help: '',
+            handler: this.handleContextInventory.bind(this)
+          },
+          M: {
+            longForm: '(M)essage history',
+            help: '',
+            handler: this.handleContextMessageHistory.bind(this)
+          },
 
           // other commands
           d: {
@@ -504,17 +520,49 @@ module.exports = class Game {
         },
         characterSheet: {
           // context switchers
-          c: {handler: this.handleContextCharacterSheet.bind(this)},
-          i: {handler: this.handleContextInventory.bind(this)},
-          m: {handler: this.handleContextMap.bind(this)},
-          M: {handler: this.handleContextMessageHistory.bind(this)},
+          m: {
+            longForm: '(m)ap',
+            help: '',
+            handler: this.handleContextMap.bind(this)
+          },
+          c: {
+            longForm: '(c)haracter sheet',
+            help: '',
+            handler: this.handleContextCharacterSheet.bind(this)
+          },
+          i: {
+            longForm: '(i)nventory',
+            help: '',
+            handler: this.handleContextInventory.bind(this)
+          },
+          M: {
+            longForm: '(M)essage history',
+            help: '',
+            handler: this.handleContextMessageHistory.bind(this)
+          },
         },
         messageHistory: {
           // context switchers
-          c: {handler: this.handleContextCharacterSheet.bind(this)},
-          i: {handler: this.handleContextInventory.bind(this)},
-          m: {handler: this.handleContextMap.bind(this)},
-          M: {handler: this.handleContextMessageHistory.bind(this)},
+          m: {
+            longForm: '(m)ap',
+            help: '',
+            handler: this.handleContextMap.bind(this)
+          },
+          c: {
+            longForm: '(c)haracter sheet',
+            help: '',
+            handler: this.handleContextCharacterSheet.bind(this)
+          },
+          i: {
+            longForm: '(i)nventory',
+            help: '',
+            handler: this.handleContextInventory.bind(this)
+          },
+          M: {
+            longForm: '(M)essage history',
+            help: '',
+            handler: this.handleContextMessageHistory.bind(this)
+          },
         },
       }
 

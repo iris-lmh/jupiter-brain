@@ -58,7 +58,7 @@ module.exports = class Renderer {
     })
     commands.push(color.whiteBg(color.black('?')))
     const lines = [
-      `\nCOMMANDS: ${exits.concat(commands).join(', ')}`
+      `\nCOMMANDS: ${game.state.uiContext === 'map' ? exits.concat(commands).join(', ') : commands.join(', ')}`
     ]
     return lines.join('\n')
   }
@@ -171,6 +171,10 @@ module.exports = class Renderer {
       lines.push('')
       lines.push(this._renderInventory(game))
       lines.push('')
+      if (game.state.messages.length) {
+        lines.push(game.state.messages.join('\n'))
+        lines.push('')
+      }
       lines.push(this._renderSelfLine(game))
     }
     else if (game.state.uiContext === 'characterSheet') {
@@ -178,6 +182,10 @@ module.exports = class Renderer {
       lines.push('')
       lines.push(this._renderCharacterSheet(game))
       lines.push('')
+      if (game.state.messages.length) {
+        lines.push(game.state.messages.join('\n'))
+        lines.push('')
+      }
       lines.push(this._renderSelfLine(game))
     }
     else if (game.state.uiContext === 'messageHistory') {

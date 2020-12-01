@@ -407,33 +407,8 @@ module.exports = class Game {
     this.addMessage(room.desc)
   }
 
-  handleContextInventory() {
-    console.log(this)
-    if (this.state.uiContext !== 'inventory') {
-      this.state.uiContext = 'inventory'
-    } else {
-      this.state.uiContext = 'map'
-    }
-  }
-
-  handleContextCharacterSheet() {
-    if (this.state.uiContext !== 'characterSheet') {
-      this.state.uiContext = 'characterSheet'
-    } else {
-      this.state.uiContext = 'map'
-    }
-  }
-
-  handleContextMessageHistory() {
-    if (this.state.uiContext !== 'messageHistory') {
-      this.state.uiContext = 'messageHistory'
-    } else {
-      this.state.uiContext = 'map'
-    }
-  }
-
-  handleContextMap() {
-    this.state.uiContext = 'map'
+  switchUiContext(context) {
+    this.state.uiContext = context
   }
 
   handleInput(input) {

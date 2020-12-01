@@ -1,22 +1,31 @@
 module.exports = function commands(game) {
+  const contextMap = {
+    longForm: '(m)ap',
+    help: 'Show the map.',
+    handler: ()=>{game.switchUiContext('map')}
+  }
+  const contextInventory = {
+    longForm: '(i)nventory',
+    help: "Show the player's inventory.",
+    // handler: game.handleContextInventory.bind(game),
+    handler: ()=>{game.switchUiContext('inventory')}
+  }
+  const contextCharacterSheet = {
+    longForm: '(c)haracter sheet',
+    help: "Show ther player's status.",
+    handler: ()=>{game.switchUiContext('characterSheet')}
+  }
+  const contextMessageHistory = {
+    longForm: '(M)essage history',
+    help: 'Show an extended history of game messages.',
+    handler: ()=>{game.switchUiContext('messageHistory')}
+  }
   return {
     map: {
       // context switchers
-      c: {
-        longForm: '(c)haracter sheet',
-        help: '',
-        handler: game.handleContextCharacterSheet.bind(game)
-      },
-      i: {
-        longForm: '(i)nventory',
-        help: "Show the player's inventory.",
-        handler: game.handleContextInventory.bind(game)
-      },
-      M: {
-        longForm: '(M)essage history',
-        help: '',
-        handler: game.handleContextMessageHistory.bind(game)
-      },
+      c: contextCharacterSheet,
+      i: contextInventory,
+      M: contextMessageHistory,
 
       // other commands
       t: {
@@ -42,26 +51,9 @@ module.exports = function commands(game) {
     },
     inventory: {
       // context switchers
-      m: {
-        longForm: '(m)ap',
-        help: '',
-        handler: game.handleContextMap.bind(game)
-      },
-      c: {
-        longForm: '(c)haracter sheet',
-        help: '',
-        handler: game.handleContextCharacterSheet.bind(game)
-      },
-      i: {
-        longForm: '(i)nventory',
-        help: '',
-        handler: game.handleContextInventory.bind(game)
-      },
-      M: {
-        longForm: '(M)essage history',
-        help: '',
-        handler: game.handleContextMessageHistory.bind(game)
-      },
+      m: contextMap,
+      c: contextCharacterSheet,
+      M: contextMessageHistory,
 
       // other commands
       d: {
@@ -77,49 +69,15 @@ module.exports = function commands(game) {
     },
     characterSheet: {
       // context switchers
-      m: {
-        longForm: '(m)ap',
-        help: '',
-        handler: game.handleContextMap.bind(game)
-      },
-      c: {
-        longForm: '(c)haracter sheet',
-        help: '',
-        handler: game.handleContextCharacterSheet.bind(game)
-      },
-      i: {
-        longForm: '(i)nventory',
-        help: '',
-        handler: game.handleContextInventory.bind(game)
-      },
-      M: {
-        longForm: '(M)essage history',
-        help: '',
-        handler: game.handleContextMessageHistory.bind(game)
-      },
+      m: contextMap,
+      i: contextInventory,
+      M: contextMessageHistory,
     },
     messageHistory: {
       // context switchers
-      m: {
-        longForm: '(m)ap',
-        help: '',
-        handler: game.handleContextMap.bind(game)
-      },
-      c: {
-        longForm: '(c)haracter sheet',
-        help: '',
-        handler: game.handleContextCharacterSheet.bind(game)
-      },
-      i: {
-        longForm: '(i)nventory',
-        help: '',
-        handler: game.handleContextInventory.bind(game)
-      },
-      M: {
-        longForm: '(M)essage history',
-        help: '',
-        handler: game.handleContextMessageHistory.bind(game)
-      },
+      m: contextMap,
+      c: contextCharacterSheet,
+      i: contextInventory,
     },
   }
 }

@@ -132,7 +132,7 @@ module.exports = class Game {
 
   getCreatureAc(creature) {
     var armor = creature.wearing
-    var dexMod = helpers.calculateAttributeMod(creature.attributes.dex)
+    var dexMod = helpers.calculateAttributeMod(creature.dex)
     var total = 0
     total += creature.baseAc
     if (armor) {
@@ -158,14 +158,15 @@ module.exports = class Game {
     })
     attributeTotal = Math.floor(attributeTotal/weapon.apAttributes.length)
     
-    netCost += weapon.apThreshold - attributeTotal
+    netCost -= attributeTotal
     if (netCost < weapon.apCostMin) {netCost = weapon.apCostMin}
+    if (netCost > weapon.apCostMax) {netCost = weapon.apCostMax}
     
     return netCost
   }
 
   getAttributeMod(creature, attributeStr) {
-    const attribute = creature.attributes[attributeStr]
+    const attribute = creature[attributeStr]
     return Math.floor((attribute - 10)/2)
   }
 
@@ -233,8 +234,8 @@ module.exports = class Game {
 
   rollInitiative(creature) {
     return helpers.diceRoll(1, 20)
-      + helpers.calculateAttributeMod(creature.attributes.dex)
-      + helpers.calculateAttributeMod(creature.attributes.wis)
+      + helpers.calculateAttributeMod(creature.dex)
+      + helpers.calculateAttributeMod(creature.wis)
   }
 
 
@@ -246,7 +247,7 @@ module.exports = class Game {
     const hitNatural = helpers.diceRoll(1, 20)
     const crit = hitNatural >= weapon.critRange
     
-    const hitBonus = weapon.hitBonus + helpers.calculateAttributeMod(attacker.attributes[weapon.hitAttribute])
+    const hitBonus = weapon.hitBonus + helpers.calculateAttributeMod(attacker[weapon.hitAttribute])
     const playerBonus = attacker.id === 'player' ? 2 : 0
     const hit = hitNatural + hitBonus + playerBonus
   
@@ -257,7 +258,7 @@ module.exports = class Game {
     const weapon = attacker.wielding
     // const weapon = this.getItem(attacker.wielding)
     const critMultiplier = didCrit ? weapon.critMult : 1
-    const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker.attributes[weapon.damAttribute])
+    const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker[weapon.damAttribute])
     const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
     const damage = 
       (dice + damageBonus) 

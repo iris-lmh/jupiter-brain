@@ -2,15 +2,14 @@ name: Android
 inherits: creature
 level: 2
 hitDie: 4
-attributes:
-  str: 8
-  dex: 8
-  con: 10
-  int: 6
-  wis: 8
-  cha: 8
+str: 8
+dex: 8
+con: 10
+int: 6
+wis: 8
+cha: 8
 apMax: 5
 ap: 5
 apRegen: 5
 wielding: weapon-knife
-loot: [loot-weapons-basic]
+loot: [loot-weapons-basic,loot-consumables-basic]

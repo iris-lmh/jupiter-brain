@@ -3,12 +3,11 @@ remainsName: remains
 inherits: creature
 level: 5
 hitDie: 10
-attributes:
-  str: 12
-  dex: 14
-  con: 16
-  int: 20
-  wis: 10
-  cha: 8
+str: 12
+dex: 14
+con: 16
+int: 20
+wis: 10
+cha: 8
 wielding: weapon-nanite-swarm
-loot: [loot-avatar]
+loot: [loot-avatar,loot-consumables-basic]

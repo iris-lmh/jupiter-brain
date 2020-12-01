@@ -68,11 +68,11 @@ const helpers = {
 
   rollHealth(creature) {
     if (creature.id == 'player') {
-      return ( creature.hitDie + creature.level * this.calculateAttributeMod(creature.attributes.con) )
+      return ( creature.hitDie + creature.level * this.calculateAttributeMod(creature.con) )
     } else {
       var hp = this.diceRoll(creature.level, creature.hitDie)
       if (hp < creature.level * creature.hitDie / 2) {hp = creature.level * creature.hitDie / 2}
-      hp +=  creature.level * this.calculateAttributeMod(creature.attributes.con)
+      hp +=  creature.level * this.calculateAttributeMod(creature.con)
       return hp
     }
   },

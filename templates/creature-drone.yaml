@@ -14,3 +14,4 @@ loot: [loot-weapons-basic,loot-consumables-basic]
 apMax: 5
 ap: 5
 apRegen: 5
+expValue: 5

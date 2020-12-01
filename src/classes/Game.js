@@ -294,8 +294,21 @@ module.exports = class Game {
       'con'
     ]
     const attributeName = attributes[index]
-    player[attributeName] += 1
-    this.addMessage(`${attributeName.toUpperCase()} increased.`)
+    if (player.exp >= player.expCost) {
+      const hpPercentage = player.hp / player.hpMax
+      player.exp -= player.expCost
+      player.level += 1
+      player[attributeName] += 1
+      player.expCost = Math.floor(player.expCost * 1.618)
+      
+      player.hpMax = Math.floor(player.hpMax * 1.618) + player.level * helpers.calculateAttributeMod(player.con)
+      player.hp = Math.floor(player.hpMax * hpPercentage)
+      this.addMessage(`${attributeName.toUpperCase()} increased.`)
+
+    }
+    else {
+      this.addMessage('Not enough EXP.')
+    }
   }
 
   handleGrabItem(commandSuffix) {
@@ -416,6 +429,9 @@ module.exports = class Game {
         } else {
           defender.hp = 0
           this.creatureDie(defenderId)
+          if (attackerId == 'player') {
+            attacker.exp += defender.expValue
+          }
         }
       } else {
         this.addMessage(missMsg + ` ${this.getApCost(attacker)} ap`)

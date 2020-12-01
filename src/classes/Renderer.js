@@ -114,6 +114,8 @@ module.exports = class Renderer {
         : game.getAttributeMod(player, name) 
     }
 
+    lines.push(`LVL: ${player.level} | EXP COST: ${player.expCost}`)
+    lines.push('')
     lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
     lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
     lines.push(`2. CHA: ${player.cha} | ${getModStr('cha')}`)
@@ -131,12 +133,13 @@ module.exports = class Renderer {
   }
 
   _renderSelfLine(game) {
-    return `Self: ${game.getPlayer().hp}/${game.getPlayer().hpMax} hp | ${game.getPlayer().ap}/${game.getPlayer().apMax} ap`
+    const player = game.getPlayer()
+    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.exp} EXP`
   }
 
   _renderTargetLine(game) {
     const target = game.getTargetOf('player')
-    var targetLine = 'No target'
+    var targetLine = 'TARGET: None'
     if (target) {
       let targetStatus = color.cyan('Unhurt')
       const targetHpPercent = target.hp / target.hpMax

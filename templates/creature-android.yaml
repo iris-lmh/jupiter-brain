@@ -13,3 +13,4 @@ ap: 5
 apRegen: 5
 wielding: weapon-knife
 loot: [loot-weapons-basic,loot-consumables-basic]
+expValue: 8

@@ -20,5 +20,5 @@ apMax: 6
 apRegen: 5
 inventory: []
 loot: null
-expValue: 0
+expValue: 5
 nanites: 0

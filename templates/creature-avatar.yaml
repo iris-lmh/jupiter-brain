@@ -11,3 +11,4 @@ wis: 10
 cha: 8
 wielding: weapon-nanite-swarm
 loot: [loot-avatar,loot-consumables-basic]
+expValue: 55

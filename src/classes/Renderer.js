@@ -40,32 +40,22 @@ module.exports = class Renderer {
   _renderCommands(game) {
     const exits = game.getCurrentRoom().exits.map(exit => {
       if (exit === 'n') {
-        return '(n)orth'
+        return color.whiteBg(color.black('n')) + 'orth'
       }
       else if (exit === 's') {
-        return '(s)outh'
+        return color.whiteBg(color.black('s')) + 'outh'
       }
       else if (exit === 'e') {
-        return '(e)ast'
+        return color.whiteBg(color.black('e')) + 'ast'
       }
       else if (exit === 'w') {
-        return '(w)est'
+        return color.whiteBg(color.black('w')) + 'est'
       }
     })
-    const commands = [
-      '(t)arget',
-      '(a)ttack',
-      // 'm',
-      '(l)ook',
-      '(g)rab',
-      '(d)rop',
-      'e(q)uip',
-      '(i)nventory',
-      '(c)haracter',
-      // 'c',
-      // 'S',
-      '?'
-    ]
+    const commands = []
+    _.forOwn(game.commands[game.state.uiContext], (command, key) => {
+      commands.push(command.longForm.replace(`(${key})`, color.whiteBg(color.black(key))))
+    })
     const lines = [
       `\nCOMMANDS: ${exits.concat(commands).join(', ')}`
     ]
@@ -195,14 +185,6 @@ module.exports = class Renderer {
       lines.push(this._renderMessageHistory(game))
     }
     
-    // lines.push('')
-    // if (game.state.messages.length) {
-    //   lines.push(game.state.messages.join('\n'))
-    //   lines.push('')
-    // }
-
-    // lines.push(`${this._renderSelfLine(game)} // ${this._renderTargetLine(game)}`)
-
     lines.push(this._renderCommands(game))
 
     lines.push(prompt)

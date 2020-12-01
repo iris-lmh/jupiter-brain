@@ -29,6 +29,9 @@ module.exports = {
   redBg: function(str) {
     return `\x1b[41m${str}\x1b[0m`
   },
+  whiteBg: function(str) {
+    return `\x1b[47m${str}\x1b[0m`
+  },
   reversed: function (str) {
     return `\x1b[7m${str}\x1b[0m`
   }

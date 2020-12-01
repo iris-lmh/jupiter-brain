@@ -1,0 +1,7 @@
+weights:
+  itemType:
+    consumable-medhypo: 100
+  itemCount:
+    - 16
+    - 4
+    - 1

@@ -1,0 +1,6 @@
+name: Consumable
+inehrits: item
+subtype: consumable
+usable: true
+apCostBase: 2
+bonus: 0

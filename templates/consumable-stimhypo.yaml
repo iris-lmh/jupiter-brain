@@ -1,0 +1,7 @@
+name: StimHypo
+inherits: consumable
+onUse: onUseStimHypo
+diceCount: 2
+diceSize: 4
+bonus: 2
+apCostBase: 0

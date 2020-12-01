@@ -30,8 +30,12 @@ module.exports = class Game {
     this.commands = new commands(this)
 
     this.state.map.generateCells()
-    this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
-    this.addCreature('creature-android', this.state.map.startX, this.state.map.startY)
+    const player = this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
+    const medHypo = this.addItem('consumable-medhypo')
+    this.creatureGrabItem(player.id, medHypo.id)
+    const stimhypo = this.addItem('consumable-stimhypo')
+    const android = this.addCreature('creature-android', this.state.map.startX, this.state.map.startY)
+    this.creatureGrabItem(player.id, stimhypo.id)
     this.spawnCreatures()
   }
   
@@ -397,11 +401,21 @@ module.exports = class Game {
           this.creatureDie(defenderId)
         }
       } else {
-        this.addMessage(missMsg)
+        this.addMessage(missMsg + ` ${this.getApCost(attacker)} ap`)
       }
     }
   }
 
+  handleUse(commandSuffix){
+    const index = commandSuffix
+    if (this.state.uiContext === 'inventory') {
+      const player = this.getPlayer()
+      const item = player.inventory[index]
+      const script = this.loader.loadScript(item.onUse)
+      this.addMessage(`You use the ${item.name}.`)
+      script(this, helpers, item)
+    }
+  }
   handleLook() {
     const room = this.getCurrentRoom()
     this.addMessage(room.desc)

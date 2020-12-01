@@ -3,6 +3,8 @@ inherits: entity
 type: item
 wearable: false
 wieldable: false
+usable: false
+onUse: null
 acBonus: 0
 maxDex: 0
 attackDesc: attack

@@ -65,6 +65,11 @@ module.exports = function commands(game) {
         longForm: 'e(q)uip',
         help: '',
         handler: game.handleEquipItem.bind(game)
+      },
+      u: {
+        longForm: '(u)se',
+        help: '',
+        handler: game.handleUse.bind(game)
       }
     },
     characterSheet: {

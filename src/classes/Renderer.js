@@ -107,14 +107,21 @@ module.exports = class Renderer {
   _renderCharacterSheet(game) {
     const lines = []
     const player = game.getPlayer()
-    lines.push(`INT: ${player.int}`)
-    lines.push(`WIS: ${player.wis}`)
-    lines.push(`CHA: ${player.cha}`)
-    lines.push(`STR: ${player.str}`)
-    lines.push(`DEX: ${player.dex}`)
-    lines.push(`CON: ${player.con}`)
+
+    const getModStr = function(name) {
+      return game.getAttributeMod(player, name) >= 0 
+        ? '+' + game.getAttributeMod(player, name) 
+        : game.getAttributeMod(player, name) 
+    }
+
+    lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
+    lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
+    lines.push(`2. CHA: ${player.cha} | ${getModStr('cha')}`)
+    lines.push(`3. STR: ${player.str} | ${getModStr('str')}`)
+    lines.push(`4. DEX: ${player.dex} | ${getModStr('dex')}`)
+    lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
     lines.push('')
-    lines.push(` AC: ${game.getCreatureAc(player)}`)
+    lines.push(`AC: ${game.getCreatureAc(player)}`)
     return lines.join('\n')
   }
 

@@ -77,6 +77,13 @@ module.exports = function commands(game) {
       m: contextMap,
       i: contextInventory,
       M: contextMessageHistory,
+
+      // other commands
+      i: {
+        longForm: '(i)ncrease attribute',
+        help: '',
+        handler: game.handleIncreaseAttribute.bind(game)
+      }
     },
     messageHistory: {
       // context switchers

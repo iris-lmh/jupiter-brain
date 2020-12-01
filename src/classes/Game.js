@@ -282,6 +282,22 @@ module.exports = class Game {
 
   // HANDLERS
 
+  handleIncreaseAttribute(commandSuffix) {
+    const index = commandSuffix
+    const player = this.getPlayer()
+    const attributes = [
+      'int',
+      'wis',
+      'cha',
+      'str',
+      'dex',
+      'con'
+    ]
+    const attributeName = attributes[index]
+    player[attributeName] += 1
+    this.addMessage(`${attributeName.toUpperCase()} increased.`)
+  }
+
   handleGrabItem(commandSuffix) {
     const index = commandSuffix
     const player = this.getPlayer()

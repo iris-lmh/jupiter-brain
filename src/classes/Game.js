@@ -506,6 +506,12 @@ module.exports = class Game {
         creature.wielding.stored = true
         this.state.items.push(creature.wielding)
       }
+      if (creature.wearing) {
+        const hydrated = hydrateEntity(this.loader, creature.wearing)
+        creature.wearing = hydrated
+        creature.wearing.stored = true
+        this.state.items.push(creature.wearing)
+      }
       creature.inventory.forEach((item, i)=> {
         const hydrated = hydrateEntity(this.loader, item)
         hydrated.stored = true

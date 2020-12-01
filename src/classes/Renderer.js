@@ -107,14 +107,14 @@ module.exports = class Renderer {
   _renderCharacterSheet(game) {
     const lines = []
     const player = game.getPlayer()
-    lines.push(`LVL: ${player.level}`)
     lines.push(`INT: ${player.int}`)
     lines.push(`WIS: ${player.wis}`)
     lines.push(`CHA: ${player.cha}`)
     lines.push(`STR: ${player.str}`)
     lines.push(`DEX: ${player.dex}`)
     lines.push(`CON: ${player.con}`)
-    lines.push(` AC: ${game.getCreatureAc(player.id)}`)
+    lines.push('')
+    lines.push(` AC: ${game.getCreatureAc(player)}`)
     return lines.join('\n')
   }
 

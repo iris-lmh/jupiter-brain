@@ -4,7 +4,7 @@ inherits: creature
 level: 1
 hitDie: 8
 wielding: weapon-knife
-# wearing: armor-ballistic-vest
+wearing: armor-ballistic-vest
 apMax: 10
 ap: 10
 apRegen: 10

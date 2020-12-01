@@ -11,8 +11,9 @@ hitAttribute: dex
 damAttribute: str
 critRange: 20
 critMult: 2
-apCostBase: 6
+apCostBase: 5
 apCostMin: 2
+apCostMax: 10
 apThreshold: 10
 apAttributes:
   - dex

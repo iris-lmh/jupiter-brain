@@ -394,7 +394,7 @@ module.exports = class Game {
         : `The ${attacker.name} misses (${hit.roll}) you.`
       
       if (hit.roll > this.getCreatureAc(defender)) {
-        this.addMessage(hitMsg)
+        this.addMessage(hitMsg + ` ${this.getApCost(attacker)} ap`)
         if (defender.hp - damage > 0) {
           defender.hp -= damage
         } else {

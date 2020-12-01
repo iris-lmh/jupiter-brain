@@ -56,6 +56,7 @@ module.exports = class Renderer {
     _.forOwn(game.commands[game.state.uiContext], (command, key) => {
       commands.push(command.longForm.replace(`(${key})`, color.whiteBg(color.black(key))))
     })
+    commands.push(color.whiteBg(color.black('?')))
     const lines = [
       `\nCOMMANDS: ${exits.concat(commands).join(', ')}`
     ]

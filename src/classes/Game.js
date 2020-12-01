@@ -441,11 +441,16 @@ module.exports = class Game {
     const player = this.getPlayer()
     const prefix = input[0]
     const suffix = input.slice(1)
-    if (suffix == '?') {
-      const helpMsg = commandList[prefix].help
-      this.addMessage(helpMsg)
-    } else if (input && this.getPlayer().hp > 0) {
-      if (this.state.uiContext === 'map' && 'nsew'.includes(prefix)) {
+    // if (suffix == '?') {
+    //   const helpMsg = commandList[prefix].help
+    //   this.addMessage(helpMsg)
+    // } else 
+    if (input && this.getPlayer().hp > 0) {
+      if (this.commands[this.state.uiContext][prefix] && suffix == '?') {
+        const helpMsg = this.commands[this.state.uiContext][prefix].help
+        this.addMessage(helpMsg)
+      } 
+      else if (this.state.uiContext === 'map' && 'nsew'.includes(prefix)) {
         this.handleMove(prefix)
       }
       else if (this.commands[this.state.uiContext][prefix]) {

@@ -3,6 +3,7 @@ const _ = require('lodash')
 const helpers = require('../helpers')
 const color = require('../color')
 const commandList = require('../command-list.json')
+const commands = require('../commands.js')
 
 const Loader = require('./Loader')
 const hydrateEntity = require('./hydrateEntity')
@@ -26,130 +27,8 @@ module.exports = class Game {
       initiative: [],
     }
 
-    this.commands = {
-      map: {
-        // context switchers
-        c: {
-          longForm: '(c)haracter sheet',
-          help: '',
-          handler: this.handleContextCharacterSheet.bind(this)
-        },
-        i: {
-          longForm: '(i)nventory',
-          help: '',
-          handler: this.handleContextInventory.bind(this)
-        },
-        M: {
-          longForm: '(M)essage history',
-          help: '',
-          handler: this.handleContextMessageHistory.bind(this)
-        },
+    this.commands = new commands(this)
 
-        // other commands
-        t: {
-          longForm: '(t)arget',
-          help: '',
-          handler: this.handleTarget.bind(this)
-        },
-        a: {
-          longForm: '(a)ttack',
-          help: '',
-          handler: this.handleAttack.bind(this)
-        },
-        l: {
-          longForm: '(l)ook',
-          help: '',
-          handler: this.handleLook.bind(this)
-        },
-        g: {
-          longForm: '(g)rab item',
-          help: '',
-          handler: this.handleGrabItem.bind(this)
-        },
-      },
-      inventory: {
-        // context switchers
-        m: {
-          longForm: '(m)ap',
-          help: '',
-          handler: this.handleContextMap.bind(this)
-        },
-        c: {
-          longForm: '(c)haracter sheet',
-          help: '',
-          handler: this.handleContextCharacterSheet.bind(this)
-        },
-        i: {
-          longForm: '(i)nventory',
-          help: '',
-          handler: this.handleContextInventory.bind(this)
-        },
-        M: {
-          longForm: '(M)essage history',
-          help: '',
-          handler: this.handleContextMessageHistory.bind(this)
-        },
-
-        // other commands
-        d: {
-          longForm: '(d)rop',
-          help: '',
-          handler: this.handleDropItem.bind(this)
-        },
-        q: {
-          longForm: 'e(q)uip',
-          help: '',
-          handler: this.handleEquipItem.bind(this)
-        }
-      },
-      characterSheet: {
-        // context switchers
-        m: {
-          longForm: '(m)ap',
-          help: '',
-          handler: this.handleContextMap.bind(this)
-        },
-        c: {
-          longForm: '(c)haracter sheet',
-          help: '',
-          handler: this.handleContextCharacterSheet.bind(this)
-        },
-        i: {
-          longForm: '(i)nventory',
-          help: '',
-          handler: this.handleContextInventory.bind(this)
-        },
-        M: {
-          longForm: '(M)essage history',
-          help: '',
-          handler: this.handleContextMessageHistory.bind(this)
-        },
-      },
-      messageHistory: {
-        // context switchers
-        m: {
-          longForm: '(m)ap',
-          help: '',
-          handler: this.handleContextMap.bind(this)
-        },
-        c: {
-          longForm: '(c)haracter sheet',
-          help: '',
-          handler: this.handleContextCharacterSheet.bind(this)
-        },
-        i: {
-          longForm: '(i)nventory',
-          help: '',
-          handler: this.handleContextInventory.bind(this)
-        },
-        M: {
-          longForm: '(M)essage history',
-          help: '',
-          handler: this.handleContextMessageHistory.bind(this)
-        },
-      },
-    }
-    
     this.state.map.generateCells()
     this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
     this.addCreature('creature-android', this.state.map.startX, this.state.map.startY)

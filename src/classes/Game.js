@@ -71,6 +71,16 @@ module.exports = class Game {
       this.state.pass = false
     }
   }
+
+  debugSpawnEntity(commandSuffix) {
+    const player = this.getPlayer()
+    this.addEntity(commandSuffix, player.x, player.y)
+  }
+
+  debugAddNanites(commandSuffix) {
+    const player = this.getPlayer()
+    player.nanites += parseInt(commandSuffix)
+  }
   
   processMoveCreature(id, dir) {
     const creature = this.getEntity(id)
@@ -492,7 +502,7 @@ module.exports = class Game {
         this.handleMove(prefix)
       }
       else if (this.commands[this.state.uiContext][prefix]) {
-        this.commands[this.state.uiContext][prefix].handler(suffix)
+        this.commands[this.state.uiContext][prefix].handler.bind(this)(suffix)
       } 
       else {
         this.addMessage('Invalid command: ' + input)

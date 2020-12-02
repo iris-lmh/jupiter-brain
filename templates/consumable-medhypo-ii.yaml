@@ -1,6 +1,6 @@
-name: MedHypo
+name: MedHypo II
 inherits: consumable
 onUse: onUseMedHypo
-diceCount: 1
+diceCount: 2
 diceSize: 4
-bonus: 1
+bonus: 2

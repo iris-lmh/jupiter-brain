@@ -1,0 +1,6 @@
+name: MedHypo I
+inherits: consumable
+onUse: onUseMedHypo
+diceCount: 1
+diceSize: 4
+bonus: 1

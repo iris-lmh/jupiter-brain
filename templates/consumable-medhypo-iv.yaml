@@ -1,0 +1,6 @@
+name: MedHypo IV
+inherits: consumable
+onUse: onUseMedHypo
+diceCount: 4
+diceSize: 4
+bonus: 4

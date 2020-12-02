@@ -13,4 +13,4 @@ ap: 5
 apRegen: 5
 wielding: weapon-knife
 loot: [loot-gear-basic,loot-consumables-basic]
-expValue: 8
+naniteValue: 8

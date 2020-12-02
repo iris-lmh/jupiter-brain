@@ -133,7 +133,7 @@ module.exports = class Renderer {
 
   _renderSelfLine(game) {
     const player = game.getPlayer()
-    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.exp} NANITES`
+    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.nanites} NANITES`
   }
 
   _renderTargetLine(game) {

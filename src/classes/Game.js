@@ -443,7 +443,8 @@ module.exports = class Game {
           defender.hp = 0
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
-            attacker.nanites += defender.expValue
+            console.log(defender.naniteValue)
+            attacker.nanites += defender.naniteValue
           }
         }
       } else {

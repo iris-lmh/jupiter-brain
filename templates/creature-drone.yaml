@@ -14,4 +14,4 @@ loot: [loot-gear-basic,loot-consumables-basic]
 apMax: 5
 ap: 5
 apRegen: 5
-expValue: 5
+naniteValue: 5

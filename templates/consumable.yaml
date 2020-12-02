@@ -1,5 +1,5 @@
 name: Consumable
-inehrits: item
+inherits: item
 subtype: consumable
 usable: true
 apCostBase: 2

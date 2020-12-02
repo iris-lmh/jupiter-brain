@@ -20,8 +20,6 @@ module.exports = class Game {
       pass: false,
       map: new Map(this.loader, 'map'),
       rooms: [],
-      creatures: [],
-      items: [],
       entities: [],
       currentRoomId: null,
       initiative: [],
@@ -30,12 +28,14 @@ module.exports = class Game {
     this.commands = new commands(this)
 
     this.state.map.generateCells()
-    const player = this.addCreature('creature-player', this.state.map.startX, this.state.map.startY)
-    const medHypo = this.addItem('consumable-medhypo')
+    const player = this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
+    const medHypo = this.addEntity('consumable-medhypo')
     this.creatureGrabItem(player.id, medHypo.id)
-    const stimhypo = this.addItem('consumable-stimhypo')
-    const android = this.addCreature('creature-android', this.state.map.startX, this.state.map.startY)
+    const stimhypo = this.addEntity('consumable-stimhypo')
     this.creatureGrabItem(player.id, stimhypo.id)
+    const android = this.addEntity('creature-drone', this.state.map.startX, this.state.map.startY)
+    this.addEntity('consumable-medhypo', this.state.map.startX, this.state.map.startY)
+    this.addEntity('consumable-stimhypo', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
   }
   
@@ -56,7 +56,7 @@ module.exports = class Game {
   
   tick() {
     const player = this.getPlayer()
-    this.getNearbyCreaturesWithout('player').forEach(creature => {
+    this.getNearbyEntitiesWithout('player').forEach(creature => {
       if (creature.hp > 0 && player.hp > 0) {
         const weapon = creature.wielding
         while (creature.ap > 0 && creature.ap >= weapon.apCost) {
@@ -77,7 +77,7 @@ module.exports = class Game {
   }
   
   processMoveCreature(id, dir) {
-    const creature = this.getCreature(id)
+    const creature = this.getEntity(id)
     switch(dir) {
       case 'n':
         creature.y--
@@ -109,7 +109,7 @@ module.exports = class Game {
         const count = helpers.weightedRoll(roomCountWeights, mapCountWeights)
         for (var i=0; i<count; i++) {
           const type = helpers.weightedRoll(roomTypeWeights, mapTypeWeights)
-          this.addCreature(type, cell.x, cell.y)
+          this.addEntity(type, cell.x, cell.y)
         }
       }
     })
@@ -119,18 +119,26 @@ module.exports = class Game {
   // GETTERS
 
   getPlayer() {
-    return this.getCreature('player')
+    return this.getEntity('player')
   }
 
-  getCreature(id) {
-    return _.find(this.state.creatures, creature => creature.id == id)
+  // getCreature(id) {
+  //   return _.find(this.state.entities, creature => creature.id == id)
+  // }
+
+  getEntity(id) {
+    return _.find(this.state.entities, entity => entity.id == id)
   }
 
-  getCreaturesWithout(excludeId) {
-    return _.filter(this.state.creatures, creature => creature.id !== excludeId)
+  // getCreaturesWithout(excludeId) {
+  //   return _.filter(this.state.entities, creature => creature.id !== excludeId)
+  // }
+
+  getEntitiesWithout(excludeId) {
+    return _.filter(this.state.entities, entity => entity.id !== excludeId)
   }
 
-  getCreatureAc(creature) {
+  getAc(creature) {
     var armor = creature.wearing
     var dexMod = helpers.calculateAttributeMod(creature.dex)
     var total = 0
@@ -143,10 +151,6 @@ module.exports = class Game {
     }
     total += dexMod
     return total
-  }
-
-  getItem(id) {
-    return _.find(this.state.items, item => item.id == id)
   }
 
   getApCost(creature) {
@@ -170,29 +174,20 @@ module.exports = class Game {
     return Math.floor((attribute - 10)/2)
   }
 
-  getNearbyCreaturesWithout(excludeId) {
+  getNearbyEntitiesWithout(excludeId) {
     const player = this.getPlayer()
-    return _.filter(this.state.creatures, creature => creature.id !== excludeId && creature.x === player.x && creature.y === player.y)
-  }
-
-  getNearbyItems() {
-    const player = this.getPlayer()
-    return _.filter(this.state.items, item => item.x === player.x && item.y === player.y && !item.stored)
+    return _.filter(this.state.entities, entity => entity.id !== excludeId && entity.x === player.x && entity.y === player.y)
   }
 
   getTargetOf(targeterId) {
-    const targeter = this.getCreature(targeterId)
-    return this.getCreature(targeter.target)
+    const targeter = this.getEntity(targeterId)
+    return this.getEntity(targeter.target)
   }
 
   getFirstValidTargetOf(targeterId) {
-    return _.find(this.getNearbyCreaturesWithout(targeterId), creature => {
+    return _.find(this.getNearbyEntitiesWithout(targeterId), creature => {
       return creature.hp > 0
     })
-  }
-
-  getRoom(id) {
-    return _.find(this.state.rooms, room => room.id == id)
   }
 
   getCurrentRoom() {
@@ -203,15 +198,15 @@ module.exports = class Game {
   // TODO these need to be done with actions. these functions should basically be action processors... right?
 
   creatureGrabItem(creatureId, itemId) {
-    const creature = this.getCreature(creatureId)
-    const item = this.getItem(itemId)
+    const creature = this.getEntity(creatureId)
+    const item = this.getEntity(itemId)
     creature.inventory.push(item)
     item.stored = true
   }
 
   creatureDropItem(creatureId, itemId) {
-    const creature = this.getCreature(creatureId)
-    const item = this.getItem(itemId)
+    const creature = this.getEntity(creatureId)
+    const item = this.getEntity(itemId)
     creature.inventory = _.without(creature.inventory, item)
     item.stored = false
     item.x = creature.x
@@ -219,11 +214,10 @@ module.exports = class Game {
   }
 
   creatureDie(creatureId) {
-    const creature = this.getCreature(creatureId)
+    const creature = this.getEntity(creatureId)
     creature.hp = 0
     creature.dead = true
     creature.inventory.forEach(item => {
-      // this.addMessage(this.getItem(itemId).name)
       this.creatureDropItem(creature.id, item.id)
     })
     const player = this.getPlayer()
@@ -256,7 +250,7 @@ module.exports = class Game {
   
   calculateDamage(attacker, didCrit) {
     const weapon = attacker.wielding
-    // const weapon = this.getItem(attacker.wielding)
+    // const weapon = this.getEntity(attacker.wielding)
     const critMultiplier = didCrit ? weapon.critMult : 1
     const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker[weapon.damAttribute])
     const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
@@ -274,9 +268,9 @@ module.exports = class Game {
     helpers.assert(typeof targetId === 'string' || targetId === null, `expected targetId to be string or null, got ${targetId}`)
 
     if (targetId === undefined) {
-      this.getCreature(targeterId).target = null
+      this.getEntity(targeterId).target = null
     } else {
-      this.getCreature(targeterId).target = targetId
+      this.getEntity(targeterId).target = targetId
     }
   }
 
@@ -314,9 +308,17 @@ module.exports = class Game {
   handleGrabItem(commandSuffix) {
     const index = commandSuffix
     const player = this.getPlayer()
-    const item = this.getNearbyItems()[index]
-    if (!item.stored) {
-      this.creatureGrabItem(player.id, item.id)
+    const entity = this.getNearbyEntitiesWithout('player')[index]
+
+    if (!entity) {
+      this.addMessage('No item found.')
+    }
+    else if (entity.type === 'item' && !entity.stored) {
+      this.creatureGrabItem(player.id, entity.id)
+    }
+    else if (entity.type !== 'item') {
+      console.log(entity)
+      this.addMessage('You cannot grab the ' + entity.type)
     }
     else {
       this.addMessage('No item found.')
@@ -328,7 +330,7 @@ module.exports = class Game {
     const player = this.getPlayer()
     // if (index < player.inventory.length - 1) {
       const itemId = player.inventory[index]
-      const item = this.getItem(itemId)
+      const item = this.getEntity(itemId)
   
       this.creatureDropItem(player.id, itemId)
     // }
@@ -366,13 +368,13 @@ module.exports = class Game {
       const target = this.getFirstValidTargetOf(player.id)
       targetId = this.getFirstValidTargetOf(player.id) ? target.id : null
     } else {
-      if (index + 1 > this.getNearbyCreaturesWithout('player').length) {
+      if (index + 1 > this.getNearbyEntitiesWithout('player').length) {
         this.addMessage(`No such option: ${index}`)
         index = 0
       }
-      targetId = this.getNearbyCreaturesWithout('player')[index].id
+      targetId = this.getNearbyEntitiesWithout('player')[index].id
     }
-    const newTarget = this.getCreature(targetId)
+    const newTarget = this.getEntity(targetId)
     if (newTarget) {
       this.addMessage(`You target the ${newTarget.name}.`)
     } else {
@@ -397,15 +399,15 @@ module.exports = class Game {
     helpers.assert(typeof attackerId === 'string', `expected attackerId to be string, got ${attackerId}`)
     helpers.assert(typeof defenderId === 'string', `expected defenderId to be object, got ${defenderId}`)
 
-    const attacker = this.getCreature(attackerId)
-    const defender = this.getCreature(defenderId)
+    const attacker = this.getEntity(attackerId)
+    const defender = this.getEntity(defenderId)
 
     if (!attacker.dead) {
       helpers.assert(typeof attacker === 'object', `expected attacker to be string, got ${attacker}`)
       helpers.assert(typeof defender === 'object', `expected defender to be object, got ${defender}`)
   
       const weapon = attacker.wielding
-      // const weapon = this.getItem(attacker.wielding)
+      // const weapon = this.getEntity(attacker.wielding)
       const hit = this.calculateHit(attacker, defender)
     
       const damage = this.calculateDamage(attacker, hit.crit)
@@ -422,7 +424,7 @@ module.exports = class Game {
         ? `You miss (${hit.roll}) the ${defender.name}.`
         : `The ${attacker.name} misses (${hit.roll}) you.`
       
-      if (hit.roll > this.getCreatureAc(defender)) {
+      if (hit.roll > this.getAc(defender)) {
         this.addMessage(hitMsg + ` ${this.getApCost(attacker)} ap`)
         if (defender.hp - damage > 0) {
           defender.hp -= damage
@@ -463,10 +465,7 @@ module.exports = class Game {
     const player = this.getPlayer()
     const prefix = input[0]
     const suffix = input.slice(1)
-    // if (suffix == '?') {
-    //   const helpMsg = commandList[prefix].help
-    //   this.addMessage(helpMsg)
-    // } else 
+
     if (input && this.getPlayer().hp > 0) {
       if (this.commands[this.state.uiContext][prefix] && suffix == '?') {
         const helpMsg = this.commands[this.state.uiContext][prefix].help
@@ -525,33 +524,33 @@ module.exports = class Game {
     }
   }
 
-  addCreature(templateName, x, y) {
-    const creature = hydrateEntity(this.loader, templateName, x, y)
-    this.state.creatures.push(creature)
+  addEntity(templateName, x, y) {
+    const entity = hydrateEntity(this.loader, templateName, x, y)
+    this.state.entities.push(entity)
 
-    if (creature.type === 'creature') {
-      creature.hpMax = helpers.rollHealth(creature)
-      creature.hp = creature.hpMax
-      if (creature.wielding) {
-        const hydrated = hydrateEntity(this.loader, creature.wielding)
-        creature.wielding = hydrated
-        creature.wielding.stored = true
-        this.state.items.push(creature.wielding)
+    if (entity.type === 'creature') {
+      entity.hpMax = helpers.rollHealth(entity)
+      entity.hp = entity.hpMax
+      if (entity.wielding) {
+        const hydrated = hydrateEntity(this.loader, entity.wielding)
+        entity.wielding = hydrated
+        entity.wielding.stored = true
+        this.state.entities.push(entity.wielding)
       }
-      if (creature.wearing) {
-        const hydrated = hydrateEntity(this.loader, creature.wearing)
-        creature.wearing = hydrated
-        creature.wearing.stored = true
-        this.state.items.push(creature.wearing)
+      if (entity.wearing) {
+        const hydrated = hydrateEntity(this.loader, entity.wearing)
+        entity.wearing = hydrated
+        entity.wearing.stored = true
+        this.state.entities.push(entity.wearing)
       }
-      creature.inventory.forEach((item, i)=> {
+      entity.inventory.forEach((item, i)=> {
         const hydrated = hydrateEntity(this.loader, item)
         hydrated.stored = true
-        creature.inventory[i] = hydrated
-        this.state.items.push(hydrated)
+        entity.inventory[i] = hydrated
+        this.state.entities.push(hydrated)
       })
-      if (creature.loot && creature.loot.length) {
-        const lootTables = creature.loot.map(tableName => {
+      if (entity.loot && entity.loot.length) {
+        const lootTables = entity.loot.map(tableName => {
           return this.loader.loadTemplate(tableName)
         })
         const counts = lootTables.map(table => {
@@ -563,24 +562,13 @@ module.exports = class Game {
         const count = helpers.weightedRoll(...counts)
         for (var i=0; i<count; i++) {
           const type = helpers.weightedRoll(...types)
-          const item = this.addItem(type)
-          this.creatureGrabItem(creature.id, item.id)
+          const item = this.addEntity(type)
+          this.creatureGrabItem(entity.id, item.id)
         }
   
       }
-    }
-    return creature
-  }
-
-  addItem(templateName, x, y) {
-    const item = hydrateEntity(this.loader, templateName, x, y)
-    this.state.items.push(item)
-    return item
-  }
-
-  addEntity(templateName, x, y) {
-    const entity = hydrateEntity(this.loader, templateName, x, y)
-    this.state.entities.push(entity)
+    } 
     return entity
   }
+
 }

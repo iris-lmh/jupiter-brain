@@ -9,29 +9,39 @@ module.exports = class Renderer {
     const lines = []
     const room = game.getCurrentRoom()
     lines.push(room.desc)
-    const creatures = game.getNearbyCreaturesWithout('player')
-    const items = game.getNearbyItems()
+    const creatures = game.getNearbyEntitiesWithout('player')
+    // const items = game.getNearbyItems()
 
-    if (creatures.length) {
-      lines.push("\nCREATURES")
-    }
-    creatures.forEach((creature, i) => {
-      const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
-      if (creature.hp > 0) {
-        lines.push(`  ${i}. There is ${article} ${creature.name}. ${creature.hp} hp`)
-      } 
-      else if (creature.hp <= 0) {
-        lines.push(`  ${i}. There is ${article} ${creature.name} ${creature.remainsName}.`)
-      }
-    })
+    // if (creatures.length) {
+    //   lines.push("\nCREATURES")
+    // }
+    // creatures.forEach((creature, i) => {
+    //   const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
+    //   if (creature.hp > 0) {
+    //     lines.push(`  ${i}. There is ${article} ${creature.name}. ${creature.hp} hp`)
+    //   } 
+    //   else if (creature.hp <= 0) {
+    //     lines.push(`  ${i}. There is ${article} ${creature.name} ${creature.remainsName}.`)
+    //   }
+    // })
 
-    if (items.length) {
-      lines.push("\nITEMS")
-    }
-    game.getNearbyItems().forEach((item, i) => {
-      if (!item.stored) {
-        const article = 'aeiou'.includes(item.name[0].toLowerCase()) ? 'an' : 'a'
-        lines.push(`  ${i}. There is ${article} ${item.name} ${item.id}.`)
+    // if (items.length) {
+    //   lines.push("\nITEMS")
+    // }
+    game.getNearbyEntitiesWithout('player').forEach((entity, i) => {
+      if (!entity.stored) {
+        const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
+        if (entity.type === 'creature') {
+          if (entity.hp > 0) {
+            lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id}. ${entity.hp} hp`)
+          } 
+          else if (entity.hp <= 0) {
+            lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id} ${entity.remainsName}.`)
+          }
+        }
+        else {
+          lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id}.`)
+        }
       }
     })
     return lines.join('\n')

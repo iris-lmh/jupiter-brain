@@ -10,5 +10,5 @@ module.exports = function onUseMedHypo(game, helpers, item) {
 
   // TODO this should belong to a game.removeEntity function or something. Lodash doesnt belong here.
   player.inventory = _.without(player.inventory, item)
-  game.state.items = _.without(game.state.items, item)
+  game.state.entities = _.without(game.state.entities, item)
 }

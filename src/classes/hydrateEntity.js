@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const helpers = require('../helpers')
 
 function inherit(loader, templateName, hierarchy = []) {
   const template = loader.loadTemplate(templateName)

@@ -10,7 +10,7 @@ int: 6
 wis: 8
 cha: 8
 wielding: weapon-knife
-loot: [loot-weapons-basic,loot-consumables-basic]
+loot: [loot-gear-basic,loot-consumables-basic]
 apMax: 5
 ap: 5
 apRegen: 5

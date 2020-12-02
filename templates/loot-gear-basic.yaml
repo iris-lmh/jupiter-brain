@@ -1,0 +1,8 @@
+weights:
+  itemType:
+    weapon-pistol: 4
+    armor-ballistic-vest: 16
+    weapon-knife: 32
+  itemCount:
+    - 16
+    - 1

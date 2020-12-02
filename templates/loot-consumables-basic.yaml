@@ -1,6 +1,7 @@
 weights:
   itemType:
     consumable-medhypo: 100
+    consumable-stimhypo: 50
   itemCount:
     - 16
     - 4

@@ -9,7 +9,12 @@ const rl = readline.createInterface({
 })
 
 function prompt() {
-  console.clear()
+  const debugMode = process.argv[2] === 'debug'
+
+  if (!debugMode) {
+    console.clear()
+  }
+  
   rl.question(renderer.render(game), (input) => {
     game.loop(input)
     prompt()

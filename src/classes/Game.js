@@ -465,18 +465,22 @@ module.exports = class Game {
   handleUse(commandSuffix){
     const index = commandSuffix
     const player = this.getPlayer()
-    if (this.state.uiContext === 'inventory') {
-      const item = player.inventory[index]
+    const context = this.state.uiContext
+    let item
+    if (context === 'inventory') {
+      item = player.inventory[index]
+    } else if (context === 'map') {
+      item = this.getNearbyEntitiesWithout('player')[index]
+    }
+    if (item && item.onUse) {
       const script = this.loader.loadScript(item.onUse)
       this.addMessage(`You use the ${item.name}.`)
       script(this, helpers, item)
     }
-    else if (this.state.uiContext === 'map') {
-      const item = this.getNearbyEntitiesWithout('player')[index]
-      const script = this.loader.loadScript(item.onUse)
-      this.addMessage(`You use the ${item.name}.`)
-      script(this, helpers, item)
+    else {
+      this.addMessage(`You cannot use that.`)
     }
+    // }
   }
   handleLook() {
     const room = this.getCurrentRoom()
@@ -565,13 +569,13 @@ module.exports = class Game {
         const hydrated = hydrateEntity(this.loader, entity.wielding)
         entity.wielding = hydrated
         // entity.wielding.stored = true
-        this.state.entities.push(entity.wielding)
+        // this.state.entities.push(entity.wielding)
       }
       if (entity.wearing) {
         const hydrated = hydrateEntity(this.loader, entity.wearing)
         entity.wearing = hydrated
         // entity.wearing.stored = true
-        this.state.entities.push(entity.wearing)
+        // this.state.entities.push(entity.wearing)
       }
       entity.inventory.forEach((item, i)=> {
         const hydrated = hydrateEntity(this.loader, item)

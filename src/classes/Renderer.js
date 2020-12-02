@@ -56,7 +56,7 @@ module.exports = class Renderer {
   }
 
   _renderMap(game) {
-    const wall = color.white('█')
+    const wall = color.whiteBg(' ')
     const lines = []
     const player = game.getPlayer()
     // const exits = _.filter(game.state.entities, entity => entity.name === 'Exit')

@@ -62,7 +62,7 @@ module.exports = class Game {
         while (creature.ap > 0 && creature.ap >= weapon.apCost) {
           creature.target = 'player'
           creature.ap -= this.getApCost(creature)
-          this.addAction({type: 'attack', attackerId: creature.id, defenderId: creature.target})
+          this.addAction({type: 'attack', entityId: creature.id, defenderId: creature.target})
         }
       }
       creature.ap += creature.apRegen
@@ -201,28 +201,33 @@ module.exports = class Game {
     const creature = this.getEntity(creatureId)
     const item = this.getEntity(itemId)
     creature.inventory.push(item)
-    item.stored = true
+    // item.stored = true
+    this.deleteEntity(item.id)
   }
 
-  creatureDropItem(creatureId, itemId) {
+  creatureDropItem(creatureId, index) {
     const creature = this.getEntity(creatureId)
-    const item = this.getEntity(itemId)
+    const item = creature.inventory[index]
+    // item.stored = false
     creature.inventory = _.without(creature.inventory, item)
-    item.stored = false
+    this.state.entities.push(item)
     item.x = creature.x
     item.y = creature.y
   }
 
   creatureDie(creatureId) {
     const creature = this.getEntity(creatureId)
+    const player = this.getPlayer()
     creature.hp = 0
     creature.dead = true
-    creature.inventory.forEach(item => {
-      this.creatureDropItem(creature.id, item.id)
-    })
-    const player = this.getPlayer()
-    if (creatureId === player.target) {
-      player.target = null
+    if (creatureId !== player.id) {
+      creature.inventory.forEach(item, i => {
+        this.creatureDropItem(creature.id, i)
+      })
+      if (creatureId === player.target) {
+        player.target = null
+      }
+      this.deleteEntity(creatureId)
     }
   }
 
@@ -313,7 +318,7 @@ module.exports = class Game {
     if (!entity) {
       this.addMessage('No item found.')
     }
-    else if (entity.type === 'item' && !entity.stored) {
+    else if (entity.type === 'item') {
       this.creatureGrabItem(player.id, entity.id)
     }
     else if (entity.type !== 'item') {
@@ -329,10 +334,10 @@ module.exports = class Game {
     const index = commandSuffix
     const player = this.getPlayer()
     // if (index < player.inventory.length - 1) {
-      const itemId = player.inventory[index]
-      const item = this.getEntity(itemId)
+      // const itemId = player.inventory[index]
+      // const item = this.getEntity(itemId)
   
-      this.creatureDropItem(player.id, itemId)
+      this.creatureDropItem(player.id, index)
     // }
   }
 
@@ -351,7 +356,7 @@ module.exports = class Game {
   handleMove(commandSuffix) {
     const room = this.getCurrentRoom()
     if (room.exits.includes(commandSuffix)) {
-      this.addAction({type:'move', id: 'player', dir: commandSuffix})
+      this.addAction({type:'move', entityId: 'player', dir: commandSuffix})
       this.setTargetOf('player', null)
     } else {
       this.addMessage('You cannot go that way.')
@@ -392,7 +397,7 @@ module.exports = class Game {
     }
 
     player.ap -= this.getApCost(player)
-    this.addAction({type: 'attack', attackerId: player.id, defenderId: target.id})
+    this.addAction({type: 'attack', entityId: player.id, defenderId: target.id})
   }
 
   processAttack(attackerId, defenderId) {
@@ -402,7 +407,7 @@ module.exports = class Game {
     const attacker = this.getEntity(attackerId)
     const defender = this.getEntity(defenderId)
 
-    if (!attacker.dead) {
+    if (attacker && !attacker.dead) {
       helpers.assert(typeof attacker === 'object', `expected attacker to be string, got ${attacker}`)
       helpers.assert(typeof defender === 'object', `expected defender to be object, got ${defender}`)
   
@@ -492,13 +497,16 @@ module.exports = class Game {
   // ACTIONS
 
   processAction(action) {
-    switch (action.type) {
-      case 'move':
-        this.processMoveCreature(action.id, action.dir)
-        break;
-      case 'attack':
-        this.processAttack(action.attackerId, action.defenderId)
-        break;
+    const entity = this.getEntity(action.entityId)
+    if (entity) {
+      switch (action.type) {
+        case 'move':
+          this.processMoveCreature(action.entityId, action.dir)
+          break;
+        case 'attack':
+          this.processAttack(action.entityId, action.defenderId)
+          break;
+      }
     }
   }
 
@@ -534,18 +542,18 @@ module.exports = class Game {
       if (entity.wielding) {
         const hydrated = hydrateEntity(this.loader, entity.wielding)
         entity.wielding = hydrated
-        entity.wielding.stored = true
+        // entity.wielding.stored = true
         this.state.entities.push(entity.wielding)
       }
       if (entity.wearing) {
         const hydrated = hydrateEntity(this.loader, entity.wearing)
         entity.wearing = hydrated
-        entity.wearing.stored = true
+        // entity.wearing.stored = true
         this.state.entities.push(entity.wearing)
       }
       entity.inventory.forEach((item, i)=> {
         const hydrated = hydrateEntity(this.loader, item)
-        hydrated.stored = true
+        // hydrated.stored = true
         entity.inventory[i] = hydrated
         this.state.entities.push(hydrated)
       })
@@ -569,6 +577,15 @@ module.exports = class Game {
       }
     } 
     return entity
+  }
+
+  deleteEntity (id) {
+    const entity = this.getEntity(id)
+    this.state.entities = _.without(this.state.entities, entity)
+    // this.state.actions = _.filter(this.state.actions, {entityId: })
+    // _.remove(this.state.actions, action => {
+    //   action.entityId === entity.id
+    // })
   }
 
 }

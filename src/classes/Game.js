@@ -2,7 +2,6 @@ const _ = require('lodash')
 
 const helpers = require('../helpers')
 const color = require('../color')
-const commandList = require('../command-list.json')
 const commands = require('../commands.js')
 
 const Loader = require('./Loader')
@@ -566,9 +565,7 @@ module.exports = class Game {
       }
       entity.inventory.forEach((item, i)=> {
         const hydrated = hydrateEntity(this.loader, item)
-        // hydrated.stored = true
         entity.inventory[i] = hydrated
-        this.state.entities.push(hydrated)
       })
       if (entity.loot && entity.loot.length) {
         const lootTables = entity.loot.map(tableName => {

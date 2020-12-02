@@ -9,7 +9,6 @@ module.exports = class Renderer {
     const lines = []
     const room = game.getCurrentRoom()
     lines.push(room.desc)
-    const creatures = game.getNearbyEntitiesWithout('player')
 
     game.getNearbyEntitiesWithout('player').forEach((entity, i) => {
       if (!entity.stored) {

@@ -4,8 +4,8 @@ inherits: creature
 hitDie: 8
 wielding: weapon-knife
 wearing: armor-ballistic-vest
-apMax: 10
-ap: 10
+apMax: 5
+ap: 5
 apRegen: 10
 exp: 0
 naniteCost: 5

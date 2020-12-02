@@ -48,6 +48,16 @@ module.exports = function commands(game) {
         help: '',
         handler: game.handleGrabItem.bind(game)
       },
+      N: {
+        longForm: '(N)ew map',
+        help: '',
+        handler: game.handleNewMap.bind(game)
+      },
+      u: {
+        longForm: '(u)se',
+        help: '',
+        handler: game.handleUse.bind(game)
+      }
     },
     inventory: {
       // context switchers

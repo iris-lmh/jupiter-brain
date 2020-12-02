@@ -1,0 +1,4 @@
+name: Exit
+inherits: item
+subtype: structure
+grabable: false

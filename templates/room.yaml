@@ -4,6 +4,7 @@ type: room
 desc: You are in a plain room.
 icon: x
 creatures: []
+structures: []
 weights:
   neighborType: []
   creatureCount: []

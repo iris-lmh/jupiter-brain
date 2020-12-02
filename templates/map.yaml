@@ -1,7 +1,7 @@
-sizeX: 16
-sizeY: 8
-minRooms: 32
-maxRooms: 64
+sizeX: 10
+sizeY: 5
+minRooms: 16
+maxRooms: 32
 straightness: 8
 weights:
   creatureCount:

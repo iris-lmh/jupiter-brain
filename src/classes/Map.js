@@ -4,14 +4,14 @@ const helpers = require('../helpers')
 const hydrateEntity = require('./hydrateEntity')
 
 module.exports = class Map {
-  constructor(loader, templateName) {
+  constructor(loader, templateName, depth = 1) {
     this.loader = loader
     const template = this.loader.loadTemplate(templateName)
 
-    this.sizeX = template.sizeX || 0
-    this.sizeY = template.sizeY || 0
-    this.minRooms = template.minRooms || 10
-    this.maxRooms = template.maxRooms || 20
+    this.sizeX = template.sizeX + Math.floor(depth/2) || 0
+    this.sizeY = template.sizeY + Math.floor(depth/4) || 0
+    this.minRooms = template.minRooms + depth * 2 || 10
+    this.maxRooms = template.maxRooms + depth * 4 || 20
     this.straightness = template.straightness || 0
     this.weights = template.weights || {
       "creatureCount":[],
@@ -29,6 +29,8 @@ module.exports = class Map {
     this.branchSteps = 0
     this.maxBranchSteps = 1000
     this.attempts = 0
+
+    this.generateCells()
   }
 
   getDirs(diagonal = false) {
@@ -78,7 +80,7 @@ module.exports = class Map {
     helpers.assert((typeof type === 'string')|| type === null, 'typeof type must be string or null')
     helpers.assert(typeof x === 'number', 'typeof x must be number')
     helpers.assert(typeof y === 'number', 'typeof y must be number')
-    return {type: type, x: x, y: y, connections: [], room: null}
+    return {type: type, x: x, y: y, connections: [], structures:[], room: null}
   }
 
   getNeighbors(x, y) {

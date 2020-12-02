@@ -1,0 +1,11 @@
+name: Exit
+inherits: room-chamber
+desc: You are near an exit.
+icon: 'E'
+entities: [structure-exit]
+loot:
+  [default, 0.2]
+weights:
+  neighborType:
+    room-chamber: 1
+    room-corridor: 1

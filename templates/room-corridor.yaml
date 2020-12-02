@@ -1,5 +1,6 @@
 name: Corridor
 inherits: room
+subtype: corridor
 desc: You are in long corridor lit by red emergency lights.
 icon: '•'
 creatures: []

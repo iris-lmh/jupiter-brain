@@ -10,24 +10,7 @@ module.exports = class Renderer {
     const room = game.getCurrentRoom()
     lines.push(room.desc)
     const creatures = game.getNearbyEntitiesWithout('player')
-    // const items = game.getNearbyItems()
 
-    // if (creatures.length) {
-    //   lines.push("\nCREATURES")
-    // }
-    // creatures.forEach((creature, i) => {
-    //   const article = 'aeiou'.includes(creature.name[0].toLowerCase()) ? 'an' : 'a'
-    //   if (creature.hp > 0) {
-    //     lines.push(`  ${i}. There is ${article} ${creature.name}. ${creature.hp} hp`)
-    //   } 
-    //   else if (creature.hp <= 0) {
-    //     lines.push(`  ${i}. There is ${article} ${creature.name} ${creature.remainsName}.`)
-    //   }
-    // })
-
-    // if (items.length) {
-    //   lines.push("\nITEMS")
-    // }
     game.getNearbyEntitiesWithout('player').forEach((entity, i) => {
       if (!entity.stored) {
         const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
@@ -77,6 +60,9 @@ module.exports = class Renderer {
     const wall = color.white('█')
     const lines = []
     const player = game.getPlayer()
+    // const exits = _.filter(game.state.entities, entity => entity.name === 'Exit')
+    // console.log(exits)
+    lines.push(`DEPTH: ${game.state.depth}\n`)
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
       lines.push(wall)
@@ -86,8 +72,11 @@ module.exports = class Renderer {
         if (cell.type) {
           icon = ' '
           if (cell.x == player.x && cell.y == player.y) {
-            icon = color.cyan('@')
-          } 
+            icon = color.cyanBg('@')
+          }
+          else if (cell.structures.includes('exit')) {
+            icon = color.greenBg('X')
+          }
           else {
             icon = cell.room.icon
           }
@@ -124,7 +113,7 @@ module.exports = class Renderer {
         : game.getAttributeMod(player, name) 
     }
 
-    lines.push(`LVL: ${player.level} | EXP COST: ${player.expCost}`)
+    lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
     lines.push('')
     lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
     lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
@@ -133,7 +122,7 @@ module.exports = class Renderer {
     lines.push(`4. DEX: ${player.dex} | ${getModStr('dex')}`)
     lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
     lines.push('')
-    lines.push(`AC: ${game.getCreatureAc(player)}`)
+    lines.push(`AC: ${game.getAc(player)}`)
     return lines.join('\n')
   }
 
@@ -144,7 +133,7 @@ module.exports = class Renderer {
 
   _renderSelfLine(game) {
     const player = game.getPlayer()
-    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.exp} EXP`
+    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.exp} NANITES`
   }
 
   _renderTargetLine(game) {
@@ -184,8 +173,8 @@ module.exports = class Renderer {
         lines.push(game.state.messages.join('\n'))
         lines.push('')
       }
-
-      lines.push(`${this._renderSelfLine(game)} // ${this._renderTargetLine(game)}`)
+      lines.push(this._renderTargetLine(game))
+      lines.push(`${this._renderSelfLine(game)}`)
     } 
     else if (game.state.uiContext === 'inventory') {
       lines.push('INVENTORY')

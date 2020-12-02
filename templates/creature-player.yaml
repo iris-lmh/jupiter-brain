@@ -8,4 +8,4 @@ apMax: 10
 ap: 10
 apRegen: 10
 exp: 0
-expCost: 5
+naniteCost: 5

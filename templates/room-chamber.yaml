@@ -1,5 +1,6 @@
 name: Chamber
 inherits: room
+subtype: chamber
 desc: You are in a big ole chamber.
 icon: '?'
 creatures: []

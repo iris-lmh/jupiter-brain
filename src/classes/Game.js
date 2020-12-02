@@ -23,20 +23,17 @@ module.exports = class Game {
       entities: [],
       currentRoomId: null,
       initiative: [],
+      depth: 1
     }
 
     this.commands = new commands(this)
 
-    this.state.map.generateCells()
+    // this.state.map.generateCells()
     const player = this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
     const medHypo = this.addEntity('consumable-medhypo')
     this.creatureGrabItem(player.id, medHypo.id)
-    const stimhypo = this.addEntity('consumable-stimhypo')
-    this.creatureGrabItem(player.id, stimhypo.id)
-    const android = this.addEntity('creature-drone', this.state.map.startX, this.state.map.startY)
-    this.addEntity('consumable-medhypo', this.state.map.startX, this.state.map.startY)
-    this.addEntity('consumable-stimhypo', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
+    this.spawnLoot()
   }
   
   loop(input) {
@@ -115,6 +112,12 @@ module.exports = class Game {
     })
   }
 
+  spawnLoot() {
+    const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
+    const randomCell = _.sample(cellsWithRooms)
+    const exit = this.addEntity('structure-exit', randomCell.x, randomCell.y)
+    randomCell.structures.push('exit')
+  }
 
   // GETTERS
 
@@ -122,17 +125,9 @@ module.exports = class Game {
     return this.getEntity('player')
   }
 
-  // getCreature(id) {
-  //   return _.find(this.state.entities, creature => creature.id == id)
-  // }
-
   getEntity(id) {
     return _.find(this.state.entities, entity => entity.id == id)
   }
-
-  // getCreaturesWithout(excludeId) {
-  //   return _.filter(this.state.entities, creature => creature.id !== excludeId)
-  // }
 
   getEntitiesWithout(excludeId) {
     return _.filter(this.state.entities, entity => entity.id !== excludeId)
@@ -221,7 +216,7 @@ module.exports = class Game {
     creature.hp = 0
     creature.dead = true
     if (creatureId !== player.id) {
-      creature.inventory.forEach(item, i => {
+      creature.inventory.forEach((item, i) => {
         this.creatureDropItem(creature.id, i)
       })
       if (creatureId === player.target) {
@@ -281,6 +276,19 @@ module.exports = class Game {
 
   // HANDLERS
 
+  handleNewMap() {
+    this.state.map = new Map(this.loader, 'map', this.state.depth)
+    this.getEntitiesWithout('player').forEach(entity => {
+      this.deleteEntity(entity.id)
+    })
+    this.spawnCreatures()
+    this.spawnLoot()
+    const player = this.getPlayer()
+    player.x = this.state.map.startX
+    player.y = this.state.map.startY
+    this.state.depth += 1
+  }
+
   handleIncreaseAttribute(commandSuffix) {
     const index = commandSuffix
     const player = this.getPlayer()
@@ -293,12 +301,12 @@ module.exports = class Game {
       'con'
     ]
     const attributeName = attributes[index]
-    if (player.exp >= player.expCost) {
+    if (player.nanites >= player.naniteCost) {
       const hpPercentage = player.hp / player.hpMax
-      player.exp -= player.expCost
+      player.nanites -= player.naniteCost
       player.level += 1
       player[attributeName] += 1
-      player.expCost = Math.floor(player.expCost * 1.618)
+      player.naniteCost = Math.floor(player.naniteCost * 1.618)
       
       player.hpMax = Math.floor(player.hpMax * 1.618) + player.level * helpers.calculateAttributeMod(player.con)
       player.hp = Math.floor(player.hpMax * hpPercentage)
@@ -318,12 +326,11 @@ module.exports = class Game {
     if (!entity) {
       this.addMessage('No item found.')
     }
-    else if (entity.type === 'item') {
+    else if (entity.type === 'item' && entity.grabable) {
       this.creatureGrabItem(player.id, entity.id)
     }
-    else if (entity.type !== 'item') {
-      console.log(entity)
-      this.addMessage('You cannot grab the ' + entity.type)
+    else if (entity.type !== 'item' || !entity.grabable) {
+      this.addMessage(`You cannot grab the ${entity.name}.`)
     }
     else {
       this.addMessage('No item found.')
@@ -437,7 +444,7 @@ module.exports = class Game {
           defender.hp = 0
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
-            attacker.exp += defender.expValue
+            attacker.nanites += defender.expValue
           }
         }
       } else {
@@ -448,11 +455,16 @@ module.exports = class Game {
 
   handleUse(commandSuffix){
     const index = commandSuffix
+    const player = this.getPlayer()
     if (this.state.uiContext === 'inventory') {
-      const player = this.getPlayer()
       const item = player.inventory[index]
       const script = this.loader.loadScript(item.onUse)
       this.addMessage(`You use the ${item.name}.`)
+      script(this, helpers, item)
+    }
+    else if (this.state.uiContext === 'map') {
+      const item = this.getNearbyEntitiesWithout('player')[index]
+      const script = this.loader.loadScript(item.onUse)
       script(this, helpers, item)
     }
   }

@@ -1,0 +1,3 @@
+name: Exit
+inherits: structure
+onUse: onUseExit

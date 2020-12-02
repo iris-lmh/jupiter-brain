@@ -203,11 +203,10 @@ module.exports = class Game {
   creatureDropItem(creatureId, index) {
     const creature = this.getEntity(creatureId)
     const item = creature.inventory[index]
-    // item.stored = false
-    creature.inventory = _.without(creature.inventory, item)
-    this.state.entities.push(item)
     item.x = creature.x
     item.y = creature.y
+    this.state.entities.push(item)
+    creature.inventory = _.without(creature.inventory, item)
   }
 
   creatureDie(creatureId) {
@@ -217,7 +216,7 @@ module.exports = class Game {
     creature.dead = true
     if (creatureId !== player.id) {
       creature.inventory.forEach((item, i) => {
-        this.creatureDropItem(creature.id, i)
+        this.creatureDropItem(creature.id, 0)
       })
       if (creatureId === player.target) {
         player.target = null
@@ -465,6 +464,7 @@ module.exports = class Game {
     else if (this.state.uiContext === 'map') {
       const item = this.getNearbyEntitiesWithout('player')[index]
       const script = this.loader.loadScript(item.onUse)
+      this.addMessage(`You use the ${item.name}.`)
       script(this, helpers, item)
     }
   }

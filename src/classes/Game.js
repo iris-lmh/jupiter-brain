@@ -29,7 +29,6 @@ module.exports = class Game {
 
     // this.state.map.generateCells()
     const player = this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
-    const medHypo = this.addEntity('consumable-medhypo')
     this.creatureGrabItem(player.id, medHypo.id)
     this.spawnCreatures()
     this.spawnLoot()

@@ -14,17 +14,21 @@ term.write(renderer.render(game))
 let input = ''
 
 term.onKey(e => {
-  input += e.key
+  
   if (e.key === '\r') {
     term.clear()
     game.loop(input)
     input = ''
-    term.write(renderer.render(game))
+    term.write('\r' + renderer.render(game))
   } else if (e.domEvent.key === 'Backspace') {
-    term.clear()
-    term.write(renderer.render(game))
-    input = ''
+    if (input.length) {
+      input = input.substring(0, input.length - 1)
+      term.write('\b')
+      term.write(' ')
+      term.write('\b')
+    }
   } else {
+    input += e.key
     term.write(e.key);
   }
 });

@@ -27,12 +27,11 @@ module.exports = class Game {
 
     this.commands = new commands(this)
 
-    // this.state.map.generateCells()
     const player = this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
     this.spawnCreatures()
     this.spawnLoot()
   }
-  
+
   loop(input) {
     this.state.messages = []
     this.handleInput(input)
@@ -296,7 +295,7 @@ module.exports = class Game {
   }
 
   handleIncreaseAttribute(commandSuffix) {
-    const index = commandSuffix
+    const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const attributes = [
       'int',
@@ -325,7 +324,7 @@ module.exports = class Game {
   }
 
   handleGrabItem(commandSuffix) {
-    const index = commandSuffix
+    const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const entity = this.getNearbyEntitiesWithout('player')[index]
 
@@ -344,7 +343,7 @@ module.exports = class Game {
   }
 
   handleDropItem(commandSuffix) {
-    const index = commandSuffix
+    const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     // if (index < player.inventory.length - 1) {
       // const itemId = player.inventory[index]
@@ -355,7 +354,7 @@ module.exports = class Game {
   }
 
   handleEquipItem(commandSuffix) {
-    const index = commandSuffix
+    const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const newItem = player.inventory[index]
     const oldItem = player.wielding
@@ -366,10 +365,10 @@ module.exports = class Game {
     player.inventory = _.without(player.inventory, newItem)
   }
 
-  handleMove(commandSuffix) {
+  handleMove(dir) {
     const room = this.getCurrentRoom()
-    if (room.exits.includes(commandSuffix)) {
-      this.addAction({type:'move', entityId: 'player', dir: commandSuffix})
+    if (room.exits.includes(dir)) {
+      this.addAction({type:'move', entityId: 'player', dir: dir})
       this.setTargetOf('player', null)
     } else {
       this.addMessage('You cannot go that way.')
@@ -461,7 +460,7 @@ module.exports = class Game {
   }
 
   handleUse(commandSuffix){
-    const index = commandSuffix
+    const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const context = this.state.uiContext
     let item
@@ -490,6 +489,7 @@ module.exports = class Game {
   }
 
   handleInput(input) {
+    console.log(input)
     input = input.replace(' ', '')
     const player = this.getPlayer()
     const prefix = input[0]

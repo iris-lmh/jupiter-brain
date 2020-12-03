@@ -26,7 +26,7 @@ module.exports = class Renderer {
         }
       }
     })
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 
   _renderCommands(game) {
@@ -50,9 +50,9 @@ module.exports = class Renderer {
     })
     commands.push(color.whiteBg(color.black('?')))
     const lines = [
-      `\nCOMMANDS: ${game.state.uiContext === 'map' ? exits.concat(commands).join(', ') : commands.join(', ')}`
+      `\r\nCOMMANDS: ${game.state.uiContext === 'map' ? exits.concat(commands).join(', ') : commands.join(', ')}`
     ]
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 
   _renderMap(game) {
@@ -61,8 +61,8 @@ module.exports = class Renderer {
     const player = game.getPlayer()
     // const exits = _.filter(game.state.entities, entity => entity.name === 'Exit')
     // console.log(exits)
-    lines.push(`DEPTH: ${game.state.depth}\n`)
-    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
+    lines.push(`DEPTH: ${game.state.depth}\r\n`)
+    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\r\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
       lines.push(wall)
       for (var x=0; x<game.state.map.sizeX; x++) {
@@ -84,9 +84,9 @@ module.exports = class Renderer {
         }
         lines.push(icon)
       }
-      lines.push(wall + '\n')
+      lines.push(wall + '\r\n')
     }
-    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\n')
+    lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\r\n')
     return lines.join('')
   }
 
@@ -99,7 +99,7 @@ module.exports = class Renderer {
     player.inventory.forEach((item, i) => {
       lines.push(`  ${i}. ${item.name} ${item.id}`)
     })
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 
   _renderCharacterSheet(game) {
@@ -122,12 +122,12 @@ module.exports = class Renderer {
     lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
     lines.push('')
     lines.push(`AC: ${game.getAc(player)}`)
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 
   _renderMessageHistory(game) {
     const lines = game.state.messageHistory 
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 
   _renderSelfLine(game) {
@@ -169,7 +169,7 @@ module.exports = class Renderer {
 
       lines.push('')
       if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\n'))
+        lines.push(game.state.messages.join('\r\n'))
         lines.push('')
       }
       lines.push(this._renderTargetLine(game))
@@ -181,7 +181,7 @@ module.exports = class Renderer {
       lines.push(this._renderInventory(game))
       lines.push('')
       if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\n'))
+        lines.push(game.state.messages.join('\r\n'))
         lines.push('')
       }
       lines.push(this._renderSelfLine(game))
@@ -192,7 +192,7 @@ module.exports = class Renderer {
       lines.push(this._renderCharacterSheet(game))
       lines.push('')
       if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\n'))
+        lines.push(game.state.messages.join('\r\n'))
         lines.push('')
       }
       lines.push(this._renderSelfLine(game))
@@ -207,6 +207,6 @@ module.exports = class Renderer {
 
     lines.push(prompt)
 
-    return lines.join('\n')
+    return lines.join('\r\n')
   }
 } 

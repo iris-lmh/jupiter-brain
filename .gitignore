@@ -6,3 +6,5 @@ TODO.md
 # browser/parcel stuff
 .parcel-cache
 dist
+scripts.js
+templates.js

@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "lodash": "^4.17.19",
+    "xterm": "^4.9.0",
     "yaml": "^1.10.0"
   },
   "devDependencies": {

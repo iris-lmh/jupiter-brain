@@ -551,7 +551,7 @@ module.exports = class Game {
   addMessage(message) {
     this.state.messages.push(message)
     this.state.messageHistory.push(message)
-    if (this.state.messageHistory.length > 50) {
+    if (this.state.messageHistory.length > 25) {
       this.state.messageHistory.shift()
     }
   }

@@ -6,7 +6,8 @@ const Renderer = require('./src/classes/Renderer')
 const game = new Game()
 const renderer = new Renderer(game)
 
-var term = new xterm.Terminal();
+var term = new xterm.Terminal({cols: 60, rows:30, scrollback: 0});
+term.setOption('fontSize', '22')
 term.open(document.getElementById('terminal'));
 term.write(renderer.render(game))
 

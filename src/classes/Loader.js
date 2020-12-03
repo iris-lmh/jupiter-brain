@@ -1,3 +1,6 @@
+// import YAMS from '../../templates/*.yaml'
+const creature = require('../../templates/creature.yaml')
+console.log(JSON.stringify(creature, null, 2))
 const fs = require('fs')
 const _ = require('lodash')
 const YAML = require('yaml')
@@ -10,7 +13,6 @@ module.exports = class Loader {
     this.scripts = {}
   }
 
-  // FIXME something about the caching is causing an infinite loop HELP
   loadTemplate(name) {
     const record = _.get(this, `templates.${name}`)
     if (!record) {

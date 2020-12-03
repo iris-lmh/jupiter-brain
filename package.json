@@ -16,6 +16,8 @@
     "yaml": "^1.10.0"
   },
   "devDependencies": {
-    "leasot": "^11.1.0"
+    "leasot": "^11.1.0",
+    "parcel": "^2.0.0-beta.1",
+    "parcel-bundler": "^1.12.4"
   }
 }

@@ -2,3 +2,7 @@ node_modules
 .DS_Store
 notes
 TODO.md
+
+# browser/parcel stuff
+.parcel-cache
+dist

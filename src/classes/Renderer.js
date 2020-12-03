@@ -60,7 +60,6 @@ module.exports = class Renderer {
     const lines = []
     const player = game.getPlayer()
     // const exits = _.filter(game.state.entities, entity => entity.name === 'Exit')
-    // console.log(exits)
     lines.push(`DEPTH: ${game.state.depth}\r\n`)
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\r\n')
     for (var y=0; y<game.state.map.sizeY; y++) {

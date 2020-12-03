@@ -25,7 +25,6 @@ term.onKey(e => {
     term.write(renderer.render(game))
     input = ''
   } else {
-    // console.log(e)
     term.write(e.key);
   }
 });

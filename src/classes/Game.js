@@ -17,19 +17,20 @@ module.exports = class Game {
       messages: [],
       messageHistory: [],
       pass: false,
-      map: new Map(this.loader, 'map'),
+      map: null,
       rooms: [],
       entities: [],
       currentRoomId: null,
       initiative: [],
-      depth: 1
+      depth: 0
     }
 
     this.commands = new commands(this)
 
-    const player = this.addEntity('creature-player', this.state.map.startX, this.state.map.startY)
-    this.spawnCreatures()
-    this.spawnLoot()
+    const player = this.addEntity('creature-player')
+    this.handleNewMap()
+    // this.spawnCreatures()
+    // this.spawnLoot()
   }
 
   loop(input) {
@@ -449,7 +450,6 @@ module.exports = class Game {
           defender.hp = 0
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
-            console.log(defender.naniteValue)
             attacker.nanites += defender.naniteValue
           }
         }
@@ -489,7 +489,6 @@ module.exports = class Game {
   }
 
   handleInput(input) {
-    console.log(input)
     input = input.replace(' ', '')
     const player = this.getPlayer()
     const prefix = input[0]
@@ -557,26 +556,24 @@ module.exports = class Game {
   }
 
   addEntity(templateName, x, y) {
+    // console.log('templateName', templateName)
     const entity = hydrateEntity(this.loader, templateName, x, y)
     this.state.entities.push(entity)
-
+    
     if (entity.type === 'creature') {
+      // console.log('inventory', entity.inventory)
       entity.hpMax = helpers.rollHealth(entity)
       entity.hp = entity.hpMax
       if (entity.wielding) {
         const hydrated = hydrateEntity(this.loader, entity.wielding)
         entity.wielding = hydrated
-        // entity.wielding.stored = true
-        // this.state.entities.push(entity.wielding)
       }
       if (entity.wearing) {
         const hydrated = hydrateEntity(this.loader, entity.wearing)
         entity.wearing = hydrated
-        // entity.wearing.stored = true
-        // this.state.entities.push(entity.wearing)
       }
-      entity.inventory.forEach((item, i)=> {
-        const hydrated = hydrateEntity(this.loader, item)
+      entity.inventory.forEach((itemTemplateName, i)=> {
+        const hydrated = hydrateEntity(this.loader, itemTemplateName)
         entity.inventory[i] = hydrated
       })
       if (entity.loot && entity.loot.length) {
@@ -592,8 +589,9 @@ module.exports = class Game {
         const count = helpers.weightedRoll(...counts)
         for (var i=0; i<count; i++) {
           const type = helpers.weightedRoll(...types)
-          const item = this.addEntity(type)
-          this.creatureGrabItem(entity.id, item.id)
+          console.log('item type', type)
+          const hydrated = hydrateEntity(this.loader, type)
+          entity.inventory.push = hydrated
         }
   
       }
@@ -604,10 +602,6 @@ module.exports = class Game {
   deleteEntity (id) {
     const entity = this.getEntity(id)
     this.state.entities = _.without(this.state.entities, entity)
-    // this.state.actions = _.filter(this.state.actions, {entityId: })
-    // _.remove(this.state.actions, action => {
-    //   action.entityId === entity.id
-    // })
   }
 
 }

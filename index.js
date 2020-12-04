@@ -13,6 +13,8 @@ term.write(renderer.render(game))
 
 let input = ''
 
+term.focus()
+
 term.onKey(e => {
   
   if (e.key === '\r') {

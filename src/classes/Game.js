@@ -51,9 +51,12 @@ module.exports = class Game {
     this.processActions()
 
     if (this.getPlayer().hp <= 0) {
-      this.addMessage(color.redBg(color.black(' You are dead. ')))
+
+      this.addMessage(color.redBg(color.black(' You are dead. Refresh page to start new game.')))
+      localStorage.removeItem(this.state.saveIndex)
+    } else {
+      this.autoSave()
     }
-    this.autoSave()
   }
   
   tick() {

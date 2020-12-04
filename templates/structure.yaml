@@ -1,4 +1,5 @@
 name: Exit
 inherits: item
+tags: [structure]
 subtype: structure
 grabable: false

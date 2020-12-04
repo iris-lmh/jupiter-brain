@@ -1,5 +1,6 @@
 name: Entity
 type: entity
+tags: [entity]
 subType: null
 inherits: null
 x: null

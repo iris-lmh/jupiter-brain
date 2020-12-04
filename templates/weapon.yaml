@@ -2,6 +2,7 @@ name: 'Weapon'
 inherits: item
 type: item
 subtype: weapon
+tags: [weapon]
 attackDesc: 'hit'
 diceCount: 1
 diceSize: 4

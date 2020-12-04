@@ -22,15 +22,16 @@ module.exports = class Game {
       entities: [],
       currentRoomId: null,
       initiative: [],
-      depth: 0
+      depth: 0,
+      creatureCount: 0,
+      itemCount: 0
     }
 
     this.commands = new commands(this)
 
     const player = this.addEntity('creature-player')
     this.handleNewMap()
-    // this.spawnCreatures()
-    // this.spawnLoot()
+    console.log(`spawned ${this.state.creatureCount} creatures and ${this.state.itemCount} items.`)
   }
 
   loop(input) {
@@ -112,8 +113,8 @@ module.exports = class Game {
 
         const count = helpers.weightedRoll(roomCountWeights, mapCountWeights)
         for (var i=0; i<count; i++) {
-          const type = helpers.weightedRoll(roomTypeWeights, mapTypeWeights)
-          this.addEntity(type, cell.x, cell.y)
+          const templateName = helpers.weightedRoll(roomTypeWeights, mapTypeWeights)
+          this.addEntity(templateName, cell.x, cell.y)
         }
       }
     })
@@ -332,10 +333,10 @@ module.exports = class Game {
     if (!entity) {
       this.addMessage('No item found.')
     }
-    else if (entity.type === 'item' && entity.grabable) {
+    else if (entity.tags.includes('item') && entity.grabable) {
       this.creatureGrabItem(player.id, entity.id)
     }
-    else if (entity.type !== 'item' || !entity.grabable) {
+    else if (entity.tags.includes('item') || !entity.grabable) {
       this.addMessage(`You cannot grab the ${entity.name}.`)
     }
     else {
@@ -556,12 +557,11 @@ module.exports = class Game {
   }
 
   addEntity(templateName, x, y) {
-    // console.log('templateName', templateName)
     const entity = hydrateEntity(this.loader, templateName, x, y)
     this.state.entities.push(entity)
     
-    if (entity.type === 'creature') {
-      // console.log('inventory', entity.inventory)
+    if (entity.tags.includes('creature')) {
+      this.state.creatureCount += 1
       entity.hpMax = helpers.rollHealth(entity)
       entity.hp = entity.hpMax
       if (entity.wielding) {
@@ -572,9 +572,10 @@ module.exports = class Game {
         const hydrated = hydrateEntity(this.loader, entity.wearing)
         entity.wearing = hydrated
       }
-      entity.inventory.forEach((itemTemplateName, i)=> {
-        const hydrated = hydrateEntity(this.loader, itemTemplateName)
+      entity.inventory.forEach((templateName, i)=> {
+        const hydrated = hydrateEntity(this.loader, templateName)
         entity.inventory[i] = hydrated
+        this.state.itemCount += 1
       })
       if (entity.loot && entity.loot.length) {
         const lootTables = entity.loot.map(tableName => {
@@ -583,18 +584,19 @@ module.exports = class Game {
         const counts = lootTables.map(table => {
           return table.weights.itemCount
         })
-        const types = lootTables.map(table => {
+        const templateNames = lootTables.map(table => {
           return table.weights.itemType
         })
         const count = helpers.weightedRoll(...counts)
         for (var i=0; i<count; i++) {
-          const type = helpers.weightedRoll(...types)
-          console.log('item type', type)
-          const hydrated = hydrateEntity(this.loader, type)
+          const templateName = helpers.weightedRoll(...templateNames)
+          const hydrated = hydrateEntity(this.loader, templateName)
           entity.inventory.push = hydrated
+          this.state.itemCount += 1
         }
   
       }
+      // console.log(entity)
     } 
     return entity
   }

@@ -1,6 +1,7 @@
 name: Item
 inherits: entity
 type: item
+tags: [item]
 grabable: true
 wearable: false
 wieldable: false

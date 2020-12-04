@@ -10,3 +10,8 @@ weights:
   neighborType:
     room-chamber: 1
     room-corridor: 1
+  creatureCount:
+    - 200
+    - 50
+  creatureType:
+    creature-android: 1000

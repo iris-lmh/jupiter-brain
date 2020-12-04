@@ -1,6 +1,7 @@
 id: player
 name: Player
 inherits: creature
+tags: [player]
 hitDie: 8
 wielding: weapon-knife
 wearing: armor-ballistic-vest

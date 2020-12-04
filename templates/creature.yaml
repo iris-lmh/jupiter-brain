@@ -1,5 +1,6 @@
 name: Creature
 inherits: entity
+tags: [creature]
 type: creature
 remainsName: corpse
 level: 1

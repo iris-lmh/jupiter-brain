@@ -13,9 +13,6 @@ module.exports = class Loader {
 
   loadTemplate(name) {
     const record = _.get(this, `templates.${name}`)
-    if (typeof name === 'object') {
-      console.log(name.split(''))
-    }
     if (!record) {
       // const path = `${this.templatesPath}${name}.yaml`
       // const str = fs.readFileSync(path, 'utf8')

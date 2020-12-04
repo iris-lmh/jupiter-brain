@@ -1,7 +1,4 @@
-// import YAMS from '../../templates/*.yaml'
-const fs = require('fs')
 const _ = require('lodash')
-const YAML = require('yaml')
 
 module.exports = class Loader {
   constructor() {

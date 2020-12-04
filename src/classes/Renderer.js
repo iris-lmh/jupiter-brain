@@ -1,6 +1,7 @@
 const _ = require('lodash')
 
 const color = require('../color')
+const storage = require('../storage')
 
 module.exports = class Renderer {
   constructor() {}
@@ -55,7 +56,7 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
-  _renderMap(game) {
+  _renderContextMap(game) {
     const wall = color.whiteBg(' ')
     const lines = []
     const player = game.getPlayer()
@@ -65,7 +66,7 @@ module.exports = class Renderer {
     for (var y=0; y<game.state.map.sizeY; y++) {
       lines.push(wall)
       for (var x=0; x<game.state.map.sizeX; x++) {
-        const cell = game.state.map.getCell(x, y)
+        const cell = game.getCell(x, y)
         var icon
         if (cell.type) {
           icon = ' '
@@ -89,7 +90,7 @@ module.exports = class Renderer {
     return lines.join('')
   }
 
-  _renderInventory(game) {
+  _renderContextInventory(game) {
     const lines = []
     const player = game.getPlayer()
     lines.push(`WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
@@ -101,7 +102,7 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
-  _renderCharacterSheet(game) {
+  _renderContextCharacterSheet(game) {
     const lines = []
     const player = game.getPlayer()
 
@@ -124,8 +125,22 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
-  _renderMessageHistory(game) {
+  _renderContextMessageHistory(game) {
     const lines = game.state.messageHistory 
+    return lines.join('\r\n')
+  }
+
+  _renderContextSystem(game) {
+    const saveList = JSON.parse(localStorage.getItem('saveList'))
+    const lines = []
+    lines.push('SAVES')
+    saveList.forEach((save, i) => {
+      if (save) {
+        lines.push(`  ${i}. ${save.name}`)
+      } else {
+        lines.push(`  ${i}. empty`)
+      }
+    })
     return lines.join('\r\n')
   }
 
@@ -163,7 +178,7 @@ module.exports = class Renderer {
     const prompt = '> '
   
     if (game.state.uiContext === 'map') {
-      lines.push(this._renderMap(game))
+      lines.push(this._renderContextMap(game))
       lines.push(this._renderRoom(game))
 
       lines.push('')
@@ -177,7 +192,7 @@ module.exports = class Renderer {
     else if (game.state.uiContext === 'inventory') {
       lines.push('INVENTORY')
       lines.push('')
-      lines.push(this._renderInventory(game))
+      lines.push(this._renderContextInventory(game))
       lines.push('')
       if (game.state.messages.length) {
         lines.push(game.state.messages.join('\r\n'))
@@ -188,7 +203,7 @@ module.exports = class Renderer {
     else if (game.state.uiContext === 'characterSheet') {
       lines.push('CHARACTER SHEET')
       lines.push('')
-      lines.push(this._renderCharacterSheet(game))
+      lines.push(this._renderContextCharacterSheet(game))
       lines.push('')
       if (game.state.messages.length) {
         lines.push(game.state.messages.join('\r\n'))
@@ -199,7 +214,12 @@ module.exports = class Renderer {
     else if (game.state.uiContext === 'messageHistory') {
       lines.push('MESSAGE HISTORY')
       lines.push('')
-      lines.push(this._renderMessageHistory(game))
+      lines.push(this._renderContextMessageHistory(game))
+    }
+    else if (game.state.uiContext === 'system') {
+      lines.push('SYSTEM MENU')
+      lines.push('')
+      lines.push(this._renderContextSystem(game))
     }
     
     lines.push(this._renderCommands(game))

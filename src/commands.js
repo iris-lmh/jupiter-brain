@@ -24,8 +24,31 @@ module.exports = function commands(game) {
     help: 'Show an extended history of game messages.',
     handler: ()=>{game.switchUiContext('debug')}
   }
+  const contextSystem = {
+    longForm: '(S)ystem',
+    help: '',
+    handler: ()=>{game.switchUiContext('system')}
+  }
 
   const commands = {
+    system: {
+      m: contextMap,
+      c: contextCharacterSheet,
+      i: contextInventory,
+      M: contextMessageHistory,
+      D: contextDebug,
+
+      s: {
+        longForm: '(s)ave game',
+        help: '',
+        handler: game.handleSave
+      },
+      l: {
+        longForm: '(l)ave game',
+        help: '',
+        handler: game.handleLoad
+      }
+    },
     debug: {
       m: contextMap,
       c: contextCharacterSheet,
@@ -54,6 +77,7 @@ module.exports = function commands(game) {
       i: contextInventory,
       M: contextMessageHistory,
       D: contextDebug,
+      S: contextSystem,
 
       // other commands
       t: {

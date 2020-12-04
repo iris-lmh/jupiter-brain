@@ -5,12 +5,14 @@ const color = require('../color')
 const commands = require('../commands.js')
 
 const Loader = require('./Loader')
+const storage = require('../storage')
 const hydrateEntity = require('./hydrateEntity')
 const Map = require('./Map')
 
 module.exports = class Game {
   constructor() {
     this.loader = new Loader()
+    const save = storage.load(0)
     this.state = {
       uiContext: 'map',
       actions: [],
@@ -24,14 +26,19 @@ module.exports = class Game {
       initiative: [],
       depth: 0,
       creatureCount: 0,
-      itemCount: 0
+      itemCount: 0,
+      saveIndex: 0
     }
-
+    
+    
+    this.state.uiContext = 'map'
+    
     this.commands = new commands(this)
-
-    const player = this.addEntity('creature-player')
-    this.handleNewMap()
-    console.log(`spawned ${this.state.creatureCount} creatures and ${this.state.itemCount} items.`)
+    
+    // if (!save) {
+      const player = this.addEntity('creature-player')
+      this.handleNewMap()
+    // }
   }
 
   loop(input) {
@@ -47,6 +54,7 @@ module.exports = class Game {
     if (this.getPlayer().hp <= 0) {
       this.addMessage(color.redBg(color.black(' You are dead. ')))
     }
+    this.autoSave()
   }
   
   tick() {
@@ -129,6 +137,10 @@ module.exports = class Game {
 
   // GETTERS
 
+  getCell(x, y) {
+    return this.state.map.cells[`${x},${y}`]
+  }
+
   getPlayer() {
     return this.getEntity('player')
   }
@@ -195,7 +207,7 @@ module.exports = class Game {
 
   getCurrentRoom() {
     const player = this.getPlayer()
-    return this.state.map.getCell(player.x, player.y).room
+    return this.getCell(player.x, player.y).room
   }
 
   // TODO these need to be done with actions. these functions should basically be action processors... right?
@@ -282,6 +294,26 @@ module.exports = class Game {
   }
 
   // HANDLERS
+
+  handleSave(commandSuffix) {
+    const index = parseInt(commandSuffix)
+    this.state.saveIndex = index
+
+    storage.save(this, index)
+  }
+
+  autoSave() {
+    storage.save(this, this.state.saveIndex)
+  }
+
+  handleLoad(commandSuffix) {
+    const index = parseInt(commandSuffix)
+    const save = storage.load(this.state.saveIndex)
+    console.log(save)
+    if (save) {
+      this.state = save
+    }
+  }
 
   handleNewMap() {
     this.state.map = new Map(this.loader, 'map', this.state.depth)
@@ -596,7 +628,6 @@ module.exports = class Game {
         }
   
       }
-      // console.log(entity)
     } 
     return entity
   }

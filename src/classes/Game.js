@@ -13,7 +13,7 @@ module.exports = class Game {
   constructor() {
     this.loader = new Loader()
     const save = storage.load(0)
-    this.state = {
+    this.state = save || {
       uiContext: 'map',
       actions: [],
       messages: [],
@@ -30,15 +30,14 @@ module.exports = class Game {
       saveIndex: 0
     }
     
-    
     this.state.uiContext = 'map'
     
     this.commands = new commands(this)
     
-    // if (!save) {
-      const player = this.addEntity('creature-player')
+    if (!save) {
+      this.addEntity('creature-player')
       this.handleNewMap()
-    // }
+    }
   }
 
   loop(input) {

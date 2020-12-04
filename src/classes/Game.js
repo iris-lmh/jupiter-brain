@@ -37,6 +37,7 @@ module.exports = class Game {
     if (!save) {
       this.addEntity('creature-player')
       this.handleNewMap()
+      this.autoSave()
     }
   }
 
@@ -52,7 +53,7 @@ module.exports = class Game {
 
     if (this.getPlayer().hp <= 0) {
 
-      this.addMessage(color.redBg(color.black(' You are dead. Refresh page to start new game.')))
+      this.addMessage(color.redBg(color.black(' YOU ARE DEAD. Refresh page to start new game.')))
       localStorage.removeItem(this.state.saveIndex)
     } else {
       this.autoSave()

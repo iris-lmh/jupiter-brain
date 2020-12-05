@@ -408,8 +408,10 @@ module.exports = class Game {
 
   handleMove(dir) {
     const room = this.getCurrentRoom()
+    const player = this.getPlayer()
     if (room.exits.includes(dir)) {
       this.addAction({type:'move', entityId: 'player', dir: dir})
+      player.ap = 0
       this.setTargetOf('player', null)
     } else {
       this.addMessage('You cannot go that way.')

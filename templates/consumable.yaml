@@ -2,6 +2,7 @@ name: Consumable
 inherits: item
 subtype: consumable
 tags: [consumable]
+desc: 'Default consumable description.'
 usable: true
 apCostBase: 2
 bonus: 0

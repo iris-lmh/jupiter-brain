@@ -197,6 +197,10 @@ module.exports = class Game {
     return _.filter(this.state.entities, entity => entity.id !== excludeId && entity.x === player.x && entity.y === player.y)
   }
 
+  getEntitiesAt(x, y) {
+    return _.filter(this.state.entities, entity => entity.x === x && entity.y === y)
+  }
+
   getTargetOf(targeterId) {
     const targeter = this.getEntity(targeterId)
     return this.getEntity(targeter.target)
@@ -515,9 +519,72 @@ module.exports = class Game {
     }
     // }
   }
-  handleLook() {
-    const room = this.getCurrentRoom()
-    this.addMessage(room.desc)
+  handleLook(commandSuffix) {
+    const index = parseInt(commandSuffix)
+    const player = this.getPlayer()
+
+    if ('nsew'.includes(commandSuffix)) {
+      let x = 0
+      let y = 0
+      let dirLine = ''
+      switch(commandSuffix) {
+        case 'n':
+          y = -1
+          dirLine = 'NORTH OF YOU:'
+          break;
+        case 's':
+          y = 1
+          dirLine = 'SOUTH OF YOU:'
+          break;
+        case 'e':
+          x = 1
+          dirLine = 'EAST OF YOU:'
+          break;
+        case 'w':
+          x = -1
+          dirLine = 'WEST OF YOU:'
+          break;
+      }
+
+      // FIXME A lot of this stuff should be happening in the renderer
+      const cell = this.getCell(x + player.x, y + player.y)
+      if (cell.type) {
+        const entities = this.getEntitiesAt(cell.x, cell.y)
+        this.addMessage(dirLine)
+
+        if (entities.length) {
+          entities.forEach(entity => {
+            const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
+            this.addMessage(`  There is ${article} ${entity.name}`)
+          })
+        }
+        else {
+          this.addMessage('  Nothing')
+        }
+
+        console.log(entities)
+      }
+    }
+    else {
+      let entities
+      if (this.state.uiContext === 'map') {
+        entities = this.getNearbyEntitiesWithout('player')
+      }
+      else if (this.state.uiContext === 'inventory') {
+        entities = player.inventory
+      }
+  
+      const e = entities[index]
+      this.addMessage(e.desc)
+      if (e.tags.includes('creature')) {
+        this.addMessage(`LVL ${e.level}`)
+      }
+  
+      if (e.tags.includes('weapon')) {
+        this.addMessage(`DAM: ${e.diceCount}d${e.diceSize}+${e.damBonus} | HIT: +${e.hitBonus} | USES: ${e.hitAttribute}`)
+        this.addMessage(`CRIT: ${e.critRange}/x${e.critMult} | BASE AP COST: ${e.apCostBase}`)
+      }
+    }
   }
 
   switchUiContext(context) {

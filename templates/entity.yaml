@@ -1,6 +1,7 @@
 name: Entity
 type: entity
 tags: [entity]
+desc: 'Blank entity'
 subType: null
 inherits: null
 x: null

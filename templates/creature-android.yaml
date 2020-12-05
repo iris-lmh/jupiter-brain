@@ -1,5 +1,6 @@
 name: Android
 inherits: creature
+desc: 'This Terran automaton has seen better days. Wires hang from its body and bits are missing.'
 level: 2
 hitDie: 4
 str: 8

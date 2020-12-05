@@ -2,6 +2,7 @@ name: Item
 inherits: entity
 type: item
 tags: [item]
+desc: 'Default item description.'
 grabable: true
 wearable: false
 wieldable: false

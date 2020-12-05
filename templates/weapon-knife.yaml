@@ -1,5 +1,6 @@
 name: Knife
 inherits: weapon
+desc: 'A wickedly sharp Terran combat knife.'
 equipable: true
 slot: wielding
 attackDesc: stab
@@ -8,7 +9,7 @@ diceSize: 4
 hitBonus: 0
 damBonus: 0
 hitAttribute: dex
-damAttribute: str
+damAttribute: dex
 critRange: 20
 critMult: 2
 apCostBase: 5

@@ -1,6 +1,7 @@
 name: Drone
 remainsName: wreckage
 inherits: creature
+desc: 'You see a small drone. It skitters about completing little tasks here and there.'
 level: 1
 hitDie: 4
 str: 8

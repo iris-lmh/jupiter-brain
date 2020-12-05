@@ -1,3 +1,4 @@
 name: Exit
 inherits: structure
 onUse: onUseExit
+desc: 'You see a viable point of egress.'

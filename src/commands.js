@@ -128,7 +128,12 @@ module.exports = function commands(game) {
         longForm: '(u)se',
         help: '',
         handler: game.handleUse
-      }
+      },
+      l: {
+        longForm: '(l)ook',
+        help: '',
+        handler: game.handleLook
+      },
     },
     characterSheet: {
       // context switchers

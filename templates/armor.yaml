@@ -2,5 +2,6 @@ name: Ballistic Vest
 inherits: item
 subtype: armor
 tags: [armor]
+desc: 'Default armor description.'
 acBonus: 0
 maxDex: 5

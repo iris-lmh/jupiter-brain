@@ -1,5 +1,6 @@
 name: Exit
 inherits: item
 tags: [structure]
+desc: 'Default structure description.'
 subtype: structure
 grabable: false

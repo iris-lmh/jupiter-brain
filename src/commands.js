@@ -43,10 +43,15 @@ module.exports = function commands(game) {
         help: '',
         handler: game.handleSave
       },
-      l: {
-        longForm: '(l)ave game',
+      // l: {
+      //   longForm: '(l)oad game',
+      //   help: '',
+      //   handler: game.handleLoad
+      // },
+      N: {
+        longForm: '(N)ew game',
         help: '',
-        handler: game.handleLoad
+        handler: game.handleNewGame
       }
     },
     debug: {

@@ -13,7 +13,7 @@ module.exports = class Game {
   constructor() {
     this.loader = new Loader()
     const save = storage.load(0)
-    this.state = save || {
+    this.defaultState = {
       uiContext: 'map',
       actions: [],
       messages: [],
@@ -29,6 +29,8 @@ module.exports = class Game {
       itemCount: 0,
       saveIndex: 0
     }
+
+    this.state = save || defaultState
     
     this.state.uiContext = 'map'
     
@@ -318,6 +320,13 @@ module.exports = class Game {
   }
 
   // HANDLERS
+
+  handleNewGame(commandSuffix) {
+    this.state = _.merge({}, this.defaultState)
+    this.addEntity('creature-player')
+    this.handleNewMap()
+    this.autoSave()
+  }
 
   handleSave(commandSuffix) {
     const index = parseInt(commandSuffix)

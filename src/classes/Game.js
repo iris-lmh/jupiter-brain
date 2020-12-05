@@ -492,7 +492,8 @@ module.exports = class Game {
           defender.hp = 0
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
-            attacker.nanites += defender.naniteValue
+            // attacker.nanites += defender.naniteValue
+            attacker.nanites += Math.floor(3 * 1.618**defender.level)
           }
         }
       } else {

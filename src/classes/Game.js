@@ -242,9 +242,27 @@ module.exports = class Game {
     creature.hp = 0
     creature.dead = true
     if (creatureId !== player.id) {
-      creature.inventory.forEach((item, i) => {
-        this.creatureDropItem(creature.id, 0)
-      })
+      // creature.inventory.forEach((item, i) => {
+      //   this.creatureDropItem(creature.id, 0)
+      // })
+      if (creature.loot && creature.loot.length) {
+        const lootTables = creature.loot.map(tableName => {
+          return this.loader.loadTemplate(tableName)
+        })
+        const counts = lootTables.map(table => {
+          return table.weights.itemCount
+        })
+        const templateNames = lootTables.map(table => {
+          return table.weights.itemType
+        })
+        const count = helpers.weightedRoll(...counts)
+        console.log(count)
+        for (var i=0; i<count; i++) {
+          const templateName = helpers.weightedRoll(...templateNames)
+          this.addEntity(templateName, creature.x, creature.y)
+          this.state.itemCount += 1
+        }
+      }
       if (creatureId === player.target) {
         player.target = null
       }
@@ -316,7 +334,6 @@ module.exports = class Game {
   handleLoad(commandSuffix) {
     const index = parseInt(commandSuffix)
     const save = storage.load(this.state.saveIndex)
-    console.log(save)
     if (save) {
       this.state = save
     }
@@ -564,8 +581,6 @@ module.exports = class Game {
         else {
           this.addMessage('  Nothing')
         }
-
-        console.log(entities)
       }
     }
     else {
@@ -677,30 +692,11 @@ module.exports = class Game {
         const hydrated = hydrateEntity(this.loader, entity.wearing)
         entity.wearing = hydrated
       }
-      entity.inventory.forEach((templateName, i)=> {
-        const hydrated = hydrateEntity(this.loader, templateName)
-        entity.inventory[i] = hydrated
-        this.state.itemCount += 1
-      })
-      if (entity.loot && entity.loot.length) {
-        const lootTables = entity.loot.map(tableName => {
-          return this.loader.loadTemplate(tableName)
-        })
-        const counts = lootTables.map(table => {
-          return table.weights.itemCount
-        })
-        const templateNames = lootTables.map(table => {
-          return table.weights.itemType
-        })
-        const count = helpers.weightedRoll(...counts)
-        for (var i=0; i<count; i++) {
-          const templateName = helpers.weightedRoll(...templateNames)
-          const hydrated = hydrateEntity(this.loader, templateName)
-          entity.inventory.push = hydrated
-          this.state.itemCount += 1
-        }
-  
-      }
+      // entity.inventory.forEach((templateName, i)=> {
+      //   const hydrated = hydrateEntity(this.loader, templateName)
+      //   entity.inventory[i] = hydrated
+      //   this.state.itemCount += 1
+      // })
     } 
     return entity
   }

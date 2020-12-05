@@ -354,13 +354,13 @@ module.exports = class Game {
       player[attributeName] += 1
       player.naniteCost = Math.floor(player.naniteCost * 1.618)
       
-      player.hpMax = Math.floor(player.hpMax * 1.618) + player.level * helpers.calculateAttributeMod(player.con)
+      player.hpMax = player.hpMax + player.hitDie / 2 + player.level * helpers.calculateAttributeMod(player.con)
       player.hp = Math.floor(player.hpMax * hpPercentage)
       this.addMessage(`${attributeName.toUpperCase()} increased.`)
 
     }
     else {
-      this.addMessage('Not enough EXP.')
+      this.addMessage('Not enough nanites.')
     }
   }
 
@@ -548,7 +548,7 @@ module.exports = class Game {
           break;
       }
 
-      // FIXME A lot of this stuff should be happening in the renderer
+      // FIXME I feel like a lot of this stuff should be happening in the renderer
       const cell = this.getCell(x + player.x, y + player.y)
       if (cell.type) {
         const entities = this.getEntitiesAt(cell.x, cell.y)

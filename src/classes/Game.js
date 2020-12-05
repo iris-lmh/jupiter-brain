@@ -256,7 +256,6 @@ module.exports = class Game {
           return table.weights.itemType
         })
         const count = helpers.weightedRoll(...counts)
-        console.log(count)
         for (var i=0; i<count; i++) {
           const templateName = helpers.weightedRoll(...templateNames)
           this.addEntity(templateName, creature.x, creature.y)

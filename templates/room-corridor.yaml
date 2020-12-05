@@ -10,7 +10,7 @@ weights:
     room-chamber: 2
     room-corridor: 1
   creatureCount:
-    - 200
+    - 100
     - 50
   creatureType:
     creature-drone: 1000

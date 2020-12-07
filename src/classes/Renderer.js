@@ -213,23 +213,25 @@ module.exports = class Renderer {
   render(game) {
     const lines = []
     const prompt = '> '
-  
-    if (game.state.uiContext === 'map') {
-      lines.push(this._renderContextMap(game))
-    } 
-    else if (game.state.uiContext === 'inventory') {
-      lines.push(this._renderContextInventory(game))
+
+    switch(game.state.uiContext) {
+      case 'map':
+        lines.push(this._renderContextMap(game))
+        break;
+      case 'inventory':
+        lines.push(this._renderContextInventory(game))
+        break;
+      case 'characterSheet':
+        lines.push(this._renderContextCharacterSheet(game))
+        break;
+      case 'messageHistory':
+        lines.push(this._renderContextMessageHistory(game))
+        break;
+      case 'system':
+        lines.push(this._renderContextSystem(game))
+        break;
     }
-    else if (game.state.uiContext === 'characterSheet') {
-      lines.push(this._renderContextCharacterSheet(game))
-    }
-    else if (game.state.uiContext === 'messageHistory') {
-      lines.push(this._renderContextMessageHistory(game))
-    }
-    else if (game.state.uiContext === 'system') {
-      lines.push(this._renderContextSystem(game))
-    }
-    
+
     lines.push(this._renderCommands(game))
 
     lines.push(prompt)

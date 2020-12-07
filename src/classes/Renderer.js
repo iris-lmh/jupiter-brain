@@ -6,7 +6,7 @@ const storage = require('../storage')
 module.exports = class Renderer {
   constructor() {}
 
-  _renderRoom(game) {
+  _renderRoomDesc(game) {
     const lines = []
     const room = game.getCurrentRoom()
     lines.push(room.desc)
@@ -56,11 +56,10 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
-  _renderContextMap(game) {
+  _renderMap(game) {
     const wall = color.whiteBg(' ')
     const lines = []
     const player = game.getPlayer()
-    // const exits = _.filter(game.state.entities, entity => entity.name === 'Exit')
     lines.push(`DEPTH: ${game.state.depth}                                         \r\n`)
     lines.push(wall + _.repeat(wall, game.state.map.sizeX + 1) + '\r\n')
     for (var y=0; y<game.state.map.sizeY; y++) {
@@ -90,15 +89,39 @@ module.exports = class Renderer {
     return lines.join('')
   }
 
+  _renderContextMap(game) {
+    const mapLines = this._renderMap(game)
+    const lines = []
+
+    lines.push('')
+    lines.push(this._renderRoomDesc(game))
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderTargetLine(game))
+    lines.push(`${this._renderSelfLine(game)}`)
+    return mapLines + lines.join('\r\n')
+  }
+
   _renderContextInventory(game) {
     const lines = []
     const player = game.getPlayer()
+    lines.push('INVENTORY')
+    lines.push('')
     lines.push(`WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
     lines.push(`WEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
     lines.push(`CARRYING:`)
     player.inventory.forEach((item, i) => {
       lines.push(`  ${i}. ${item.name} ${item.id}`)
     })
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
     return lines.join('\r\n')
   }
 
@@ -112,6 +135,8 @@ module.exports = class Renderer {
         : game.getAttributeMod(player, name) 
     }
 
+    lines.push('CHARACTER SHEET')
+    lines.push('')
     lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
     lines.push('')
     lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
@@ -122,17 +147,29 @@ module.exports = class Renderer {
     lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
     lines.push('')
     lines.push(`AC: ${game.getAc(player)}`)
+
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
     return lines.join('\r\n')
   }
 
   _renderContextMessageHistory(game) {
-    const lines = game.state.messageHistory 
+    const lines = []
+    lines.push('MESSAGE HISTORY')
+    lines.push('')
+    lines.push(game.state.messageHistory.join('\r\n'))
     return lines.join('\r\n')
   }
 
   _renderContextSystem(game) {
     const saveList = JSON.parse(localStorage.getItem('saveList'))
     const lines = []
+    lines.push('SYSTEM MENU')
+    lines.push('')
     lines.push('SAVES')
     saveList.forEach((save, i) => {
       if (save) {
@@ -179,46 +216,17 @@ module.exports = class Renderer {
   
     if (game.state.uiContext === 'map') {
       lines.push(this._renderContextMap(game))
-      lines.push(this._renderRoom(game))
-
-      lines.push('')
-      if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\r\n'))
-        lines.push('')
-      }
-      lines.push(this._renderTargetLine(game))
-      lines.push(`${this._renderSelfLine(game)}`)
     } 
     else if (game.state.uiContext === 'inventory') {
-      lines.push('INVENTORY')
-      lines.push('')
       lines.push(this._renderContextInventory(game))
-      lines.push('')
-      if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\r\n'))
-        lines.push('')
-      }
-      lines.push(this._renderSelfLine(game))
     }
     else if (game.state.uiContext === 'characterSheet') {
-      lines.push('CHARACTER SHEET')
-      lines.push('')
       lines.push(this._renderContextCharacterSheet(game))
-      lines.push('')
-      if (game.state.messages.length) {
-        lines.push(game.state.messages.join('\r\n'))
-        lines.push('')
-      }
-      lines.push(this._renderSelfLine(game))
     }
     else if (game.state.uiContext === 'messageHistory') {
-      lines.push('MESSAGE HISTORY')
-      lines.push('')
       lines.push(this._renderContextMessageHistory(game))
     }
     else if (game.state.uiContext === 'system') {
-      lines.push('SYSTEM MENU')
-      lines.push('')
       lines.push(this._renderContextSystem(game))
     }
     

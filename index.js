@@ -30,14 +30,36 @@ term.onKey(e => {
     game.loop(input)
     input = ''
     term.write('\r' + renderer.render(game))
-  } else if (e.domEvent.key === 'Backspace') {
+  } 
+  else if (e.domEvent.key === 'Backspace') {
     if (input.length) {
       input = input.substring(0, input.length - 1)
       term.write('\b')
       term.write(' ')
       term.write('\b')
     }
-  } else {
+  } 
+  else if (e.domEvent.key === 'ArrowUp') {
+    term.clear()
+    game.loop('n')
+    term.write('\r' + renderer.render(game))
+  }
+  else if (e.domEvent.key === 'ArrowDown') {
+    term.clear()
+    game.loop('s')
+    term.write('\r' + renderer.render(game))
+  }
+  else if (e.domEvent.key === 'ArrowLeft') {
+    term.clear()
+    game.loop('w')
+    term.write('\r' + renderer.render(game))
+  }
+  else if (e.domEvent.key === 'ArrowRight') {
+    term.clear()
+    game.loop('e')
+    term.write('\r' + renderer.render(game))
+  }
+  else {
     input += e.key
     term.write(e.key);
   }

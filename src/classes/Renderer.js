@@ -17,14 +17,11 @@ module.exports = class Renderer {
         const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
         if (entity.type === 'creature') {
           if (entity.hp > 0) {
-            lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id}. ${entity.hp} hp`)
+            lines.push(`  ${i}. There is ${article} ${entity.name}. ${entity.hp} hp`)
           } 
-          else if (entity.hp <= 0) {
-            lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id} ${entity.remainsName}.`)
-          }
         }
         else {
-          lines.push(`  ${i}. There is ${article} ${entity.name} ${entity.id}.`)
+          lines.push(`  ${i}. There is ${article} ${entity.name}.`)
         }
       }
     })
@@ -120,7 +117,7 @@ module.exports = class Renderer {
     lines.push(`WEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
     lines.push(`CARRYING:`)
     player.inventory.forEach((item, i) => {
-      lines.push(`  ${i}. ${item.name} ${item.id}`)
+      lines.push(`  ${i}. ${item.name}`)
     })
     lines.push('')
     if (game.state.messages.length) {

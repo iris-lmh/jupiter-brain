@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const uuid = require('uuid')
 
 function inherit(loader, templateName, hierarchy = []) {
   const template = loader.loadTemplate(templateName)
@@ -23,7 +24,7 @@ module.exports = function hydrateEntity(loader, templateName, x, y) {
   })
   
   // TODO use actual uuids to keep it random between sessions
-  output.id = output.id || _.uniqueId()
+  output.id = output.id || uuid.v4()
   output.x = x
   output.y = y
 

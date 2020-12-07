@@ -6,7 +6,7 @@ const commands = require('../commands.js')
 
 const Loader = require('./Loader')
 const storage = require('../storage')
-const hydrateEntity = require('./hydrateEntity')
+const hydrateEntity = require('../hydrateEntity')
 const Map = require('./Map')
 
 module.exports = class Game {

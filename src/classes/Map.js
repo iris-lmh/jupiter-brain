@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 const helpers = require('../helpers')
-const hydrateEntity = require('./hydrateEntity')
+const hydrateEntity = require('../hydrateEntity')
 
 module.exports = class Map {
   constructor(loader, templateName, depth = 1) {

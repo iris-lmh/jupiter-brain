@@ -194,7 +194,7 @@ module.exports = class Game {
 
   getAttributeMod(creature, attributeStr) {
     const attribute = creature[attributeStr]
-    return Math.floor((attribute - 10)/2)
+    return Math.floor((attribute - 10))
   }
 
   getNearbyEntitiesWithout(excludeId) {

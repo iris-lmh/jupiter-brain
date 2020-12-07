@@ -78,7 +78,7 @@ const helpers = {
   },
 
   calculateAttributeMod: function(n) {
-    return Math.floor((n - 10)/2)
+    return Math.floor((n - 10))
   },
 
   deductAp: function(creature, amount) {

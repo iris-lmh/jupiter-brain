@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "todo": "leasot -xS ./**/* -i node_modules --reporter markdown > TODO.md"
+    "todo": "leasot -xS ./**/* -i './node_modules','./dist' --reporter markdown > TODO.md"
   },
   "keywords": [],
   "author": "",

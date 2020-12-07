@@ -12,6 +12,7 @@ weights:
     room-corridor: 1
   creatureCount:
     - 50
+    - 100
     - 50
   creatureType:
     creature-android: 1000

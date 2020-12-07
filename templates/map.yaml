@@ -10,7 +10,7 @@ weights:
     - 4
     - 1
   creatureType:
-    creature-drone: 300
-    creature-android: 100
+    # creature-drone: 300
+    # creature-android: 100
     # creature-avatar: 50
   roomType: {}

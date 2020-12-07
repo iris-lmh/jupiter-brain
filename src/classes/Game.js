@@ -637,7 +637,8 @@ module.exports = class Game {
       else {
         this.addMessage('Invalid command: ' + input)
       }
-    } else {
+    } 
+    else if (this.state.uiContext === 'map') {
       this.state.pass = true
     }
     if (player.ap <= 0) {

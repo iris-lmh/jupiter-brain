@@ -30,7 +30,7 @@ module.exports = class Game {
       saveIndex: 0
     }
 
-    this.state = save || defaultState
+    this.state = save || this.defaultState
     
     this.state.uiContext = 'map'
     

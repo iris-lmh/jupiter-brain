@@ -3,6 +3,7 @@ const _ = require('lodash')
 const color = require('../color')
 const storage = require('../storage')
 
+// TODO theres actually no reason for this to be a class honestly
 module.exports = class Renderer {
   constructor() {}
 

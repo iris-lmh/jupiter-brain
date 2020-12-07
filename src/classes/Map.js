@@ -194,7 +194,7 @@ module.exports = class Map {
         neighbors.forEach(neighbor => {
           var shouldConnect = false
           
-          // TODO make algorythm more comprehensive
+          // TODO make algorithm more comprehensive
           if (cell.type === 'room-corridor' && neighbor.type === 'room-corridor') {
             shouldConnect = true
           }

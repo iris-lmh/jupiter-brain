@@ -444,7 +444,7 @@ module.exports = class Game {
   }
 
   handleTarget(commandSuffix) {
-    // FIXME Maybe do targeting with actions.
+    // TODO Maybe do targeting with actions.
     const index = parseInt(commandSuffix)
     var targetId
     const player = this.getPlayer()

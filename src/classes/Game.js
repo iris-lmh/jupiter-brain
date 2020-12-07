@@ -135,9 +135,12 @@ module.exports = class Game {
 
   spawnLoot() {
     const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
-    const randomCell = _.sample(cellsWithRooms)
-    const exit = this.addEntity('structure-exit', randomCell.x, randomCell.y)
-    randomCell.structures.push('exit')
+    const randomCell1 = _.sample(cellsWithRooms)
+    const exit = this.addEntity('structure-exit', randomCell1.x, randomCell1.y)
+    randomCell1.structures.push('exit')
+    const randomCell2 = _.sample(cellsWithRooms)
+    const enhancementStation = this.addEntity('structure-enhancement-station', randomCell2.x, randomCell2.y)
+    randomCell2.structures.push('enhancement-station')
   }
 
   // GETTERS

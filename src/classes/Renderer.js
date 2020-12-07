@@ -73,8 +73,13 @@ module.exports = class Renderer {
           if (cell.x == player.x && cell.y == player.y) {
             icon = color.cyanBg('@')
           }
+
+          // FIXME This seems like a really messy way of displaying structure icons
           else if (cell.structures.includes('exit')) {
             icon = color.greenBg('X')
+          }
+          else if (cell.structures.includes('enhancement-station')) {
+            icon = color.blueBg('E')
           }
           else {
             icon = cell.room.icon
@@ -182,6 +187,37 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
+  _renderContextEnhancementStation(game) {
+    const lines = []
+    const player = game.getPlayer()
+
+    const getModStr = function(name) {
+      return game.getAttributeMod(player, name) >= 0 
+        ? '+' + game.getAttributeMod(player, name) 
+        : game.getAttributeMod(player, name) 
+    }
+
+    lines.push('ENHANCEMENT STATION')
+    lines.push('')
+    lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
+    lines.push('')
+    lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
+    lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
+    lines.push(`2. CHA: ${player.cha} | ${getModStr('cha')}`)
+    lines.push(`3. STR: ${player.str} | ${getModStr('str')}`)
+    lines.push(`4. DEX: ${player.dex} | ${getModStr('dex')}`)
+    lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
+    lines.push('')
+    lines.push(`AC: ${game.getAc(player)}`)
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
+    return lines.join('\r\n')
+  }
+
   _renderSelfLine(game) {
     const player = game.getPlayer()
     return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.nanites} NANITES`
@@ -230,6 +266,9 @@ module.exports = class Renderer {
         break;
       case 'system':
         lines.push(this._renderContextSystem(game))
+        break;
+      case 'enhancementStation':
+        lines.push(this._renderContextEnhancementStation(game))
         break;
     }
 

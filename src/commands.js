@@ -148,6 +148,20 @@ module.exports = function commands(game) {
       D: contextDebug,
 
       // other commands
+      // i: {
+      //   longForm: '(i)ncrease attribute',
+      //   help: '',
+      //   handler: game.handleIncreaseAttribute
+      // }
+    },
+    enhancementStation: {
+      // context switchers
+      m: contextMap,
+      // i: contextInventory,
+      // M: contextMessageHistory,
+      // D: contextDebug,
+
+      // other commands
       i: {
         longForm: '(i)ncrease attribute',
         help: '',

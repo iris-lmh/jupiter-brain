@@ -22,6 +22,7 @@ module.exports = function hydrateEntity(loader, templateName, x, y) {
     }
   })
   
+  // TODO use actual uuids to keep it random between sessions
   output.id = output.id || _.uniqueId()
   output.x = x
   output.y = y

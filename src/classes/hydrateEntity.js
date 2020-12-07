@@ -1,4 +1,3 @@
-const { template } = require('lodash')
 const _ = require('lodash')
 
 function inherit(loader, templateName, hierarchy = []) {
@@ -14,11 +13,9 @@ function inherit(loader, templateName, hierarchy = []) {
 
 module.exports = function hydrateEntity(loader, templateName, x, y) {
   const hierarchy = inherit(loader, templateName)
-  // const output = _.merge({}, ...hierarchy)
   const output = _.mergeWith({}, ...hierarchy, (objValue, srcValue)=>{
     if (_.isArray(objValue)) {
       return objValue.concat(srcValue);
-      // return srcValue
     }
     else {
       return srcValue

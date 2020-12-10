@@ -134,13 +134,28 @@ module.exports = class Game {
   }
 
   spawnLoot() {
+    // const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
+    // const randomCell1 = _.sample(cellsWithRooms)
+    // const exit = this.addEntity('structure-exit', randomCell1.x, randomCell1.y)
+    // randomCell1.structures.push('exit')
+
+    // const randomCell2 = _.sample(cellsWithRooms)
+    // const enhancementStation = this.addEntity('structure-enhancement-station', randomCell2.x, randomCell2.y)
+    // randomCell2.structures.push('enhancement-station')
+
+    this.spawnStructure('structure-exit')
+    this.spawnStructure('structure-enhancement-station')
+
+    // const randomCell3 = _.sample(cellsWithRooms)
+    // const enhancementStation = this.addEntity('structure-', randomCell3.x, randomCell3.y)
+    // randomCell3.structures.push('enhancement-station')
+  }
+
+  spawnStructure(templateName) {
     const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
-    const randomCell1 = _.sample(cellsWithRooms)
-    const exit = this.addEntity('structure-exit', randomCell1.x, randomCell1.y)
-    randomCell1.structures.push('exit')
-    const randomCell2 = _.sample(cellsWithRooms)
-    const enhancementStation = this.addEntity('structure-enhancement-station', randomCell2.x, randomCell2.y)
-    randomCell2.structures.push('enhancement-station')
+    const randomCell = _.sample(cellsWithRooms)
+    const exit = this.addEntity(templateName, randomCell.x, randomCell.y)
+    randomCell.structures.push(templateName)
   }
 
   // GETTERS

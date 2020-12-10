@@ -72,11 +72,11 @@ module.exports = class Renderer {
           }
 
           // FIXME This seems like a really messy way of displaying structure icons
-          else if (cell.structures.includes('exit')) {
+          else if (cell.structures.includes('structure-exit')) {
             icon = color.greenBg('X')
           }
-          else if (cell.structures.includes('enhancement-station')) {
-            icon = color.blueBg('E')
+          else if (cell.structures.includes('structure-enhancement-station')) {
+            icon = color.greenBg('E')
           }
           else {
             icon = cell.room.icon

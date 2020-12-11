@@ -1,0 +1,4 @@
+chance: 0.15
+items:
+  - [10, consumable-medhypo-i] 
+  - [2, consumable-stimhypo]

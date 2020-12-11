@@ -6,6 +6,7 @@ const commands = require('../commands.js')
 
 const Loader = require('./Loader')
 const storage = require('../storage')
+const loot = require('../loot')
 const hydrateEntity = require('../hydrateEntity')
 const Map = require('./Map')
 
@@ -261,27 +262,18 @@ module.exports = class Game {
     const player = this.getPlayer()
     creature.hp = 0
     creature.dead = true
+
     if (creatureId !== player.id) {
+      // DROP LOOT
+      // TODO reimpliment creature dropping loot from inventory on death
       // creature.inventory.forEach((item, i) => {
       //   this.creatureDropItem(creature.id, 0)
       // })
-      if (creature.loot && creature.loot.length) {
-        const lootTables = creature.loot.map(tableName => {
-          return this.loader.loadTemplate(tableName)
-        })
-        const counts = lootTables.map(table => {
-          return table.weights.itemCount
-        })
-        const templateNames = lootTables.map(table => {
-          return table.weights.itemType
-        })
-        const count = helpers.weightedRoll(...counts)
-        for (var i=0; i<count; i++) {
-          const templateName = helpers.weightedRoll(...templateNames)
-          this.addEntity(templateName, creature.x, creature.y)
-          this.state.itemCount += 1
-        }
-      }
+      const drops = loot.dropLoot(this.loader, creature)
+      drops.forEach(dropName => {
+        this.addEntity(dropName, creature.x, creature.y)
+      })
+
       if (creatureId === player.target) {
         player.target = null
       }

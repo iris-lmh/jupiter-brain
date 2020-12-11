@@ -1,7 +1,7 @@
 name: Drone
 remainsName: wreckage
 inherits: creature
-desc: 'You see a small drone. It skitters about completing little tasks here and there.'
+desc: 'You see a small worker drone. It skitters about completing little tasks here and there.'
 level: 1
 hitDie: 4
 str: 8
@@ -11,7 +11,9 @@ int: 6
 wis: 8
 cha: 8
 wielding: weapon-knife
-loot: [loot-gear-basic,loot-consumables-basic]
+loot:
+  - [0,2,table-loot-consumables-basic]
+  - [0,1,table-loot-gear-basic]
 apMax: 5
 ap: 5
 apRegen: 5

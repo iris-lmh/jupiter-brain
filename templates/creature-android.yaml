@@ -1,8 +1,8 @@
 name: Android
 inherits: creature
-desc: 'This Terran automaton has seen better days. Wires hang from its body and bits are missing.'
+desc: 'Once a crowning achievement of Terran biotech, this abandoned automaton has seen better days. Chunks of its body are missing and black fluid drips from tubes that hang from its body.'
 level: 2
-hitDie: 4
+hitDie: 6
 str: 8
 dex: 8
 con: 10
@@ -13,5 +13,7 @@ apMax: 5
 ap: 5
 apRegen: 5
 wielding: weapon-knife
-loot: [loot-gear-basic,loot-consumables-basic]
+loot:
+  - [0,2,table-loot-consumables-basic]
+  - [0,1,table-loot-gear-basic]
 naniteValue: 8

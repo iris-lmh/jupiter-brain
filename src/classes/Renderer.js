@@ -71,7 +71,7 @@ module.exports = class Renderer {
             icon = color.cyanBg('@')
           }
 
-          // FIXME This seems like a really messy way of displaying structure icons
+          // FIXME This seems like a really messy way of displaying structure icons. these icons should be defined in a template i think.
           else if (cell.structures.includes('structure-exit')) {
             icon = color.greenBg('X')
           }
@@ -128,18 +128,14 @@ module.exports = class Renderer {
     return lines.join('\r\n')
   }
 
-  _renderContextCharacterSheet(game) {
-    const lines = []
-    const player = game.getPlayer()
-
+  _renderPlayerStats(game) {
     const getModStr = function(name) {
       return game.getAttributeMod(player, name) >= 0 
         ? '+' + game.getAttributeMod(player, name) 
         : game.getAttributeMod(player, name) 
     }
-
-    lines.push('CHARACTER SHEET')
-    lines.push('')
+    const lines = []
+    const player = game.getPlayer()
     lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
     lines.push('')
     lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
@@ -150,7 +146,16 @@ module.exports = class Renderer {
     lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
     lines.push('')
     lines.push(`AC: ${game.getAc(player)}`)
+    return lines.join('\r\n')
+  }
 
+  _renderContextCharacterSheet(game) {
+    const lines = []
+    const player = game.getPlayer()
+
+    lines.push('CHARACTER SHEET')
+    lines.push('')
+    lines.push(this._renderPlayerStats(game))
     lines.push('')
     if (game.state.messages.length) {
       lines.push(game.state.messages.join('\r\n'))
@@ -188,24 +193,9 @@ module.exports = class Renderer {
     const lines = []
     const player = game.getPlayer()
 
-    const getModStr = function(name) {
-      return game.getAttributeMod(player, name) >= 0 
-        ? '+' + game.getAttributeMod(player, name) 
-        : game.getAttributeMod(player, name) 
-    }
-
     lines.push('ENHANCEMENT STATION')
     lines.push('')
-    lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
-    lines.push('')
-    lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
-    lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
-    lines.push(`2. CHA: ${player.cha} | ${getModStr('cha')}`)
-    lines.push(`3. STR: ${player.str} | ${getModStr('str')}`)
-    lines.push(`4. DEX: ${player.dex} | ${getModStr('dex')}`)
-    lines.push(`5. CON: ${player.con} | ${getModStr('con')}`)
-    lines.push('')
-    lines.push(`AC: ${game.getAc(player)}`)
+    lines.push(this._renderPlayerStats(game))
     lines.push('')
     if (game.state.messages.length) {
       lines.push(game.state.messages.join('\r\n'))

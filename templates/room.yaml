@@ -2,6 +2,7 @@ name: Room
 inherits: entity
 type: room
 desc: You are in a plain room.
+explored: false
 icon: x
 creatures: []
 structures: []

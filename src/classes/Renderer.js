@@ -66,6 +66,9 @@ module.exports = class Renderer {
         const cell = game.getCell(x, y)
         var icon
         if (cell.type) {
+          const exploredBg = cell.room.explored 
+            ? function(str){return color.grayBrightBg(str)}
+            : function(str){return str}
           icon = ' '
           if (cell.x == player.x && cell.y == player.y) {
             icon = color.cyanBg('@')
@@ -79,7 +82,7 @@ module.exports = class Renderer {
             icon = color.greenBg('E')
           }
           else {
-            icon = cell.room.icon
+            icon = exploredBg(cell.room.icon)
           }
         } else {
           icon = wall

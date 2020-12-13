@@ -97,6 +97,9 @@ module.exports = class Game {
   
   processMoveCreature(id, dir) {
     const creature = this.getEntity(id)
+    const isPlayer = creature.id === 'player'
+    
+    if (isPlayer) {this.getCurrentRoom().explored = true}
     switch(dir) {
       case 'n':
         creature.y--
@@ -111,6 +114,8 @@ module.exports = class Game {
         creature.x--
         break;
     }
+    if (isPlayer) {this.getCurrentRoom().explored = true}
+
   }
 
   spawnCreatures() {

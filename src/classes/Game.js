@@ -7,6 +7,7 @@ const commands = require('../commands.js')
 const Loader = require('./Loader')
 const storage = require('../storage')
 const loot = require('../loot')
+const spawn = require('../spawn')
 const hydrateEntity = require('../hydrateEntity')
 const Map = require('./Map')
 
@@ -114,48 +115,25 @@ module.exports = class Game {
   }
 
   spawnCreatures() {
-    const map = this.state.map
-
-    const mapCountWeights = map.weights.creatureCount
-    const mapTypeWeights = map.weights.creatureType
-    
     _.forOwn(this.state.map.cells, cell => {
       if (cell.room) {
-        
-        const roomCountWeights = cell.room.weights.creatureCount
-        const roomTypeWeights = cell.room.weights.creatureType
-
-        const count = helpers.weightedRoll(roomCountWeights, mapCountWeights)
-        for (var i=0; i<count; i++) {
-          const templateName = helpers.weightedRoll(roomTypeWeights, mapTypeWeights)
-          this.addEntity(templateName, cell.x, cell.y)
-        }
+       const spawns = spawn.spawnCreatures(this.loader, cell.room)
+       spawns.forEach(templateName => {
+         const creature = this.addEntity(templateName, cell.x, cell.y)
+       })
       }
     })
   }
 
   spawnLoot() {
-    // const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
-    // const randomCell1 = _.sample(cellsWithRooms)
-    // const exit = this.addEntity('structure-exit', randomCell1.x, randomCell1.y)
-    // randomCell1.structures.push('exit')
-
-    // const randomCell2 = _.sample(cellsWithRooms)
-    // const enhancementStation = this.addEntity('structure-enhancement-station', randomCell2.x, randomCell2.y)
-    // randomCell2.structures.push('enhancement-station')
-
     this.spawnStructure('structure-exit')
     this.spawnStructure('structure-enhancement-station')
-
-    // const randomCell3 = _.sample(cellsWithRooms)
-    // const enhancementStation = this.addEntity('structure-', randomCell3.x, randomCell3.y)
-    // randomCell3.structures.push('enhancement-station')
   }
 
   spawnStructure(templateName) {
     const cellsWithRooms = _.filter(this.state.map.cells, cell => cell.room !== null)
     const randomCell = _.sample(cellsWithRooms)
-    const exit = this.addEntity(templateName, randomCell.x, randomCell.y)
+    const structure = this.addEntity(templateName, randomCell.x, randomCell.y)
     randomCell.structures.push(templateName)
   }
 

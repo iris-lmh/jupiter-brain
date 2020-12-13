@@ -10,9 +10,6 @@ weights:
   neighborType:
     room-chamber: 1
     room-corridor: 1
-  creatureCount:
-    - 50
-    - 100
-    - 50
-  creatureType:
-    creature-android: 1000
+spawn:
+  - [0,4,'table-spawn-easy',0.5]
+  - [0,1,'table-spawn-hard',0.05]

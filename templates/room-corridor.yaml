@@ -9,8 +9,5 @@ weights:
   neighborType:
     room-chamber: 2
     room-corridor: 1
-  creatureCount:
-    - 100
-    - 50
-  creatureType:
-    creature-drone: 1000
+spawn:
+  - [0,2,0.33,'table-spawn-easy',0.33]

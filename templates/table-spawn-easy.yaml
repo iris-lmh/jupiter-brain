@@ -1,0 +1,4 @@
+chance: 0.5
+creatures:
+  - [10, creature-drone]
+  - [5, creature-android]

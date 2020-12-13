@@ -2,7 +2,7 @@ const fs = require('fs')
 const _ = require('lodash')
 const YAML = require('yaml')
 
-const loot = require('./loot')
+const spawn = require('./spawn')
 
 const creatureTemplates = []
 const lootTables = {}
@@ -37,7 +37,7 @@ function testLoot(creature, count) {
   console.log('killing', count, creature.name)
   const totals = {}
   for (var i=0; i<count; i++) {
-    const results = loot.dropLoot(loader, creature)
+    const results = spawn.rollSpawns(loader, creature)
 
     results.forEach(result => {
       if (!totals[result]) {

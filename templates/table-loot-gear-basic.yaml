@@ -1,5 +1,5 @@
 chance: 0.05
-items:
+entries:
   - [10, weapon-knife] 
   - [10, armor-ballistic-vest]
   - [2, weapon-pistol]

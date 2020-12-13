@@ -11,7 +11,7 @@ int: 6
 wis: 8
 cha: 8
 wielding: weapon-knife
-loot:
+spawn:
   - [0,2,table-loot-consumables-basic]
   - [0,1,table-loot-gear-basic]
 apMax: 5

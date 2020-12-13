@@ -11,7 +11,7 @@ int: 20
 wis: 10
 cha: 8
 wielding: weapon-nanite-swarm
-loot:
+spawn:
   - [2,2,table-loot-consumables-basic,0.5]
   - [2,2,table-loot-gear-basic,0.5]
 inventory: [weapon-nanite-swarm]

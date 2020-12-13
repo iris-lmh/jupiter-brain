@@ -6,7 +6,6 @@ const commands = require('../commands.js')
 
 const Loader = require('./Loader')
 const storage = require('../storage')
-const loot = require('../loot')
 const spawn = require('../spawn')
 const hydrateEntity = require('../hydrateEntity')
 const Map = require('./Map')
@@ -117,7 +116,7 @@ module.exports = class Game {
   spawnCreatures() {
     _.forOwn(this.state.map.cells, cell => {
       if (cell.room) {
-       const spawns = spawn.spawnCreatures(this.loader, cell.room)
+       const spawns = spawn.rollSpawns(this.loader, cell.room)
        spawns.forEach(templateName => {
          const creature = this.addEntity(templateName, cell.x, cell.y)
        })
@@ -222,7 +221,6 @@ module.exports = class Game {
     const creature = this.getEntity(creatureId)
     const item = this.getEntity(itemId)
     creature.inventory.push(item)
-    // item.stored = true
     this.deleteEntity(item.id)
   }
 
@@ -247,7 +245,7 @@ module.exports = class Game {
       // creature.inventory.forEach((item, i) => {
       //   this.creatureDropItem(creature.id, 0)
       // })
-      const drops = loot.dropLoot(this.loader, creature)
+      const drops = spawn.rollSpawns(this.loader, creature)
       drops.forEach(dropName => {
         this.addEntity(dropName, creature.x, creature.y)
       })

@@ -2,7 +2,7 @@ const _ = require('lodash')
 
 module.exports = {
   spawnRoll(table) {
-    const valueMap = _.reduce(table.creatures, (memo, entry) => {
+    const valueMap = _.reduce(table.entries, (memo, entry) => {
       memo.currentTotal += entry[0]
       memo.mapped.push([
         memo.currentTotal,
@@ -24,9 +24,9 @@ module.exports = {
     return result
   },
   
-  spawnCreatures(loader, room) {
+  rollSpawns(loader, entity) {
     const results = []
-    room.spawn.forEach(entry => {
+    entity.spawn.forEach(entry => {
       const minTries = entry[0]
       const maxTries = entry[1]
       const tableName = entry[2]

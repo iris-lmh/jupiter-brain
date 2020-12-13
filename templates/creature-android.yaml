@@ -13,7 +13,7 @@ apMax: 5
 ap: 5
 apRegen: 5
 wielding: weapon-knife
-loot:
+spawn:
   - [0,2,table-loot-consumables-basic]
   - [0,1,table-loot-gear-basic]
 naniteValue: 8

@@ -290,9 +290,10 @@ module.exports = class Game {
     const critMultiplier = didCrit ? weapon.critMult : 1
     const damageBonus = weapon.damBonus + helpers.calculateAttributeMod(attacker[weapon.damAttribute])
     const dice = helpers.diceRoll(weapon.diceCount, weapon.diceSize)
-    const damage = 
+    let damage = 
       (dice + damageBonus) 
       * critMultiplier
+    if (damage < 1) {damage = 1}
     return damage
   }
 

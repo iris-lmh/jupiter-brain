@@ -370,14 +370,14 @@ module.exports = class Game {
     ]
     const attributeName = attributes[index]
     if (player.nanites >= player.naniteCost) {
-      const hpPercentage = player.hp / player.hpMax
+      const missingHp = player.hpMax - player.hp
       player.nanites -= player.naniteCost
       player.level += 1
       player[attributeName] += 1
       player.naniteCost = Math.floor(player.naniteCost * 1.618)
       
       player.hpMax = player.hpMax + player.hitDie / 2 + player.level * helpers.calculateAttributeMod(player.con)
-      player.hp = Math.floor(player.hpMax * hpPercentage)
+      player.hp = player.hpMax - missingHp
       this.addMessage(`${attributeName.toUpperCase()} increased.`)
 
     }

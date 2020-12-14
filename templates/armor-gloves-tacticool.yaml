@@ -1,6 +1,7 @@
-name: Ballistic Vest
+name: Tacticool Gloves
 inherits: item
 subtype: armor
 tags: []
-acBonus: 2
+slot: hands
+acBonus: 1
 maxDex: 3

@@ -116,8 +116,11 @@ module.exports = class Renderer {
     const player = game.getPlayer()
     lines.push('INVENTORY')
     lines.push('')
-    lines.push(`WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
-    lines.push(`WEARING: ${player.wearing ? player.wearing.name : 'Nothing'}`)
+    lines.push(`0. WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
+    lines.push(`1.  ON HEAD: ${player.head ? player.head.name : 'Nothing'}`)
+    lines.push(`2.  ON BODY: ${player.body ? player.body.name : 'Nothing'}`)
+    lines.push(`3. ON HANDS: ${player.hands ? player.hands.name : 'Nothing'}`)
+    lines.push(`4.  ON FEET: ${player.feet ? player.feet.name : 'Nothing'}`)
     lines.push(`CARRYING:`)
     player.inventory.forEach((item, i) => {
       lines.push(`  ${i}. ${item.name}`)

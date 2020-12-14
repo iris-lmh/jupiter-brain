@@ -1,0 +1,7 @@
+name: Combat Boots
+inherits: item
+subtype: armor
+tags: []
+slot: feet
+acBonus: 1
+maxDex: 3

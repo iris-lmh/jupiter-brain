@@ -160,15 +160,20 @@ module.exports = class Game {
   }
 
   getAc(creature) {
-    var armor = creature.wearing
     var dexMod = helpers.calculateAttributeMod(creature.dex)
     var total = 0
     total += creature.baseAc
-    if (armor) {
-      total += armor.acBonus
-      if (armor.maxDex < dexMod) {
-        dexMod = armor.maxDex
-      }
+    if (creature.head) {
+      total += creature.head.acBonus
+    }
+    if (creature.body) {
+      total += creature.body.acBonus
+    }
+    if (creature.hands) {
+      total += creature.hands.acBonus
+    }
+    if (creature.feet) {
+      total += creature.feet.acBonus
     }
     total += dexMod
     return total
@@ -403,24 +408,35 @@ module.exports = class Game {
   handleDropItem(commandSuffix) {
     const index = parseInt(commandSuffix)
     const player = this.getPlayer()
-    // if (index < player.inventory.length - 1) {
-      // const itemId = player.inventory[index]
-      // const item = this.getEntity(itemId)
-  
+    if (player.inventory[index]) {
       this.creatureDropItem(player.id, index)
-    // }
+    }
   }
 
   handleEquipItem(commandSuffix) {
     const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const newItem = player.inventory[index]
-    const oldItem = player.wielding
-    if (oldItem) {
-      player.inventory.push(oldItem)
+    if (newItem) {
+      const oldItem = player[newItem.slot]
+      if (oldItem) {
+        player.inventory.push(oldItem)
+      }
+      player[newItem.slot] = newItem
     }
-    player.wielding = newItem
     player.inventory = _.without(player.inventory, newItem)
+  }
+
+  handleUnequipItem(commandSuffix) {
+    const index = parseInt(commandSuffix)
+    const slots = ['wielding','head','body','hands','feet']
+    const slot = slots[index]
+    const player = this.getPlayer()
+    const item = player[slot]
+    if (item) {
+      player.inventory.push(item)
+      player[slot] = null
+    }
   }
 
   handleMove(dir) {
@@ -689,16 +705,23 @@ module.exports = class Game {
         const hydrated = hydrateEntity(this.loader, entity.wielding)
         entity.wielding = hydrated
       }
-      if (entity.wearing) {
-        const hydrated = hydrateEntity(this.loader, entity.wearing)
-        entity.wearing = hydrated
+      if (entity.head) {
+        const hydrated = hydrateEntity(this.loader, entity.head)
+        entity.head = hydrated
       }
-      // entity.inventory.forEach((templateName, i)=> {
-      //   const hydrated = hydrateEntity(this.loader, templateName)
-      //   entity.inventory[i] = hydrated
-      //   this.state.itemCount += 1
-      // })
-    } 
+      if (entity.body) {
+        const hydrated = hydrateEntity(this.loader, entity.body)
+        entity.body = hydrated
+      }
+      if (entity.hands) {
+        const hydrated = hydrateEntity(this.loader, entity.hands)
+        entity.hands = hydrated
+      }
+      if (entity.feet) {
+        const hydrated = hydrateEntity(this.loader, entity.feet)
+        entity.feet = hydrated
+      }
+    }
     return entity
   }
 

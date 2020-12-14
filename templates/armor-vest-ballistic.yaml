@@ -1,0 +1,7 @@
+name: Ballistic Vest
+inherits: item
+subtype: armor
+tags: []
+slot: body
+acBonus: 2
+maxDex: 4

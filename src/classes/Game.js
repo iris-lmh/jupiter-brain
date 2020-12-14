@@ -132,6 +132,7 @@ module.exports = class Game {
   spawnLoot() {
     this.spawnStructure('structure-exit')
     this.spawnStructure('structure-enhancement-station')
+    this.spawnStructure('structure-recycler')
   }
 
   spawnStructure(templateName) {
@@ -414,6 +415,16 @@ module.exports = class Game {
     }
   }
 
+  handleRecycleItem(commandSuffix) {
+    const index = parseInt(commandSuffix)
+    const player = this.getPlayer()
+    const item = player.inventory[index]
+    if (item) {
+      player.nanites += Math.floor(3 * 1.618**item.level-1)
+      player.inventory = _.without(player.inventory, item)
+    }
+  }
+
   handleEquipItem(commandSuffix) {
     const index = parseInt(commandSuffix)
     const player = this.getPlayer()
@@ -526,7 +537,7 @@ module.exports = class Game {
           this.creatureDie(defenderId)
           if (attackerId == 'player') {
             // attacker.nanites += defender.naniteValue
-            attacker.nanites += Math.floor(3 * 1.618**defender.level)
+            attacker.nanites += Math.floor(2 * 1.618**defender.level-1)
           }
         }
       } else {

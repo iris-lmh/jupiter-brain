@@ -173,6 +173,20 @@ module.exports = function commands(game) {
         handler: game.handleIncreaseAttribute
       }
     },
+    recycler: {
+      // context switchers
+      m: contextMap,
+      // i: contextInventory,
+      // M: contextMessageHistory,
+      // D: contextDebug,
+
+      // other commands
+      r: {
+        longForm: '(r)ecycle item',
+        help: '',
+        handler: game.handleRecycleItem
+      }
+    },
     messageHistory: {
       // context switchers
       m: contextMap,

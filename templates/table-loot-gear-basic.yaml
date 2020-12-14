@@ -1,4 +1,4 @@
-chance: 0.05
+chance: 0.1
 entries:
   - [10, weapon-knife] 
   - [10, armor-helmet]

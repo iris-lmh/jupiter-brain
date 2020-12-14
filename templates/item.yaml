@@ -25,4 +25,4 @@ apThreshold: 10
 apAttributes:
   - dex
 qualities: []
-stored: false
+level: 1

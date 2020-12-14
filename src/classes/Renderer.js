@@ -81,6 +81,9 @@ module.exports = class Renderer {
           else if (cell.structures.includes('structure-enhancement-station')) {
             icon = color.greenBg('E')
           }
+          else if (cell.structures.includes('structure-recycler')) {
+            icon = color.greenBg('R')
+          }
           else {
             icon = exploredBg(cell.room.icon)
           }
@@ -111,19 +114,53 @@ module.exports = class Renderer {
     return mapLines + lines.join('\r\n')
   }
 
+  _renderEquipped(game) {
+    const lines = []
+    const player = game.getPlayer()
+    lines.push('  EQUIPPED:')
+    lines.push(`    0. WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
+    lines.push(`    1.  ON HEAD: ${player.head ? player.head.name : 'Nothing'}`)
+    lines.push(`    2.  ON BODY: ${player.body ? player.body.name : 'Nothing'}`)
+    lines.push(`    3. ON HANDS: ${player.hands ? player.hands.name : 'Nothing'}`)
+    lines.push(`    4.  ON FEET: ${player.feet ? player.feet.name : 'Nothing'}`)
+    return lines.join('\r\n')
+  }
+
+  _renderCarrying(game) {
+    const lines = []
+    const player = game.getPlayer()
+    lines.push(`  CARRYING: ${player.inventory.length ? '' : 'Nothing'}`)
+    player.inventory.forEach((item, i) => {
+      lines.push(`    ${i}. ${item.name}`)
+    })
+    return lines.join('\r\n')
+  }
+
   _renderContextInventory(game) {
     const lines = []
     const player = game.getPlayer()
     lines.push('INVENTORY')
     lines.push('')
-    lines.push(`0. WIELDING: ${player.wielding ? player.wielding.name : 'Nothing'}`)
-    lines.push(`1.  ON HEAD: ${player.head ? player.head.name : 'Nothing'}`)
-    lines.push(`2.  ON BODY: ${player.body ? player.body.name : 'Nothing'}`)
-    lines.push(`3. ON HANDS: ${player.hands ? player.hands.name : 'Nothing'}`)
-    lines.push(`4.  ON FEET: ${player.feet ? player.feet.name : 'Nothing'}`)
-    lines.push(`CARRYING:`)
+    lines.push(this._renderEquipped(game))
+    lines.push('')
+    lines.push(this._renderCarrying(game))
+    lines.push('')
+    if (game.state.messages.length) {
+      lines.push(game.state.messages.join('\r\n'))
+      lines.push('')
+    }
+    lines.push(this._renderSelfLine(game))
+    return lines.join('\r\n')
+  }
+
+  _renderContextRecycler(game) {
+    const lines = []
+    const player = game.getPlayer()
+    lines.push('RECYCLER')
+    lines.push('')
+    lines.push(`  CARRYING: ${player.inventory.length ? '' : 'Nothing'}`)
     player.inventory.forEach((item, i) => {
-      lines.push(`  ${i}. ${item.name}`)
+      lines.push(`    ${i}. ${item.name} (${Math.floor(3 * 1.618**item.level)}n)`)
     })
     lines.push('')
     if (game.state.messages.length) {
@@ -142,7 +179,7 @@ module.exports = class Renderer {
     }
     const lines = []
     const player = game.getPlayer()
-    lines.push(`LVL: ${player.level} | NANITE COST: ${player.naniteCost}`)
+    lines.push(`LVL: ${player.level} | ENHANCEMENT COST: ${player.naniteCost}n`)
     lines.push('')
     lines.push(`0. INT: ${player.int} | ${getModStr('int')}`)
     lines.push(`1. WIS: ${player.wis} | ${getModStr('wis')}`)
@@ -213,7 +250,7 @@ module.exports = class Renderer {
 
   _renderSelfLine(game) {
     const player = game.getPlayer()
-    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.nanites} NANITES`
+    return `SELF: ${player.hp}/${player.hpMax} HP | ${player.ap}/${player.apMax} AP | ${player.nanites}n`
   }
 
   _renderTargetLine(game) {
@@ -262,6 +299,9 @@ module.exports = class Renderer {
         break;
       case 'enhancementStation':
         lines.push(this._renderContextEnhancementStation(game))
+        break;
+      case 'recycler':
+        lines.push(this._renderContextRecycler(game))
         break;
     }
 

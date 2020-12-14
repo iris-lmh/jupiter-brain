@@ -13,7 +13,6 @@ int: 10
 wis: 10
 cha: 10
 wielding: null
-wearing: null
 head: null
 body: null
 hands: null

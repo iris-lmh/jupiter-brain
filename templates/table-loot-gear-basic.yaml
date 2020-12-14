@@ -1,5 +1,8 @@
 chance: 0.05
 entries:
   - [10, weapon-knife] 
+  - [10, armor-helmet]
   - [10, armor-vest-ballistic]
+  - [10, armor-gloves-tacticool]
+  - [10, armor-boots-combat]
   - [2, weapon-pistol]

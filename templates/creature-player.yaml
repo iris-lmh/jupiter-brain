@@ -4,11 +4,6 @@ inherits: creature
 tags: [player]
 hitDie: 8
 wielding: weapon-knife
-wearing: armor-vest-ballistic
-head: armor-helmet
-body: armor-vest-ballistic
-hands: armor-gloves-tacticool
-feet: armor-boots-combat
 apMax: 5
 ap: 5
 apRegen: 10

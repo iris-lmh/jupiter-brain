@@ -387,6 +387,7 @@ module.exports = class Game {
   }
 
   handleGrabItem(commandSuffix) {
+    // TODO Do this with actions and make it cost AP
     const index = parseInt(commandSuffix)
     const player = this.getPlayer()
     const entity = this.getNearbyEntitiesWithout('player')[index]
@@ -452,7 +453,6 @@ module.exports = class Game {
   }
 
   handleTarget(commandSuffix) {
-    // TODO Maybe do targeting with actions.
     const index = parseInt(commandSuffix)
     var targetId
     const player = this.getPlayer()

@@ -521,12 +521,12 @@ module.exports = class Game {
       const playerIsKilled = killed && attackerId != 'player' ? ', killing you' : ''
     
       const hitMsg = attackerId == 'player' 
-        ? `You${hit.crit ? ' critically ' : ' '}${weapon.attackDesc} (${hit.roll}) the ${defender.name} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
-        : `The ${attacker.name}${hit.crit ? ' critically ' : ' '}${weapon.attackDesc}s (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
+        ? `You${hit.crit ? ' critically ' : ' '}${weapon.attackDesc} (${hit.roll}) the ${color.red(defender.name)} with your ${weapon.name}, dealing ${damage} damage${enemyIsKilled}.`
+        : `The ${color.red(attacker.name)}${hit.crit ? ' critically ' : ' '}${weapon.attackDesc}s (${hit.roll}) you with its ${weapon.name}, dealing ${damage} damage${playerIsKilled}.`
     
       const missMsg = attackerId == 'player'
-        ? `You miss (${hit.roll}) the ${defender.name}.`
-        : `The ${attacker.name} misses (${hit.roll}) you.`
+        ? `You miss (${hit.roll}) the ${color.red(defender.name)}.`
+        : `The ${color.red(attacker.name)} misses (${hit.roll}) you.`
       
       if (hit.roll > this.getAc(defender)) {
         this.addMessage(hitMsg + ` ${this.getApCost(attacker)} ap`)
@@ -602,7 +602,8 @@ module.exports = class Game {
         if (entities.length) {
           entities.forEach(entity => {
             const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
-            this.addMessage(`  There is ${article} ${entity.name}`)
+            const entityName = entity.tags.includes('creature') ? color.red(entity.name) : entity.name
+            this.addMessage(`  There is ${article} ${entityName}`)
           })
         }
         else {

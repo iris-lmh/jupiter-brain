@@ -14,9 +14,9 @@ module.exports = class Renderer {
     game.getNearbyEntitiesWithout('player').forEach((entity, i) => {
       if (!entity.stored) {
         const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
-        if (entity.type === 'creature') {
+        if (entity.tags.includes('creature')) {
           if (entity.hp > 0) {
-            lines.push(`  ${i}. There is ${article} ${entity.name}. ${entity.hp} hp`)
+            lines.push(`  ${i}. There is ${article} ${color.red(entity.name)}. ${entity.hp} hp`)
           } 
         }
         else {

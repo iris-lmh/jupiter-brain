@@ -9,27 +9,16 @@ module.exports = class Loader {
   }
 
   loadTemplate(name) {
-    const record = _.get(this, `templates.${name}`)
-    if (!record) {
-      // const path = `${this.templatesPath}${name}.yaml`
-      // const str = fs.readFileSync(path, 'utf8')
-      // const template = YAML.parse(str)
-      // this.templates[name] = template
-      // return template
-    } else {
-      return record
+    if (!this.templates[name]) {
+      throw `Template not found: ${name}`
     }
+    return this.templates[name]
   }
 
   loadScript(name) {
-    const record = _.get(this, `scripts.${name}`)
-    if (!record) {
-      // const path = `${this.scriptsPath}${name}.js`
-      // const script = require(path)
-      // this.scripts[name] = script
-      return script
-    } else {
-      return record
+    if (!this.scripts[name]) {
+      throw `Script not found: ${name}`
     }
+    return this.scripts[name]
   }
 }

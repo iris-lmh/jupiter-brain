@@ -2,32 +2,32 @@ module.exports = function commands(game) {
   const contextMap = {
     longForm: '(m)ap',
     help: 'Show the map.',
-    handler: ()=>{game.switchUiContext('map')}
+    handler: 'handleContextMap'
   }
   const contextInventory = {
     longForm: '(i)nventory',
     help: "Show the player's inventory.",
-    handler: ()=>{game.switchUiContext('inventory')}
+    handler: 'handleContextInventory'
   }
   const contextCharacterSheet = {
     longForm: '(c)haracter sheet',
     help: "Show ther player's status.",
-    handler: ()=>{game.switchUiContext('characterSheet')}
+    handler: 'handleContextCharacterSheet'
   }
   const contextMessageHistory = {
     longForm: '(M)essage history',
     help: 'Show an extended history of game messages.',
-    handler: ()=>{game.switchUiContext('messageHistory')}
+    handler: 'handleContextMessageHistory'
   }
   const contextDebug = {
     longForm: '(D)ebug',
     help: 'Show an extended history of game messages.',
-    handler: ()=>{game.switchUiContext('debug')}
+    handler: 'handleContextDebug'
   }
   const contextSystem = {
     longForm: '(S)ystem',
     help: '',
-    handler: ()=>{game.switchUiContext('system')}
+    handler: 'handleContextSystem'
   }
 
   const commands = {
@@ -41,17 +41,17 @@ module.exports = function commands(game) {
       s: {
         longForm: '(s)ave game',
         help: '',
-        handler: game.handleSave
+        handler: 'handleSave'
       },
       // l: {
       //   longForm: '(l)oad game',
       //   help: '',
-      //   handler: game.handleLoad
+      //   handler: 'handleLoad'
       // },
       N: {
         longForm: '(N)ew game',
         help: '',
-        handler: game.handleNewGame
+        handler: 'handleNewGame'
       }
     },
     debug: {
@@ -63,17 +63,17 @@ module.exports = function commands(game) {
       N: {
         longForm: '(N)ew map',
         help: '',
-        handler: game.handleNewMap
+        handler: 'handleNewMap'
       },
       s: {
         longForm: '(s)pawn entity',
         help: '',
-        handler: game.debugSpawnEntity
+        handler: 'debugSpawnEntity'
       },
       n: {
         longForm: '(n)dd nanites',
         help: '',
-        handler: game.debugAddNanites
+        handler: 'debugAddNanites'
       }
     },
     map: {
@@ -88,27 +88,27 @@ module.exports = function commands(game) {
       t: {
         longForm: '(t)arget',
         help: '',
-        handler: game.handleTarget
+        handler: 'handleTarget'
       },
       a: {
         longForm: '(a)ttack',
         help: '',
-        handler: game.handleAttack
+        handler: 'handleAttack'
       },
       l: {
         longForm: '(l)ook',
         help: '',
-        handler: game.handleLook
+        handler: 'handleLook'
       },
       g: {
         longForm: '(g)rab item',
         help: '',
-        handler: game.handleGrabItem
+        handler: 'handleGrabItem'
       },
       u: {
         longForm: '(u)se',
         help: '',
-        handler: game.handleUse
+        handler: 'handleUse'
       }
     },
     inventory: {
@@ -122,27 +122,27 @@ module.exports = function commands(game) {
       d: {
         longForm: '(d)rop',
         help: '',
-        handler: game.handleDropItem
+        handler: 'handleDropItem'
       },
       q: {
         longForm: 'e(q)uip',
         help: '',
-        handler: game.handleEquipItem
+        handler: 'handleEquipItem'
       },
       u: {
         longForm: '(u)se',
         help: '',
-        handler: game.handleUse
+        handler: 'handleUse'
       },
       U: {
         longForm: '(U)nequip',
         help: '',
-        handler: game.handleUnequipItem
+        handler: 'handleUnequipItem'
       },
       l: {
         longForm: '(l)ook',
         help: '',
-        handler: game.handleLook
+        handler: 'handleLook'
       },
     },
     characterSheet: {
@@ -151,13 +151,6 @@ module.exports = function commands(game) {
       i: contextInventory,
       M: contextMessageHistory,
       D: contextDebug,
-
-      // other commands
-      // i: {
-      //   longForm: '(i)ncrease attribute',
-      //   help: '',
-      //   handler: game.handleIncreaseAttribute
-      // }
     },
     enhancementStation: {
       // context switchers
@@ -170,7 +163,7 @@ module.exports = function commands(game) {
       i: {
         longForm: '(i)ncrease attribute',
         help: '',
-        handler: game.handleIncreaseAttribute
+        handler: 'handleIncreaseAttribute'
       }
     },
     recycler: {
@@ -184,7 +177,7 @@ module.exports = function commands(game) {
       r: {
         longForm: '(r)ecycle item',
         help: '',
-        handler: game.handleRecycleItem
+        handler: 'handleRecycleItem'
       }
     },
     messageHistory: {

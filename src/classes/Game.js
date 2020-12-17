@@ -2,7 +2,8 @@ const _ = require('lodash')
 
 const helpers = require('../helpers')
 const color = require('../color')
-const commands = require('../commands.js')
+const commands = require('../commands')
+const inputHandlers = require('../inputHandlers')
 
 const Loader = require('./Loader')
 const storage = require('../storage')
@@ -39,7 +40,7 @@ module.exports = class Game {
     
     if (!save) {
       this.addEntity('creature-player')
-      this.handleNewMap()
+      this.goToNewMap()
       this.autoSave()
     }
   }
@@ -319,33 +320,11 @@ module.exports = class Game {
 
   // HANDLERS
 
-  handleNewGame(commandSuffix) {
-    this.state = _.merge({}, this.defaultState)
-    this.addEntity('creature-player')
-    this.handleNewMap()
-    this.autoSave()
-  }
-
-  handleSave(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    this.state.saveIndex = index
-
-    storage.save(this, index)
-  }
-
   autoSave() {
     storage.save(this, this.state.saveIndex)
   }
 
-  handleLoad(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const save = storage.load(this.state.saveIndex)
-    if (save) {
-      this.state = save
-    }
-  }
-
-  handleNewMap() {
+  goToNewMap() {
     this.state.map = new Map(this.loader, 'map', this.state.depth)
     this.getEntitiesWithout('player').forEach(entity => {
       this.deleteEntity(entity.id)
@@ -356,148 +335,7 @@ module.exports = class Game {
     player.x = this.state.map.startX
     player.y = this.state.map.startY
     this.state.depth += 1
-  }
-
-  handleIncreaseAttribute(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    const attributes = [
-      'int',
-      'wis',
-      'cha',
-      'str',
-      'dex',
-      'con'
-    ]
-    const attributeName = attributes[index]
-    if (player.nanites >= player.naniteCost) {
-      const missingHp = player.hpMax - player.hp
-      player.nanites -= player.naniteCost
-      player.level += 1
-      player[attributeName] += 1
-      player.naniteCost = Math.floor(player.naniteCost * 1.618)
-      
-      player.hpMax = player.hpMax + player.hitDie / 2 + player.level * helpers.calculateAttributeMod(player.con)
-      player.hp = player.hpMax - missingHp
-      this.addMessage(`${attributeName.toUpperCase()} increased.`)
-
-    }
-    else {
-      this.addMessage('Not enough nanites.')
-    }
-  }
-
-  handleGrabItem(commandSuffix) {
-    // TODO Do this with actions and make it cost AP
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    const entity = this.getNearbyEntitiesWithout('player')[index]
-
-    if (!entity) {
-      this.addMessage('No item found.')
-    }
-    else if (entity.tags.includes('item') && entity.grabable) {
-      this.creatureGrabItem(player.id, entity.id)
-    }
-    else if (entity.tags.includes('item') || !entity.grabable) {
-      this.addMessage(`You cannot grab the ${entity.name}.`)
-    }
-    else {
-      this.addMessage('No item found.')
-    }
-  }
-
-  handleDropItem(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    if (player.inventory[index]) {
-      this.creatureDropItem(player.id, index)
-    }
-  }
-
-  handleRecycleItem(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    const item = player.inventory[index]
-    if (item) {
-      player.nanites += Math.floor(3 * 1.618**item.level-1)
-      player.inventory = _.without(player.inventory, item)
-    }
-  }
-
-  handleEquipItem(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    const newItem = player.inventory[index]
-    if (newItem) {
-      const oldItem = player[newItem.slot]
-      if (oldItem) {
-        player.inventory.push(oldItem)
-      }
-      player[newItem.slot] = newItem
-    }
-    player.inventory = _.without(player.inventory, newItem)
-  }
-
-  handleUnequipItem(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const slots = ['wielding','head','body','hands','feet']
-    const slot = slots[index]
-    const player = this.getPlayer()
-    const item = player[slot]
-    if (item) {
-      player.inventory.push(item)
-      player[slot] = null
-    }
-  }
-
-  handleMove(dir) {
-    const room = this.getCurrentRoom()
-    const player = this.getPlayer()
-    if (room.exits.includes(dir)) {
-      this.addAction({type:'move', entityId: 'player', dir: dir})
-      player.ap = 0
-      this.setTargetOf('player', null)
-    } else {
-      this.addMessage('You cannot go that way.')
-    }
-  }
-
-  handleTarget(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    var targetId
-    const player = this.getPlayer()
-    const invalidIndex = !(index >= 0)
-    if (invalidIndex) {
-      const target = this.getFirstValidTargetOf(player.id)
-      targetId = this.getFirstValidTargetOf(player.id) ? target.id : null
-    } else {
-      if (index + 1 > this.getNearbyEntitiesWithout('player').length) {
-        this.addMessage(`No such option: ${index}`)
-        index = 0
-      }
-      targetId = this.getNearbyEntitiesWithout('player')[index].id
-    }
-    const newTarget = this.getEntity(targetId)
-    if (newTarget) {
-      this.addMessage(`You target the ${newTarget.name}.`)
-    } else {
-      this.addMessage('No valid targets.')
-    }
-    this.setTargetOf(player.id, targetId)
-  }
-
-  handleAttack() {
-    const player = this.getPlayer()
-    const target = this.getTargetOf(player.id) || this.getFirstValidTargetOf(player.id)
-    if (!target) {
-      this.addMessage('No valid targets.')
-      return
-    }
-
-    player.ap -= this.getApCost(player)
-    this.addAction({type: 'attack', entityId: player.id, defenderId: target.id})
-  }
+  }  
 
   processAttack(attackerId, defenderId) {
     helpers.assert(typeof attackerId === 'string', `expected attackerId to be string, got ${attackerId}`)
@@ -546,93 +384,6 @@ module.exports = class Game {
     }
   }
 
-  handleUse(commandSuffix){
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-    const context = this.state.uiContext
-    let item
-    if (context === 'inventory') {
-      item = player.inventory[index]
-    } else if (context === 'map') {
-      item = this.getNearbyEntitiesWithout('player')[index]
-    }
-    if (item && item.onUse) {
-      const script = this.loader.loadScript(item.onUse)
-      this.addMessage(`You use the ${item.name}.`)
-      script(this, helpers, item)
-    }
-    else {
-      this.addMessage(`You cannot use that.`)
-    }
-    // }
-  }
-  handleLook(commandSuffix) {
-    const index = parseInt(commandSuffix)
-    const player = this.getPlayer()
-
-    if ('nsew'.includes(commandSuffix)) {
-      let x = 0
-      let y = 0
-      let dirLine = ''
-      switch(commandSuffix) {
-        case 'n':
-          y = -1
-          dirLine = 'NORTH OF YOU:'
-          break;
-        case 's':
-          y = 1
-          dirLine = 'SOUTH OF YOU:'
-          break;
-        case 'e':
-          x = 1
-          dirLine = 'EAST OF YOU:'
-          break;
-        case 'w':
-          x = -1
-          dirLine = 'WEST OF YOU:'
-          break;
-      }
-
-      // FIXME I feel like a lot of this stuff should be happening in the renderer
-      const cell = this.getCell(x + player.x, y + player.y)
-      if (cell.type) {
-        const entities = this.getEntitiesAt(cell.x, cell.y)
-        this.addMessage(dirLine)
-
-        if (entities.length) {
-          entities.forEach(entity => {
-            const article = 'aeiou'.includes(entity.name[0].toLowerCase()) ? 'an' : 'a'
-            const entityName = entity.tags.includes('creature') ? color.red(entity.name) : entity.name
-            this.addMessage(`  There is ${article} ${entityName}`)
-          })
-        }
-        else {
-          this.addMessage('  Nothing')
-        }
-      }
-    }
-    else {
-      let entities
-      if (this.state.uiContext === 'map') {
-        entities = this.getNearbyEntitiesWithout('player')
-      }
-      else if (this.state.uiContext === 'inventory') {
-        entities = player.inventory
-      }
-  
-      const e = entities[index]
-      this.addMessage(e.desc)
-      if (e.tags.includes('creature')) {
-        this.addMessage(`LVL ${e.level}`)
-      }
-  
-      if (e.tags.includes('weapon')) {
-        this.addMessage(`DAM: ${e.diceCount}d${e.diceSize}+${e.damBonus} | HIT: +${e.hitBonus} | USES: ${e.hitAttribute}`)
-        this.addMessage(`CRIT: ${e.critRange}/x${e.critMult} | BASE AP COST: ${e.apCostBase}`)
-      }
-    }
-  }
-
   switchUiContext(context) {
     this.state.uiContext = context
   }
@@ -649,10 +400,12 @@ module.exports = class Game {
         this.addMessage(helpMsg)
       } 
       else if (this.state.uiContext === 'map' && 'nsew'.includes(prefix)) {
-        this.handleMove(prefix)
+        inputHandlers.handleMove(this, prefix)
       }
       else if (this.commands[this.state.uiContext][prefix]) {
-        this.commands[this.state.uiContext][prefix].handler.bind(this)(suffix)
+        const handlerName = this.commands[this.state.uiContext][prefix].handler
+        const handler = inputHandlers[handlerName]
+        handler(this, suffix)
       } 
       else {
         this.addMessage('Invalid command: ' + input)
@@ -689,7 +442,7 @@ module.exports = class Game {
     })
     this.state.actions = []
   }
-
+  
 
   // ADDERS
 

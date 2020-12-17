@@ -20,7 +20,7 @@ module.exports = {
     const index = parseInt(commandSuffix)
     game.state.saveIndex = index
 
-    storage.save(this, index)
+    storage.save(game, index)
   },
 
   handleLoad(game, commandSuffix) {
@@ -189,7 +189,7 @@ module.exports = {
     if (item && item.onUse) {
       const script = game.loader.loadScript(item.onUse)
       game.addMessage(`You use the ${item.name}.`)
-      script(this, helpers, item)
+      script(game, helpers, item)
     }
     else {
       game.addMessage(`You cannot use that.`)
